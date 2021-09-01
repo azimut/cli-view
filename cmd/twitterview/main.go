@@ -16,11 +16,12 @@ type options struct {
 }
 
 var opt options
+var url string
 
 func init() {
-	flag.StringVar(&opt.userAgent, "A", "CliView/0.1", "default User-Agent sent")
-	flag.DurationVar(&opt.timeout, "t", time.Second*5, "timeout in seconds")
 	flag.IntVar(&opt.width, "w", 0, "fixed with, defaults to console width")
+	flag.StringVar(&opt.userAgent, "A", "Wget", "default User-Agent sent")
+	flag.DurationVar(&opt.timeout, "t", time.Second*5, "timeout in seconds")
 }
 
 func usage() {
@@ -31,7 +32,10 @@ func usage() {
 func main() {
 	flag.Parse()
 	flag.Usage = usage
-	t := twitter.Tweet{}
-	t.GetHeader("what is this")
-	println("HELP ME")
+	url = "https://twitter.com/vickyguareschi/status/1432922904556146691"
+	res, err := twitter.Fetch(url, opt.userAgent, opt.timeout)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(res)
 }

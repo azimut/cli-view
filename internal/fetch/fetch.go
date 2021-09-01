@@ -22,7 +22,6 @@ func getResponse(req *http.Request, timeout time.Duration) (*http.Response, erro
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
 	return resp, nil
 }
 
@@ -33,6 +32,7 @@ func handleResponse(resp *http.Response) (string, error) {
 	if b, err := ioutil.ReadAll(resp.Body); err == nil {
 		return string(b), nil
 	}
+	defer resp.Body.Close()
 	return "", fmt.Errorf("no body read")
 }
 
