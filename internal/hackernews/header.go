@@ -14,6 +14,7 @@ func NewHeader(doc *goquery.Document) *Op {
 		title:     getTitle(doc),
 		score:     getScore(doc),
 		user:      getUser(doc),
+		date:      getDate(doc),
 		url:       getUrl(doc),
 	}
 }
@@ -27,15 +28,26 @@ func getDate(doc *goquery.Document) time.Time {
 	if !exists {
 		panic("could not find span.age title")
 	}
-	date, err := time.Parse("%-%M-%DT%h:%m:%s", rawdate)
+	date, err := time.Parse("2006-01-02T15:04:05", rawdate)
 	if err != nil {
 		panic(err)
 	}
 	return date
 }
 
+func TrimToNum(r rune) bool {
+	if n := r - '0'; n >= 0 && n <= 9 {
+		return false
+	}
+	return true
+}
+
 func getNComments(doc *goquery.Document) int {
-	rawn := doc.Find("td.subtext a").Last().Text()
+	rawn, err := doc.Find("td.subtext a").Last().Html()
+	if err != nil {
+		panic(err)
+	}
+	rawn = strings.TrimFunc(rawn, TrimToNum)
 	n, err := strconv.Atoi(rawn)
 	if err != nil {
 		panic(err)

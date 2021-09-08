@@ -2,17 +2,18 @@ package hackernews
 
 import (
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
 )
 
-func MakeComments(doc *goquery.Document) []*Comment {
+func NewComments(doc *goquery.Document) []*Comment {
 	prev := &Comment{}
 	var parents []*Comment
 	var comments []*Comment
 	doc.Find("table.comment-tree tr.comtr").Each(func(i int, sel *goquery.Selection) {
-		current := NewComment(sel)
+		current := newComment(sel)
 		if current.isChildOf(prev) {
 			prev.Childs = append(prev.Childs, current)
 			parents = append(parents, prev)
@@ -38,13 +39,13 @@ func MakeComments(doc *goquery.Document) []*Comment {
 	return comments
 }
 
-func NewComment(sel *goquery.Selection) *Comment {
+func newComment(sel *goquery.Selection) *Comment {
 	return &Comment{
 		id:  commentId(sel),
 		msg: commentMsg(sel),
 		//togg: commentTogg(sel),
-		user: commentUser(sel),
-		//date:     commentDate(sel),
+		user:   commentUser(sel),
+		date:   commentDate(sel),
 		indent: commentIndent(sel),
 	}
 }
@@ -95,7 +96,14 @@ func commentIndent(sel *goquery.Selection) int {
 }
 
 func commentMsg(sel *goquery.Selection) string {
-	return sel.Find("span.commtext").Text()
+	// NOTE: the dangling <p>s I think break goquery parser, leaving trash into .Html()
+	msg, err := sel.Find("div.comment span.commtext").Html()
+	if err != nil {
+		panic(err)
+	}
+	msg = strings.Split(msg, "<div class=\"reply\">")[0]
+	msg = strings.TrimSpace(msg)
+	return msg
 }
 
 func commentId(sel *goquery.Selection) int {
@@ -119,7 +127,7 @@ func commentDate(sel *goquery.Selection) time.Time {
 	if !exists {
 		panic("could not find span.age title")
 	}
-	date, err := time.Parse("%-%M-%DT%h:%m:%s", rawdate)
+	date, err := time.Parse("2006-01-02T15:04:05", rawdate)
 	if err != nil {
 		panic(err)
 	}

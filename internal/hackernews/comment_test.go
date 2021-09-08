@@ -18,7 +18,7 @@ func TestMakeComments(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	comments := MakeComments(doc)
+	comments := NewComments(doc)
 	if len(comments) != 19 {
 		t.Errorf("expected 19 root comments got %d", len(comments))
 	}
