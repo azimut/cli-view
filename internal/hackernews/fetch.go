@@ -1,8 +1,6 @@
 package hackernews
 
 import (
-	"errors"
-	"net/url"
 	"strings"
 	"time"
 
@@ -10,19 +8,8 @@ import (
 	"github.com/azimut/cli-view/internal/fetch"
 )
 
-func EffectiveUrl(rawUrl string) (string, error) {
-	uri, err := url.Parse(rawUrl)
-	if err != nil {
-		return "", err
-	}
-	if uri.Host != "news.ycombinator.com" {
-		return "", errors.New("invalid hostname")
-	}
-	return uri.String(), nil
-}
-
 func Fetch(url, ua string, timeout time.Duration) (doc *goquery.Document, err error) {
-	url, err = EffectiveUrl(url)
+	url, err = effectiveUrl(url)
 	if err != nil {
 		return nil, err
 	}

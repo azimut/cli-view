@@ -9,14 +9,14 @@ import (
 )
 
 func TestNewHeader(t *testing.T) {
-	file, err := ioutil.ReadFile("/home/sendai/testfield/hn.html")
+	file, err := ioutil.ReadFile("testdata/hn.html")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	r := bytes.NewReader(file)
 	doc, err := goquery.NewDocumentFromReader(r)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	header := NewHeader(doc)
 	if header.url != "https://www.newyorker.com/news/news-desk/the-red-warning-light-on-richard-bransons-space-flight" {
