@@ -1,0 +1,4 @@
+* cli-view
+  See some urls from the command line.
+  - Tweets (using embedded json support)
+  - HackerNews stories (parsing html)
