@@ -1,4 +1,37 @@
 * cli-view
   See some urls from the command line.
-  - Tweets (using embedded json support)
-  - HackerNews stories (parsing html)
+** Twitter
+   Uses embeded json, publish.twitter.com
+#+begin_src
+~ » twitterview https://twitter.com/TwitterDev/status/1428061939146526722
+URL: https://twitter.com/TwitterDev/status/1428061939146526722
+external: https://t.co/IloBIxYGbX
+image: https://pic.twitter.com/an4zhbBBKI
+
+   All systems go! Help shape the future of Twitter Spaces with the new Spaces endpoints. ✨
+
+3 weeks ago
+#+end_src
+** hackerview
+   Parses html
+#+begin_src
+~ » hackerview https://news.ycombinator.com/item\?id\=28468751
+title: 60x speed-up of Linux “perf”
+url: https://eighty-twenty.org/2021/09/09/perf-addr2line-speed-improvement
+tonyg(211) - 5 hours ago
+
+
+ FINALLY AN ACTUAL ANSWER!! :D
+
+ I had done a bunch of research into this a while ago and filed an issue with the Ubuntu bug tracker, but was told it
+ was due to ABI stability (which did not make any sense).
+
+ https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1894407
+
+ Understanding that there is actually an underlying license problem is like finally being told all of the reasons for
+ everything that happened on LOST ;P.
+>>> saurik - 33 minutes ago
+
+      > This bug affects 3 people (!)
+     >> mistrial9 - 13 minutes ago
+#+end_src
