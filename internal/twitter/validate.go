@@ -12,12 +12,13 @@ func EffectiveUrl(rawUrl string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	uri.RawQuery = ""
 	if uri.Host == "m.twitter.com" || uri.Host == "mobile.twitter.com" || uri.Host == "t.co" {
 		uri.Host = "twitter.com"
 	}
 	if uri.Host != "twitter.com" {
 		return "", errors.New("invalid hostname")
 	}
+	uri.RawQuery = ""
+	uri.Scheme = "https"
 	return prefix + uri.String(), nil
 }
