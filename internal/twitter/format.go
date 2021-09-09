@@ -16,6 +16,8 @@ func externalName(external string) string {
 		return "image: " + external + "\n"
 	} else if strings.Contains(external, "t.co") {
 		return "external: " + external + "\n"
+	} else if external != "" {
+		panic("unknown not external URL passed: " + external)
 	}
 	return ""
 }
@@ -66,7 +68,8 @@ func paragraph(html string) (string, []string) {
 	if err != nil {
 		panic(err)
 	}
-	removeHashtagsLinks(doc.Find("p a"))
+	removeAllHashtagLinks(doc.Find("p a"))
+	removeAllMentionLinks(doc.Find("p a"))
 	external := popExternalLinks(doc.Find("p a"))
 	msg, err := doc.Find("p").Html()
 	if err != nil {
@@ -87,7 +90,16 @@ func popExternalLinks(sel *goquery.Selection) (ret []string) {
 	return ret
 }
 
-func removeHashtagsLinks(sel *goquery.Selection) {
+func removeAllMentionLinks(sel *goquery.Selection) {
+	sel.Each(func(i int, s *goquery.Selection) {
+		mention := s.Text()
+		if strings.HasPrefix(mention, "@") {
+			s.ReplaceWithHtml(mention)
+		}
+	})
+}
+
+func removeAllHashtagLinks(sel *goquery.Selection) {
 	sel.Each(func(i int, s *goquery.Selection) {
 		hashtag := s.Text()
 		if strings.HasPrefix(hashtag, "#") {
