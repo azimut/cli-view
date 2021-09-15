@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"time"
 
@@ -54,7 +55,6 @@ func run(args []string, stdout io.Writer) error {
 func main() {
 	err := run(os.Args, os.Stdout)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
+		log.Fatal(err)
 	}
 }
