@@ -11,17 +11,6 @@ import (
 	"jaytaylor.com/html2text"
 )
 
-func externalName(external string) string {
-	if strings.Contains(external, "pic.twitter.com") {
-		return "image: " + external + "\n"
-	} else if strings.Contains(external, "t.co") {
-		return "external: " + external + "\n"
-	} else if external != "" {
-		panic("unknown not external URL passed: " + external)
-	}
-	return ""
-}
-
 func Format(t *Embedded) (formatted string) {
 	msg, links := paragraph(t.Html)
 	formatted += fmt.Sprintf("URL: %s\n", t.Url)
@@ -31,6 +20,17 @@ func Format(t *Embedded) (formatted string) {
 	formatted += "\n" + fitInScreen(plaintext(msg))
 	formatted += "\n\n" + date(t.Html)
 	return
+}
+
+func externalName(external string) string {
+	if strings.Contains(external, "pic.twitter.com") {
+		return "image: " + external + "\n"
+	} else if strings.Contains(external, "t.co") {
+		return "external: " + external + "\n"
+	} else if external != "" {
+		panic("unknown not external URL passed: " + external)
+	}
+	return ""
 }
 
 func fitInScreen(s string) string {
