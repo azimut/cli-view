@@ -13,5 +13,6 @@ func effectiveUrl(rawUrl string) (string, error) {
 	if uri.Host != "news.ycombinator.com" {
 		return "", errors.New("invalid hostname")
 	}
+	uri.Scheme = "https"
 	return uri.String(), nil
 }
