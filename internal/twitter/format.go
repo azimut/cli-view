@@ -8,7 +8,7 @@ import (
 	text "github.com/MichaelMure/go-term-text"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/dustin/go-humanize"
-	"jaytaylor.com/html2text"
+	"github.com/jaytaylor/html2text"
 )
 
 func Format(t *Embedded) (formatted string) {

@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strings"
 
+	text "github.com/MichaelMure/go-term-text"
 	"github.com/PuerkitoBio/goquery"
-	"github.com/azimut/cli-view/internal/format"
 	"github.com/dustin/go-humanize"
-	"jaytaylor.com/html2text"
+	"github.com/jaytaylor/html2text"
 )
 
 func PrintDoc(doc *goquery.Document) {
@@ -31,11 +31,11 @@ func (o *Op) String() (ret string) {
 
 func (c *Comment) String() (ret string) {
 	indent := c.indent * 5
-	msg, err := html2text.FromString(c.msg)
+	msg, err := html2text.FromString(c.msg, html2text.Options{OmitLinks: false, PrettyTables: true, CitationStyleLinks: true})
 	if err != nil {
 		panic(err)
 	}
-	wrapped := format.WrapLeftPadded(msg, 120, indent+1)
+	wrapped, _ := text.WrapLeftPadded(msg, 120, indent+1)
 	ret += "\n" + wrapped + "\n"
 	arrow := ">>> "
 	if c.indent > 0 {
