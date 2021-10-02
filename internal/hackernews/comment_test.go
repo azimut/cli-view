@@ -9,7 +9,7 @@ import (
 )
 
 func TestMakeComments(t *testing.T) {
-	file, err := ioutil.ReadFile("testdata/hn.html")
+	file, err := ioutil.ReadFile("../../testdata/hn.html")
 	if err != nil {
 		t.Fatal(err)
 	}
