@@ -1,7 +1,7 @@
 * cli-view
   See some urls from the command line.
 ** Twitter
-   Uses embeded json, publish.twitter.com
+   Uses [[https://developer.twitter.com/en/docs/twitter-for-websites/oembed-api][oEmbeded]] twitter json api
 #+begin_src
 ~ » twitterview https://twitter.com/TwitterDev/status/1428061939146526722
 URL: https://twitter.com/TwitterDev/status/1428061939146526722

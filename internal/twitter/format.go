@@ -22,6 +22,21 @@ func Format(t *Embedded) (formatted string) {
 	return
 }
 
+func paragraph(html string) (string, []string) {
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(html))
+	if err != nil {
+		panic(err)
+	}
+	removeAllHashtagLinks(doc.Find("p a"))
+	removeAllMentionLinks(doc.Find("p a"))
+	external := popExternalLinks(doc.Find("p a"))
+	msg, err := doc.Find("p").Html()
+	if err != nil {
+		panic(err)
+	}
+	return msg, external
+}
+
 func externalName(external string) string {
 	if strings.Contains(external, "pic.twitter.com") {
 		return "image: " + external + "\n"
@@ -63,31 +78,16 @@ func date(html string) string {
 	return humanize.Time(date)
 }
 
-func paragraph(html string) (string, []string) {
-	doc, err := goquery.NewDocumentFromReader(strings.NewReader(html))
-	if err != nil {
-		panic(err)
-	}
-	removeAllHashtagLinks(doc.Find("p a"))
-	removeAllMentionLinks(doc.Find("p a"))
-	external := popExternalLinks(doc.Find("p a"))
-	msg, err := doc.Find("p").Html()
-	if err != nil {
-		panic(err)
-	}
-	return msg, external
-}
-
 func popExternalLinks(sel *goquery.Selection) (ret []string) {
 	sel.Each(func(i int, s *goquery.Selection) {
 		link := s.Text()
+		s.Remove()
 		if strings.HasPrefix(link, "pic.twitter.com") {
 			link = "https://" + link
 		}
 		ret = append(ret, link)
-		s.Remove()
 	})
-	return ret
+	return
 }
 
 func removeAllMentionLinks(sel *goquery.Selection) {
