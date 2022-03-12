@@ -17,7 +17,7 @@ func Fetch(url, ua string, timeout time.Duration) (tweet *Embedded, err error) {
 		return nil, err
 	}
 	b := []byte(res)
-	if err != json.Unmarshal(b, &tweet) {
+	if err = json.Unmarshal(b, &tweet); err != nil {
 		return nil, err
 	}
 	return

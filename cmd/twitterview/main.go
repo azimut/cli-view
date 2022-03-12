@@ -46,7 +46,7 @@ func run(args []string, stdout io.Writer) error {
 	url = flag.Args()[0]
 	res, err := twitter.Fetch(url, opt.userAgent, opt.timeout)
 	if err != nil {
-		return errors.New("could not fetch url")
+		return err
 	}
 	fmt.Println(twitter.Format(res))
 	return nil

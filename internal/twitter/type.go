@@ -7,9 +7,9 @@ type Embedded struct {
 	Html         string
 	width        int
 	height       int
-	kind         string `json:"type"`
-	cacheAge     int    `json:cache_age`
-	providerName string `json:provider_name`
-	providerUrl  string `json:provider_url`
+	Kind         string `json:"type"`
+	PacheAge     string `json:"cache_age"`
+	ProviderName string `json:"provider_name"`
+	ProviderUrl  string `json:"provider_url"`
 	version      float32
 }

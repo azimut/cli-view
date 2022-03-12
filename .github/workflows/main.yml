@@ -1,10 +1,12 @@
 name: CI
 
 on:
+
   push:
     paths-ignore:
       - 'LICENSE'
       - 'README.org'
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -21,8 +23,4 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: 1.17
-      - run: go test ./...
-      - name: go run
-        run: |
-          go run cmd/hackerview/main.go -t 20s https://news.ycombinator.com/item?id=3078128
-          go run cmd/twitterview/main.go -t 20s https://twitter.com/TwitterDev/status/1443269993676763138
+      - run: make test
