@@ -1,6 +1,6 @@
 module github.com/azimut/cli-view
 
-go 1.14
+go 1.17
 
 require (
 	github.com/MichaelMure/go-term-text v0.3.1
