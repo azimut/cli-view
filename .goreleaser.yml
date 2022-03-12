@@ -1,0 +1,7 @@
+builds:
+- id: twitterview
+  binary: twitterview
+  main: ./cmd/twitterview
+  goos:   [ linux ]
+  goarch: [ amd64 ]
+  flags:  [ -v ]
