@@ -1,14 +1,15 @@
 name: CI
 
-on: [push]
-
+on:
+  push:
+    paths-ignore:
+      - 'LICENSE'
+      - 'README.org'
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
       - uses: actions/cache@v2
         with:
           path: |
@@ -19,17 +20,9 @@ jobs:
             ${{ runner.os }}-go-
       - uses: actions/setup-go@v2
         with:
-          go-version: 1.14
+          go-version: 1.17
       - run: go test ./...
       - name: go run
         run: |
           go run cmd/hackerview/main.go -t 20s https://news.ycombinator.com/item?id=3078128
           go run cmd/twitterview/main.go -t 20s https://twitter.com/TwitterDev/status/1443269993676763138
-      - uses: goreleaser/goreleaser-action@v2
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          distribution: goreleaser
-          version: latest
-          args: release --rm-dist
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
