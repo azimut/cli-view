@@ -13,6 +13,7 @@ type Op struct {
 	ncomments int
 	user      string
 	date      time.Time
+	selfUrl   string
 }
 
 type Comment struct {

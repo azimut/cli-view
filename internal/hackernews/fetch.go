@@ -12,6 +12,18 @@ func unix2time(t int) time.Time {
 	return time.Unix(int64(t), 0)
 }
 
+// TODO: ncomments
+func newOp(story *gophernews.Story, selfUrl string) Op {
+	return Op{
+		url:     story.URL,
+		title:   story.Title,
+		score:   story.Score,
+		user:    story.By,
+		date:    unix2time(story.Time),
+		selfUrl: selfUrl,
+	}
+}
+
 func Fetch(rawUrl, ua string, timeout time.Duration) (doc *Op, err error) {
 	url, storyId, err := effectiveUrl(rawUrl)
 	if err != nil {
@@ -22,17 +34,7 @@ func Fetch(rawUrl, ua string, timeout time.Duration) (doc *Op, err error) {
 	if err != nil {
 		return nil, err
 	}
-	if story.Type != "story" {
-		return nil, errors.New("is not a story")
-	}
-	// TODO: ncomments
-	op := Op{
-		url:   url,
-		title: story.Title,
-		score: story.Score,
-		user:  story.By,
-		date: unix2time(story.Time),
-	}
+	op := newOp(story, url)
 	// comments := fetchComments(story.Kids) // TODO: error
 	return &op, nil
 }
@@ -41,6 +43,9 @@ func fetchStory(client *gophernews.Client, id int) (*gophernews.Story, error) {
 	story, err := client.GetStory(id)
 	if err != nil {
 		return nil, err
+	}
+	if story.Type != "story" {
+		return nil, errors.New("is not a story")
 	}
 	return &story, nil
 }

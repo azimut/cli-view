@@ -25,6 +25,7 @@ func printChilds(c []*Comment) {
 func (o *Op) String() (ret string) {
 	ret += "title: " + o.title + "\n"
 	ret += "url: " + o.url + "\n"
+	ret += "self: " + o.selfUrl + "\n"
 	ret += fmt.Sprintf("%s(%d) - %s\n", o.user, o.score, humanize.Time(o.date))
 	return
 }
