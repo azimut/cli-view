@@ -1,25 +1,102 @@
 package hackernews
 
 import (
-	"strings"
+	"errors"
+	"github.com/caser/gophernews"
 	"time"
-
-	"github.com/PuerkitoBio/goquery"
-	"github.com/azimut/cli-view/internal/fetch"
 )
 
-func Fetch(url, ua string, timeout time.Duration) (doc *goquery.Document, err error) {
-	url, err = effectiveUrl(url)
+const NUM_OF_WORKERS = 3
+
+func unix2time(t int) time.Time {
+	return time.Unix(int64(t), 0)
+}
+
+func Fetch(rawUrl, ua string, timeout time.Duration) (doc *Op, err error) {
+	url, storyId, err := effectiveUrl(rawUrl)
 	if err != nil {
 		return nil, err
 	}
-	res, err := fetch.Fetch(url, ua, timeout)
+	client := gophernews.NewClient()
+	story, err := fetchStory(client, storyId)
 	if err != nil {
 		return nil, err
 	}
-	doc, err = goquery.NewDocumentFromReader(strings.NewReader(res))
+	if story.Type != "story" {
+		return nil, errors.New("is not a story")
+	}
+	// TODO: ncomments
+	op := Op{
+		url:   url,
+		title: story.Title,
+		score: story.Score,
+		user:  story.By,
+		date: unix2time(story.Time),
+	}
+	// comments := fetchComments(story.Kids) // TODO: error
+	return &op, nil
+}
+
+func fetchStory(client *gophernews.Client, id int) (*gophernews.Story, error) {
+	story, err := client.GetStory(id)
 	if err != nil {
 		return nil, err
 	}
-	return
+	return &story, nil
+}
+
+func fetchComments(comments []int) (state map[int]Comment) {
+	storiesCh := make(chan int, 5)
+	commentsCh := make(chan result, 5)
+	go sendWork(comments, storiesCh)
+	spawnWorkers(storiesCh, commentsCh)
+	collector(storiesCh, commentsCh, state)
+	return state
+}
+
+func sendWork(ids []int, input chan<- int) {
+	for _, id := range ids {
+		input <- id
+	}
+}
+
+func spawnWorkers(in <-chan int, out chan<- result) {
+	for i := 0; i < NUM_OF_WORKERS; i++ {
+		go worker(in, out)
+	}
+}
+
+type result struct {
+	comment gophernews.Comment
+	err     error
+}
+
+func worker(stories <-chan int, output chan<- result) {
+	client := gophernews.NewClient()
+	for storyId := range stories {
+		comment, err := client.GetComment(storyId)
+		if err != nil {
+			output <- result{err: err}
+		}
+		output <- result{comment: comment}
+	}
+}
+
+func collector(commentsCh chan<- int, responseCh <-chan result, state map[int]Comment) {
+	for response := range responseCh {
+		if response.err != nil {
+			continue
+		}
+		c := response.comment
+		state[c.ID] = Comment{
+			id:   c.ID,
+			msg:  c.Text,
+			user: c.By,
+			kids: c.Kids,
+		}
+		for _, id := range c.Kids {
+			commentsCh <- id
+		}
+	}
+	close(commentsCh)
 }
