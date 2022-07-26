@@ -12,15 +12,15 @@ func unix2time(t int) time.Time {
 	return time.Unix(int64(t), 0)
 }
 
-// TODO: ncomments
 func newOp(story *gophernews.Story, selfUrl string) Op {
 	return Op{
-		url:     story.URL,
-		title:   story.Title,
-		score:   story.Score,
-		user:    story.By,
-		date:    unix2time(story.Time),
-		selfUrl: selfUrl,
+		url:       story.URL,
+		title:     story.Title,
+		score:     story.Score,
+		user:      story.By,
+		date:      unix2time(story.Time),
+		ncomments: len(story.Kids), // ?
+		selfUrl:   selfUrl,
 	}
 }
 

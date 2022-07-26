@@ -36,14 +36,3 @@ func comment2comment(c gophernews.Comment, indent int) Comment {
 		indent: indent,
 	}
 }
-
-func story2op(s gophernews.Story) Op {
-	return Op{
-		url:       s.URL,
-		title:     s.Title,
-		score:     s.Score,
-		ncomments: len(s.Kids),
-		user:      s.By,
-		date:      time.Unix(int64(s.Time), 0),
-	}
-}

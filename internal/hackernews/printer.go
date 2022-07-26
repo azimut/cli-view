@@ -10,6 +10,8 @@ import (
 	"github.com/jaytaylor/html2text"
 )
 
+const SPACES_PER_INDENT = 5
+
 func PrintDoc(doc *goquery.Document) {
 	fmt.Println(NewHeader(doc))
 	printChilds(NewComments(doc))
@@ -31,7 +33,7 @@ func (o *Op) String() (ret string) {
 }
 
 func (c *Comment) String() (ret string) {
-	indent := c.indent * 5
+	indent := c.indent * SPACES_PER_INDENT
 	msg, err := html2text.FromString(c.msg, html2text.Options{OmitLinks: false, PrettyTables: true, CitationStyleLinks: true})
 	if err != nil {
 		panic(err)
