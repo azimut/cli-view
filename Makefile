@@ -11,5 +11,5 @@ test:
 	go vet ./...
 	go test ./...
 testrun:
-	go run cmd/hackerview/main.go -t 20s $(HN_URL)
-#	go run cmd/twitterview/main.go -t 20s $(TW_URL)
+	go run cmd/hackerview/main.go -l 10 -t 20s $(HN_URL)
+	go run cmd/twitterview/main.go -t 20s $(TW_URL)

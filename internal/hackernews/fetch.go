@@ -26,7 +26,7 @@ func newOp(story *gophernews.Story, selfUrl string) Op {
 	}
 }
 
-func Fetch(rawUrl, ua string, timeout time.Duration) (doc *Op, c *[]Comment, err error) {
+func Fetch(rawUrl, ua string, timeout time.Duration, limit int) (doc *Op, c *[]Comment, err error) {
 	url, storyId, err := effectiveUrl(rawUrl)
 	if err != nil {
 		return nil, nil, err
@@ -37,7 +37,11 @@ func Fetch(rawUrl, ua string, timeout time.Duration) (doc *Op, c *[]Comment, err
 		return nil, nil, err
 	}
 	op := newOp(story, url)
-	comments := fetchComments(story.Kids) // TODO: error
+	ids := story.Kids
+	if limit > 0 {
+		ids = ids[:limit]
+	}
+	comments := fetchComments(ids) // TODO: error
 	return &op, &comments, nil
 }
 
