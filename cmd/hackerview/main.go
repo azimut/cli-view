@@ -51,7 +51,6 @@ func run(args []string, stdout io.Writer) error {
 	fmt.Println(op)
 	for _, comment := range *comments {
 		fmt.Println(&comment)
-		fmt.Println(comment)
 	}
 	// hackernews.PrintDoc(doc)
 	return nil

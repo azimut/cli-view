@@ -108,12 +108,19 @@ func collector(
 		if response.err != nil {
 			continue
 		}
+
 		c := response.comment
+
+		if c.Text == "" && len(c.Kids) == 0 {
+			continue
+		}
+
 		state = append(state, Comment{
 			id:   c.ID,
 			msg:  c.Text,
 			user: c.By,
 			kids: c.Kids,
+			date: unix2time(c.Time),
 		})
 		// for _, id := range c.Kids {
 		// 	commentsCh <- id
