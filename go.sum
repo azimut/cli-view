@@ -7,6 +7,8 @@ github.com/PuerkitoBio/goquery v1.7.1/go.mod h1:XY0pP4kfraEmmV1O7Uf6XyjoslwsneBb
 github.com/andybalholm/cascadia v1.2.0 h1:vuRCkM5Ozh/BfmsaTm26kbjm0mIOM3yS5Ek/F5h18aE=
 github.com/andybalholm/cascadia v1.2.0/go.mod h1:YCyR8vOZT9aZ1CHEd8ap0gMVm2aFgxBp0T0eFw1RUQY=
 github.com/atotto/clipboard v0.1.2/go.mod h1:ZY9tmq7sm5xIbd9bOK4onWV4S6X0u6GY7Vn0Yu86PYI=
+github.com/caser/gophernews v0.0.0-20150107061403-f17255d5b792 h1:yWTZbMC92aSFyZm+f7iJTrLdV2Q3eEIreRoYmJE86lk=
+github.com/caser/gophernews v0.0.0-20150107061403-f17255d5b792/go.mod h1:XAJyumv6flVGfp36Ii0+4mjkLLHZYlu+osSOpgsLHLs=
 github.com/charmbracelet/bubbles v0.9.0 h1:lqJ8FXwoLceQF2J0A+dWo1Cuu1dNyjbW4Opgdi2vkhw=
 github.com/charmbracelet/bubbles v0.9.0/go.mod h1:NWT/c+0rYEnYChz5qCyX4Lj6fDw9gGToh9EFJPajghU=
 github.com/charmbracelet/bubbletea v0.14.1/go.mod h1:b5lOf5mLjMg1tRn1HVla54guZB+jvsyV0yYAQja95zE=

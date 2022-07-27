@@ -1,6 +1,8 @@
 package hackernews
 
-import "time"
+import (
+	"time"
+)
 
 type Op struct {
 	url       string
@@ -9,12 +11,14 @@ type Op struct {
 	ncomments int
 	user      string
 	date      time.Time
+	selfUrl   string
 }
 
 type Comment struct {
 	id     int
 	msg    string
 	Childs []*Comment
+	kids   []int
 	indent int
 	user   string
 	date   time.Time
