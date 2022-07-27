@@ -44,11 +44,15 @@ func run(args []string, stdout io.Writer) error {
 		return errors.New("missing URL argument")
 	}
 	url = flag.Args()[0]
-	op, err := hackernews.Fetch(url, opt.userAgent, opt.timeout)
+	op, comments, err := hackernews.Fetch(url, opt.userAgent, opt.timeout)
 	if err != nil {
 		return errors.New("could not fetch url")
 	}
-	println(op.String())
+	fmt.Println(op)
+	for _, comment := range *comments {
+		fmt.Println(&comment)
+		fmt.Println(comment)
+	}
 	// hackernews.PrintDoc(doc)
 	return nil
 }

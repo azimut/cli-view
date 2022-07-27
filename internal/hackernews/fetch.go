@@ -2,8 +2,10 @@ package hackernews
 
 import (
 	"errors"
-	"github.com/caser/gophernews"
+	"sync"
 	"time"
+
+	"github.com/caser/gophernews"
 )
 
 const NUM_OF_WORKERS = 3
@@ -24,19 +26,19 @@ func newOp(story *gophernews.Story, selfUrl string) Op {
 	}
 }
 
-func Fetch(rawUrl, ua string, timeout time.Duration) (doc *Op, err error) {
+func Fetch(rawUrl, ua string, timeout time.Duration) (doc *Op, c *[]Comment, err error) {
 	url, storyId, err := effectiveUrl(rawUrl)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	client := gophernews.NewClient()
 	story, err := fetchStory(client, storyId)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	op := newOp(story, url)
-	// comments := fetchComments(story.Kids) // TODO: error
-	return &op, nil
+	comments := fetchComments(story.Kids) // TODO: error
+	return &op, &comments, nil
 }
 
 func fetchStory(client *gophernews.Client, id int) (*gophernews.Story, error) {
@@ -50,24 +52,32 @@ func fetchStory(client *gophernews.Client, id int) (*gophernews.Story, error) {
 	return &story, nil
 }
 
-func fetchComments(comments []int) (state map[int]Comment) {
-	storiesCh := make(chan int, 5)
+func fetchComments(comments []int) []Comment {
+	idsChan := make(chan int, 5)
 	commentsCh := make(chan result, 5)
-	go sendWork(comments, storiesCh)
-	spawnWorkers(storiesCh, commentsCh)
-	collector(storiesCh, commentsCh, state)
-	return state
+	var wg sync.WaitGroup
+	go sendWork(&wg, comments, idsChan)
+	go closeAfterWait(&wg, commentsCh)
+	spawnWorkers(&wg, idsChan, commentsCh)
+	return collector(&wg, idsChan, commentsCh)
 }
 
-func sendWork(ids []int, input chan<- int) {
+func closeAfterWait(wg *sync.WaitGroup, commentsCh chan<- result) {
+	wg.Wait()
+	close(commentsCh)
+}
+
+func sendWork(wg *sync.WaitGroup, ids []int, input chan<- int) {
 	for _, id := range ids {
 		input <- id
+		wg.Add(1)
 	}
+	close(input)
 }
 
-func spawnWorkers(in <-chan int, out chan<- result) {
+func spawnWorkers(wg *sync.WaitGroup, in <-chan int, out chan<- result) {
 	for i := 0; i < NUM_OF_WORKERS; i++ {
-		go worker(in, out)
+		go worker(wg, in, out)
 	}
 }
 
@@ -76,32 +86,38 @@ type result struct {
 	err     error
 }
 
-func worker(stories <-chan int, output chan<- result) {
+func worker(wg *sync.WaitGroup, commentsChan <-chan int, output chan<- result) {
 	client := gophernews.NewClient()
-	for storyId := range stories {
-		comment, err := client.GetComment(storyId)
+	for commentId := range commentsChan {
+		comment, err := client.GetComment(commentId)
 		if err != nil {
 			output <- result{err: err}
 		}
 		output <- result{comment: comment}
+		wg.Done()
 	}
 }
 
-func collector(commentsCh chan<- int, responseCh <-chan result, state map[int]Comment) {
+func collector(
+	wg *sync.WaitGroup,
+	commentsCh chan<- int,
+	responseCh <-chan result,
+
+) (state []Comment) {
 	for response := range responseCh {
 		if response.err != nil {
 			continue
 		}
 		c := response.comment
-		state[c.ID] = Comment{
+		state = append(state, Comment{
 			id:   c.ID,
 			msg:  c.Text,
 			user: c.By,
 			kids: c.Kids,
-		}
-		for _, id := range c.Kids {
-			commentsCh <- id
-		}
+		})
+		// for _, id := range c.Kids {
+		// 	commentsCh <- id
+		// }
 	}
-	close(commentsCh)
+	return
 }

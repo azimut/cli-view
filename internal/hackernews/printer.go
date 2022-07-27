@@ -13,7 +13,7 @@ import (
 const SPACES_PER_INDENT = 5
 
 func PrintDoc(doc *goquery.Document) {
-	fmt.Println(NewHeader(doc))
+	// fmt.Println(NewHeader(doc))
 	printChilds(NewComments(doc))
 }
 
