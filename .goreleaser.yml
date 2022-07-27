@@ -5,3 +5,9 @@ builds:
   goos:   [ linux ]
   goarch: [ amd64 ]
   flags:  [ -v ]
+- id: hackerview
+  binary: hackerview
+  main: ./cmd/hackerview
+  goos:   [ linux ]
+  goarch: [ amd64 ]
+  flags:  [ -v ]
