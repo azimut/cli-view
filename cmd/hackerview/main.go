@@ -52,7 +52,6 @@ func run(args []string, stdout io.Writer) error {
 	for _, comment := range *comments {
 		fmt.Println(&comment)
 	}
-	// hackernews.PrintDoc(doc)
 	return nil
 }
 

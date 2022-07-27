@@ -2,8 +2,6 @@ package hackernews
 
 import (
 	"time"
-
-	"github.com/caser/gophernews"
 )
 
 type Op struct {
@@ -24,15 +22,4 @@ type Comment struct {
 	indent int
 	user   string
 	date   time.Time
-}
-
-func comment2comment(c gophernews.Comment, indent int) Comment {
-	return Comment{
-		id:     c.ID,
-		msg:    c.Text,
-		user:   c.By,
-		kids:   c.Kids,
-		date:   time.Unix(int64(c.Time), 0),
-		indent: indent,
-	}
 }
