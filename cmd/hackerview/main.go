@@ -26,7 +26,6 @@ var url string
 
 func init() {
 	flag.DurationVar(&opt.timeout, "t", time.Second*5, "timeout in seconds")
-	flag.StringVar(&opt.userAgent, "A", "cli-view/0.1", "default User-Agent sent")
 	flag.BoolVar(&opt.useColors, "C", true, "use colors")
 	flag.BoolVar(&opt.usePretty, "P", true, "use pretty formatting")
 	flag.IntVar(&opt.width, "w", 80, "fixed with")
@@ -46,7 +45,7 @@ func run(args []string, stdout io.Writer) error {
 		return errors.New("missing URL argument")
 	}
 	url = flag.Args()[0]
-	op, comments, err := hackernews.Fetch(url, opt.userAgent, opt.timeout, opt.limit)
+	op, comments, err := hackernews.Fetch(url, opt.timeout, opt.limit)
 	if err != nil {
 		return errors.New("could not fetch url")
 	}
