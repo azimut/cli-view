@@ -14,11 +14,11 @@ import (
 
 type options struct {
 	timeout   time.Duration
-	userAgent string
 	useColors bool
 	usePretty bool
 	width     int
 	limit     int
+	workers   uint
 }
 
 var opt options
@@ -30,6 +30,7 @@ func init() {
 	flag.BoolVar(&opt.usePretty, "P", true, "use pretty formatting")
 	flag.IntVar(&opt.width, "w", 80, "fixed with")
 	flag.IntVar(&opt.limit, "l", 0, "limits the ammount of comments to fetch")
+	flag.UintVar(&opt.workers, "W", 3, "number of workers to fetch comments")
 }
 
 func usage() {
@@ -45,7 +46,7 @@ func run(args []string, stdout io.Writer) error {
 		return errors.New("missing URL argument")
 	}
 	url = flag.Args()[0]
-	op, comments, err := hackernews.Fetch(url, opt.timeout, opt.limit)
+	op, comments, err := hackernews.Fetch(url, opt.timeout, opt.limit, opt.workers)
 	if err != nil {
 		return errors.New("could not fetch url")
 	}

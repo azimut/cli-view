@@ -8,8 +8,6 @@ import (
 	"github.com/caser/gophernews"
 )
 
-const NUM_OF_WORKERS = 3
-
 func unix2time(t int) time.Time {
 	return time.Unix(int64(t), 0)
 }
@@ -26,7 +24,12 @@ func newOp(story *gophernews.Story, selfUrl string) Op {
 	}
 }
 
-func Fetch(rawUrl string, timeout time.Duration, limit int) (doc *Op, c *[]Comment, err error) {
+func Fetch(
+	rawUrl string,
+	timeout time.Duration,
+	limit int,
+	workers uint,
+) (doc *Op, c *[]Comment, err error) {
 	url, storyId, err := effectiveUrl(rawUrl)
 	if err != nil {
 		return nil, nil, err
@@ -38,11 +41,19 @@ func Fetch(rawUrl string, timeout time.Duration, limit int) (doc *Op, c *[]Comme
 	}
 	op := newOp(story, url)
 	ids := story.Kids
+	limit = min(len(ids), limit)
 	if limit > 0 {
 		ids = ids[:limit]
 	}
-	comments := fetchComments(ids) // TODO: error
+	comments := fetchComments(ids, workers) // TODO: error
 	return &op, &comments, nil
+}
+
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
 }
 
 func fetchStory(client *gophernews.Client, id int) (*gophernews.Story, error) {
@@ -56,14 +67,16 @@ func fetchStory(client *gophernews.Client, id int) (*gophernews.Story, error) {
 	return &story, nil
 }
 
-func fetchComments(comments []int) []Comment {
+func fetchComments(comments []int, workers uint) []Comment {
 	idsChan := make(chan int, 5)
 	commentsCh := make(chan result, 5)
 	var wg sync.WaitGroup
 	wg.Add(len(comments))
 	go sendWork(comments, idsChan)
 	go closeAfterWait(&wg, commentsCh)
-	spawnWorkers(&wg, idsChan, commentsCh)
+	for i := 0; i < int(workers); i++ {
+		go worker(&wg, idsChan, commentsCh)
+	}
 	return collector(&wg, idsChan, commentsCh)
 }
 
@@ -77,12 +90,6 @@ func sendWork(ids []int, input chan<- int) {
 		input <- id
 	}
 	close(input)
-}
-
-func spawnWorkers(wg *sync.WaitGroup, in <-chan int, out chan<- result) {
-	for i := 0; i < NUM_OF_WORKERS; i++ {
-		go worker(wg, in, out)
-	}
 }
 
 type result struct {
