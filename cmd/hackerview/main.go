@@ -28,7 +28,7 @@ func init() {
 	flag.StringVar(&opt.userAgent, "A", "Wget", "default User-Agent sent")
 	flag.BoolVar(&opt.useColors, "C", true, "use colors")
 	flag.BoolVar(&opt.usePretty, "P", true, "use pretty formatting")
-	flag.IntVar(&opt.width, "w", 0, "fixed with, defaults to console width")
+	flag.IntVar(&opt.width, "w", 80, "fixed with")
 }
 
 func usage() {

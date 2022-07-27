@@ -17,7 +17,7 @@ func Format(width int, op *Op, comments *[]Comment) {
 	max_width = width
 	fmt.Println(op)
 	for _, comment := range *comments {
-		fmt.Println(comment)
+		fmt.Println(&comment)
 	}
 }
 
@@ -34,7 +34,13 @@ func (o *Op) String() (ret string) {
 		ret += "url: " + o.url + "\n"
 	}
 	ret += "self: " + o.selfUrl + "\n"
-	ret += fmt.Sprintf("%s(%d) - %s\n", o.user, o.score, humanize.Time(o.date))
+	ret += fmt.Sprintf(
+		"%s(%d) - %s - %d Comments\n",
+		o.user,
+		o.score,
+		humanize.Time(o.date),
+		o.ncomments,
+	)
 	return
 }
 
