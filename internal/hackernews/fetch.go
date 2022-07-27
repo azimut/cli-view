@@ -56,7 +56,8 @@ func fetchComments(comments []int) []Comment {
 	idsChan := make(chan int, 5)
 	commentsCh := make(chan result, 5)
 	var wg sync.WaitGroup
-	go sendWork(&wg, comments, idsChan)
+	wg.Add(len(comments))
+	go sendWork(comments, idsChan)
 	go closeAfterWait(&wg, commentsCh)
 	spawnWorkers(&wg, idsChan, commentsCh)
 	return collector(&wg, idsChan, commentsCh)
@@ -67,10 +68,9 @@ func closeAfterWait(wg *sync.WaitGroup, commentsCh chan<- result) {
 	close(commentsCh)
 }
 
-func sendWork(wg *sync.WaitGroup, ids []int, input chan<- int) {
+func sendWork(ids []int, input chan<- int) {
 	for _, id := range ids {
 		input <- id
-		wg.Add(1)
 	}
 	close(input)
 }
