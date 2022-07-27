@@ -48,10 +48,7 @@ func run(args []string, stdout io.Writer) error {
 	if err != nil {
 		return errors.New("could not fetch url")
 	}
-	fmt.Println(op)
-	for _, comment := range *comments {
-		fmt.Println(&comment)
-	}
+	hackernews.Format(opt.width, op, comments)
 	return nil
 }
 
