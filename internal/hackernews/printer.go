@@ -2,6 +2,7 @@ package hackernews
 
 import (
 	"fmt"
+	"net/url"
 	"strings"
 
 	text "github.com/MichaelMure/go-term-text"
@@ -28,14 +29,22 @@ func printChilds(c []*Comment) {
 	}
 }
 
+func pastLink(title string) string {
+	return fmt.Sprintf(
+		"https://hn.algolia.com/?query=%s&sort=byDate\n",
+		url.QueryEscape(title),
+	)
+}
+
 func (o *Op) String() (ret string) {
 	ret += "title: " + o.title + "\n"
 	if o.url != "" {
-		ret += "url: " + o.url + "\n"
+		ret += "URL: " + o.url + "\n"
+		ret += "past: " + pastLink(o.title)
 	}
 	ret += "self: " + o.selfUrl + "\n"
 	ret += fmt.Sprintf(
-		"%s(%d) - %s - %d Comments\n",
+		"\n%s(%d) - %s - %d Comments\n",
 		o.user,
 		o.score,
 		humanize.Time(o.date),
