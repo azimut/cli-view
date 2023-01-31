@@ -12,7 +12,7 @@ func Fetch(url, ua string, timeout time.Duration) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	response, err := getResponse(request, timeout)
+	response, err := makeResponse(request, timeout)
 	if err != nil {
 		return "", err
 	}
@@ -32,7 +32,7 @@ func makeRequest(url, ua string) (*http.Request, error) {
 	return req, nil
 }
 
-func getResponse(req *http.Request, timeout time.Duration) (*http.Response, error) {
+func makeResponse(req *http.Request, timeout time.Duration) (*http.Response, error) {
 	client := &http.Client{Timeout: timeout}
 	resp, err := client.Do(req)
 	if err != nil {

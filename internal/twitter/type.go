@@ -12,4 +12,5 @@ type Embedded struct {
 	ProviderName string `json:"provider_name"`
 	ProviderUrl  string `json:"provider_url"`
 	version      float32
+	Links        []string // NOT in the response
 }

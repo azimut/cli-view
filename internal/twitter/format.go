@@ -7,6 +7,7 @@ import (
 
 	text "github.com/MichaelMure/go-term-text"
 	"github.com/PuerkitoBio/goquery"
+	"github.com/azimut/cli-view/internal/fetch"
 	"github.com/dustin/go-humanize"
 	"github.com/jaytaylor/html2text"
 )
@@ -15,7 +16,7 @@ func Format(t *Embedded) (formatted string) {
 	msg, links := paragraph(t.Html)
 	formatted += fmt.Sprintf("URL: %s\n", t.Url)
 	for _, link := range links {
-		formatted += externalName(link)
+		formatted += formatLink(link)
 	}
 	formatted += "\n" + fitInScreen(plaintext(msg))
 	formatted += "\n\n" + date(t.Html)
@@ -37,13 +38,17 @@ func paragraph(html string) (string, []string) {
 	return msg, external
 }
 
-func externalName(external string) string {
-	if strings.Contains(external, "pic.twitter.com") {
-		return "image: " + external + "\n"
-	} else if strings.Contains(external, "t.co") {
-		return "external: " + external + "\n"
-	} else if external != "" {
-		panic("unknown not external URL passed: " + external)
+func formatLink(link string) string {
+	if strings.Contains(link, "pic.twitter.com") {
+		return "<< HAS MEDIA >>\n"
+	} else if strings.Contains(link, "t.co") {
+		finalUrl, err := fetch.UrlLocation(link, "Mozilla", time.Second*10) // TODO: use arguments
+		if err != nil {
+			return "external: " + link + "\n"
+		}
+		return "external: " + finalUrl + "\n"
+	} else if link != "" {
+		panic("unknown not external URL passed: " + link)
 	}
 	return ""
 }

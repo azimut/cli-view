@@ -5,8 +5,6 @@ import (
 	"net/url"
 )
 
-const prefix = "https://publish.twitter.com/oembed?url="
-
 func EffectiveUrl(rawUrl string) (string, error) {
 	uri, err := url.Parse(rawUrl)
 	if err != nil {
@@ -20,5 +18,5 @@ func EffectiveUrl(rawUrl string) (string, error) {
 	}
 	uri.RawQuery = ""
 	uri.Scheme = "https"
-	return prefix + uri.String(), nil
+	return "https://publish.twitter.com/oembed?url=" + uri.String(), nil
 }
