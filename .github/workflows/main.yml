@@ -23,4 +23,6 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: 1.17
-      - run: make test
+      - run: |
+          make test
+          make testrun > /dev/null
