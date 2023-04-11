@@ -1,13 +1,22 @@
 builds:
-- id: twitterview
-  binary: twitterview
-  main: ./cmd/twitterview
-  goos:   [ linux ]
-  goarch: [ amd64 ]
-  flags:  [ -v ]
-- id: hackerview
-  binary: hackerview
-  main: ./cmd/hackerview
-  goos:   [ linux ]
-  goarch: [ amd64 ]
-  flags:  [ -v ]
+
+  - id: twitterview
+    binary: twitterview
+    main: ./cmd/twitterview
+    goos:    [  linux  ]
+    goarch:  [  amd64  ]
+    ldflags: [ "-s -w" ]
+
+  - id: hackerview
+    binary: hackerview
+    main: ./cmd/hackerview
+    goos:    [  linux  ]
+    goarch:  [  amd64  ]
+    ldflags: [ "-s -w" ]
+
+  - id: redditview
+    binary: redditview
+    main: ./cmd/redditview
+    goos:    [  linux  ]
+    goarch:  [  amd64  ]
+    ldflags: [ "-s -w" ]
