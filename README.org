@@ -35,3 +35,35 @@ tonyg(211) - 5 hours ago
       > This bug affects 3 people (!)
      >> mistrial9 - 13 minutes ago
 #+end_src
+** Reddit
+#+begin_src
+> twitterview https://www.reddit.com/r/rust/comments/120mjef/how_to_learn_rust/
+
+title: How to Learn Rust
+ self: https://www.reddit.com/r/rust/comments/120mjef/how_to_learn_rust/
+  url: https://youtu.be/2hXNd6x9sZs
+
+
+0atman(507) - 2 weeks ago - 103 Comment(s)
+
+
+
+ Might be an unpopular opinion, but there's so many videos focusing on teaching or even teaching methodology for
+ learning the language, but then beyond the first 30 minutes covering the absolute basics, almost all beginner to
+ intermediate difficulty topics are basically gone. I see this a lot with the posts on this subreddit too. Lots of
+ people dipping their feet in the waters, but few reaching the level of proficiency to fully flesh out the ecosystem.
+ >> james7132(151) - 2 weeks ago
+
+    This is akin to bikesheding (https://en.m.wikipedia.org/wiki/Law_of_triviality). It's easier just to talk the easy
+    talk than explore complex scenarios or advanced topics beyond the basics. Most content always will be the same
+    regurgitated things you can read on the official docs but only a few will touch real use cases or production ready
+    problems.
+    >> InterestingPatient49(68) - 2 weeks ago
+
+    Might this not be a problem with any language? I don't quite follow.
+    >> 0atman(11) - 2 weeks ago
+
+    There is the, imho excellent, crust of rust series which aims to cover exactly that. But I agree that actually good
+    tutorials that ho beyond the basics are sorely lacking.
+    >> Jannis_Black(3) - 2 weeks ago
+#+end_src
