@@ -31,7 +31,7 @@ func (op Op) String() (ret string) {
 	ret += "\n"
 	ret += fixupContent(op.selftext, MaxWidth, Padding)
 	ret += "\n"
-	ret += fmt.Sprintf("%s(%d) - %s - %d Comment(s)\n\n\n\n",
+	ret += fmt.Sprintf("%s(%d) - %s - %d Comment(s)\n\n\n",
 		color.New(AuthorColor).Sprint(op.author),
 		op.upvotes,
 		relativeFromUnix(op.createdUTC),

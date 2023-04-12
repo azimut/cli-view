@@ -25,4 +25,3 @@ jobs:
           go-version: 1.17
       - run: |
           make test
-          make testrun > /dev/null

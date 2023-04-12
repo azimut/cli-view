@@ -25,7 +25,7 @@ var url string
 
 func init() {
 	flag.DurationVar(&opt.timeout, "t", time.Second*5, "timeout in seconds")
-	flag.StringVar(&opt.userAgent, "A", "Wget", "default User-Agent sent")
+	flag.StringVar(&opt.userAgent, "A", "Twitter_View/0.1", "default User-Agent sent")
 	flag.BoolVar(&opt.useColors, "C", true, "use colors")
 	flag.BoolVar(&opt.usePretty, "P", true, "use pretty formatting")
 	flag.IntVar(&opt.width, "w", 0, "fixed with, defaults to console width")
