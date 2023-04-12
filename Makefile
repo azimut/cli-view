@@ -1,6 +1,6 @@
 GO_FILES = $(shell find . -type f -name '*.go')
 
-.PHONY: all install clean test testrun
+.PHONY: all install clean test
 
 all: twitterview hackerview redditview
 
