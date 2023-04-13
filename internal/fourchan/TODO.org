@@ -1,0 +1,19 @@
+- Type of HTML
+  - > Green text
+    <span class="quote">&gt;move over im gonna make the  thread</span>
+  - Link to Message on the same Thread
+    >>92748359
+    <a href="#p92748359" class="quotelink">&gt;&gt;92748359</a><br>
+  - Multi-quote messages are separate by 2 <br><br>
+  - Link to Message on another Thread
+    >>92748198 →
+    <a href="/g/thread/92745370#p92748198" class="quotelink">&gt;&gt;92748198</a><br>
+  - Normal text is urlencoded
+    Made me smile, Thank G'yoo
+    Made me smile, Thank G&#039;yoo
+  - Normal text has <br> for new lines
+    Hi guys got a question
+    I'm using Automatic 1111
+    how do I increase the generation batch count?
+    I want to let it run overnight but I'm capped at 100 and I burn that in like two hours
+    Hi guys got a question<br>I&#039;m using Automatic 1111<br>how do I increase the generation batch count?<br>I want to let it run overnight but I&#039;m capped at 100 and I burn that in like two hours
