@@ -13,6 +13,7 @@ require (
 	github.com/fatih/color v1.15.0
 	github.com/gomarkdown/markdown v0.0.0-20230322041520-c84983bdbf2a
 	github.com/jaytaylor/html2text v0.0.0-20230321000545-74c2419ad056
+	github.com/moshee/go-4chan-api v0.0.0-20180705201006-117c90c93e9c
 	github.com/tidwall/gjson v1.14.4
 )
 
