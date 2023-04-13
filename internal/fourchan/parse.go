@@ -13,14 +13,18 @@ func toThread(apiThread *api.Thread) *Thread {
 			subject:    apiThread.OP.Subject,
 		},
 	}
+	// NOTE: go-4chan-api adds op as the first (aka [0]) post
+	if len(apiThread.Posts) <= 1 {
+		return &thread
+	}
 	// TODO: depth + replies tree
-	for _, post := range apiThread.Posts {
-		reply := Post{
-			attachment: getAttachment(post),
-			comment:    post.Comment,
-			created:    post.Time,
+	for _, apiPost := range apiThread.Posts[1:] {
+		post := Post{
+			attachment: getAttachment(apiPost),
+			comment:    apiPost.Comment,
+			created:    apiPost.Time,
 		}
-		thread.posts = append(thread.posts, reply)
+		thread.posts = append(thread.posts, post)
 	}
 	return &thread
 }
