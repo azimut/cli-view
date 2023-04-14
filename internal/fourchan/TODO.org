@@ -4,6 +4,42 @@
   - Link to Message on the same Thread
     >>92748359
     <a href="#p92748359" class="quotelink">&gt;&gt;92748359</a><br>
+  - Multi-quote on the same Thread, with the same message (I ADDED THE NEW LINES AFTER br)
+    #+begin_src html
+      <a href=\"#p92772863\" class=\"quotelink\">&gt;&gt;92772863</a><br>
+      <a href=\"#p92773151\" class=\"quotelink\">&gt;&gt;92773151</a><br>
+      <a href=\"#p92773243\" class=\"quotelink\">&gt;&gt;92773243</a><br>
+      <a href=\"#p92773269\" class=\"quotelink\">&gt;&gt;92773269</a><br>
+      <a href=\"#p92773469\" class=\"quotelink\">&gt;&gt;92773469</a><br>
+      is it true about gcc?<br>
+      https://www.youtube.com/watch?v=B5Y<wbr>okNW7tIs
+    #+end_src
+  - Multi-quote to messages on other Thread (I ADDED THE NEW LINES AFTER br)
+    #+begin_src html
+    <a href=\"/g/thread/92750475#p92762320\" class=\"quotelink\">&gt;&gt;92762320</a><br>
+    I have a macro that typedef&#039;s up to 2 levels of pointers. If I ever need more, then I can modify the macro and everything will now have the extra typedefs applied. (pic related)<br>
+    <a href=\"/g/thread/92750475#p92762569\" class=\"quotelink\">&gt;&gt;92762569</a><br>
+    Nope. Never used them, never seen them used. Just return NULL if the input size is 0.<br>
+    <a href=\"/g/thread/92750475#p92764145\" class=\"quotelink\">&gt;&gt;92764145</a><br>
+    based. more people should read it. lots of pajeet code in there, but the kernel and low level code is great.<br>
+    <a href=\"/g/thread/92750475#p92764193\" class=\"quotelink\">&gt;&gt;92764193</a><br>
+    GetTempPath/GetTempFileName/CreateF<wbr>ile<br>
+    <a href=\"/g/thread/92750475#p92764359\" class=\"quotelink\">&gt;&gt;92764359</a><br>
+    <a href=\"/g/thread/92750475#p92764402\" class=\"quotelink\">&gt;&gt;92764402</a><br>
+    <span class=\"quote\">&gt;and then delete said file after youre done with it</span><br>
+    Pass FILE_ATTRIBUTE_TEMPORARY | FILE_FLAG_DELETE_ON_CLOSE to CreateFile in the dwFlagsAndAttributes parameter. Easy.<br>
+    <a href=\"/g/thread/92750475#p92764413\" class=\"quotelink\">&gt;&gt;92764413</a><br>
+    Shits unreadable bro. Stop cramming so much shit into each statement and add some fucking comments.<br>
+    <span class=\"quote\">&gt;The file is just a single heap allocated block of memory</span><br>
+    You can use a file mapping to &quot;load&quot; a file into memory without having to do a heap allocation. CreateFile/CreateFileMapping/MapVie<wbr>wOfFile and boom you have the contents of the file in memory. It&#039;s efficient and uses less physical memory than heap allocation.<br>
+    <a href=\"/g/thread/92750475#p92766628\" class=\"quotelink\">&gt;&gt;92766628</a><br>
+    The code changes to use a table if you have 100 shapes. The best solution for any problem depends on the problem, and doing shit to calculate 3 kinds of shapes isn&#039;t even remotely the same as for 30 kinds of shapes.<br>
+    <a href=\"/g/thread/92750475#p92766776\" class=\"quotelink\">&gt;&gt;92766776</a><br>
+    linux config files are a disaster anyway, no harm in inventing one more format to throw on the pile. kek.<br>
+    <a href=\"/g/thread/92750475#p92768358\" class=\"quotelink\">&gt;&gt;92768358</a><br>
+    <span class=\"quote\">&gt;rumours about the NT kernal</span><br>
+    read the source. download the WRK from github. that code used to run on every PC in existence.
+    #+end_src
   - Multi-quote messages are separate by 2 <br><br>
   - Link to Message on another Thread
     >>92748198 →
@@ -11,7 +47,8 @@
   - Normal text is urlencoded
     Made me smile, Thank G'yoo
     Made me smile, Thank G&#039;yoo
-  - Normal text has <br> for new lines
+  - Normal text might have a random *<wbr>*
+  - Normal text has *<br>* for new lines
     Hi guys got a question
     I'm using Automatic 1111
     how do I increase the generation batch count?
