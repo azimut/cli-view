@@ -1,5 +1,5 @@
 - Types of messages
-  - [ ] Code embed <pre class=prettyprint", could be inlined
+  - [ ] Code embed *<pre class=prettyprint"*, could be inlined
    #+begin_src html
      <a href=\"#p92788773\" class=\"quotelink\">&gt;&gt;92788773</a><br>
      <span class=\"quote\">&gt;In the first one, you&#039;re passing i a dictionary that matches the keyword arguments of the function, so it works.</span><br>

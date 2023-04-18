@@ -44,20 +44,23 @@ func (post Post) String() (ret string) {
 	}
 
 	if post.attachment.filename == "" {
-		ret += fmt.Sprintf(">> %13s", humanize.Time(post.created))
+		ret += fmt.Sprintf(">> %-13s", humanize.Time(post.created))
 	} else {
 		if strings.HasSuffix(post.attachment.url, post.attachment.filename) {
-			ret += fmt.Sprintf(">> %13s | %s | %s",
+			ret += fmt.Sprintf(">> %-13s | %s | %s",
 				humanize.Time(post.created),
 				post.attachment.url,
 				post.attachment.filename,
 			)
 		} else {
-			ret += fmt.Sprintf(">> %13s | %s",
+			ret += fmt.Sprintf(">> %-13s | %s",
 				humanize.Time(post.created),
 				post.attachment.url,
 			)
 		}
+	}
+	for _, reply := range post.replies {
+		ret += fmt.Sprint(reply)
 	}
 	ret += "\n\n"
 	return
