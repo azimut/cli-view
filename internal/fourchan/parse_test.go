@@ -106,29 +106,36 @@ func TestExplodeNPosts(t *testing.T) {
 		{
 			subject: "comment, 1 response",
 			comment: `<a href="#p92834152" class="quotelink">&gt;&gt;92834152</a><br>Yes https://jetbra.in/s`,
+			id:      1,
 		},
 		{
 			subject: "comment, no reply",
 			comment: "hey whats up",
+			id:      2,
 		},
 		{
 			subject: "empty comment, no reply",
+			id:      3,
 		},
 		{
 			subject: "empty comment, 1 reply",
 			comment: `<a href="#p92835905" class="quotelink">&gt;&gt;92835905</a>`,
+			id:      4,
 		},
 		{
 			subject: "2 replies",
 			comment: `No YOU<br><br><a href="#p92835905" class="quotelink">&gt;&gt;92835905</a><br>Yes https://jetbra.in/s`,
+			id:      5,
 		},
 		{
 			subject: "3 replies",
 			comment: `<a href="#p92834152" class="quotelink">&gt;&gt;92834152</a><br>paying for free software?<br><br><a href="#p92835905" class="quotelink">&gt;&gt;92835905</a><br>based<br><br><a href="#p92838617" class="quotelink">&gt;&gt;92838617</a><br>paying for free software?<br><br>`,
+			id:      6,
 		},
 		{
 			subject: "2 replies, with the same message",
 			comment: `<a href="#p92834152" class="quotelink">&gt;&gt;92834152</a><br><a href="#p92835905" class="quotelink">&gt;&gt;92835905</a><br>based`,
+			id:      7,
 		},
 	}
 	testNrs := []int{1, 1, 1, 1, 2, 3, 1}
