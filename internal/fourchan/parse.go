@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/jaytaylor/html2text"
 	"github.com/moshee/go-4chan-api/api"
 )
 
@@ -16,7 +17,7 @@ func toThread(apiThread *api.Thread) *Thread {
 		op: Op{
 			attachment: getAttachment(apiThread.OP),
 			board:      apiThread.Board,
-			comment:    apiThread.OP.Comment,
+			comment:    plaintextComment(cleanComment(apiThread.OP.Comment)),
 			created:    apiThread.OP.Time,
 			id:         int(apiThread.OP.Id),
 			subject:    apiThread.OP.Subject,
@@ -46,7 +47,8 @@ func toThread(apiThread *api.Thread) *Thread {
 // explodePost explodes based on "quotelink"
 func explodePost(post Post) (posts []Post) {
 	findings := reQuote.FindAllString(post.comment, -1)
-	replies := cleanComments(reQuote.Split(post.comment, -1))
+	replies := reQuote.Split(post.comment, -1)
+	replies = fixComments(replies) // Clean here for later empty string checks
 
 	// Whole post is "not replying"
 	if len(findings) == 0 && len(replies) == 1 {
@@ -88,7 +90,7 @@ func explodePost(post Post) (posts []Post) {
 		fmt.Println(finding)
 	}
 	fmt.Printf("---- Comment [%d] <%s>\n", post.id, post.subject+">")
-	fmt.Println(post.comment)
+	fmt.Println(strings.ReplaceAll(post.comment, "<br>", "<br>\n"))
 	fmt.Println("---- Replies ", len(replies))
 	for _, reply := range replies {
 		fmt.Println("'" + reply + "'")
@@ -97,21 +99,30 @@ func explodePost(post Post) (posts []Post) {
 	return
 }
 
-func cleanComments(comments []string) (ret []string) {
+func fixComments(comments []string) (ret []string) {
 	for _, comment := range comments {
-		ret = append(ret, cleanComment(comment))
+		ret = append(ret, plaintextComment(cleanComment(comment)))
 	}
 	return
 }
 
+func plaintextComment(comment string) string {
+	comment, err := html2text.FromString(comment, html2text.Options{})
+	if err != nil {
+		panic(err)
+	}
+	return comment
+}
+
 func cleanComment(comment string) string {
+	comment = strings.ReplaceAll(comment, "<wbr>", "") // NOTE: breaks links
+	comment = strings.TrimSpace(comment)
 	for strings.HasPrefix(comment, "<br>") {
-		comment = strings.TrimPrefix(comment, "<br>")
+		comment = strings.TrimSpace(strings.TrimPrefix(comment, "<br>"))
 	}
 	for strings.HasSuffix(comment, "<br>") {
-		comment = strings.TrimSuffix(comment, "<br>")
+		comment = strings.TrimSpace(strings.TrimSuffix(comment, "<br>"))
 	}
-	comment = strings.ReplaceAll(comment, "<wbr>", "") // NOTE: breaks links
 	return comment
 }
 

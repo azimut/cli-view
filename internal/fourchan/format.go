@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"strings"
 
+	text "github.com/MichaelMure/go-term-text"
 	"github.com/dustin/go-humanize"
-	"github.com/jaytaylor/html2text"
+	"github.com/fatih/color"
 )
 
 func (thread Thread) String() (ret string) {
@@ -27,10 +28,7 @@ func (op Op) String() (ret string) {
 	ret += "\n"
 	// TODO: better parser to handle links..etc..
 	if op.comment != "" {
-		comment, err := html2text.FromString(op.comment, html2text.Options{})
-		if err != nil {
-			panic(err)
-		}
+		comment, _ := text.WrapLeftPadded(greenTextIt(op.comment), 100, 2)
 		ret += comment + "\n"
 	}
 	ret += "\n"
@@ -40,8 +38,8 @@ func (op Op) String() (ret string) {
 
 func (post Post) String() (ret string) {
 	if post.comment != "" {
-		ret += strings.Repeat(" ", post.depth*3)
-		ret += post.comment + "\n"
+		comment, _ := text.WrapLeftPadded(greenTextIt(post.comment), 100, max(post.depth*3, 1))
+		ret += comment + "\n"
 	}
 
 	ret += strings.Repeat(" ", post.depth*3)
@@ -66,4 +64,23 @@ func (post Post) String() (ret string) {
 		ret += fmt.Sprint(reply)
 	}
 	return
+}
+
+var green = color.New(color.FgGreen)
+
+func greenTextIt(text string) string {
+	lines := strings.Split(text, "\n")
+	for i, line := range lines {
+		if strings.HasPrefix(line, ">") {
+			lines[i] = green.Sprint(line)
+		}
+	}
+	return strings.Join(lines, "\n")
+}
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
 }
