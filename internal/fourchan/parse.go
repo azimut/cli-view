@@ -49,7 +49,7 @@ func explodePost(post Post) (posts []Post) {
 	replies := reQuote.Split(post.comment, -1)
 
 	// Whole post is "not replying"
-	if len(findings) == 0 {
+	if len(findings) == 0 && len(replies) == 1 {
 		return append(posts, post)
 	}
 
@@ -67,15 +67,15 @@ func explodePost(post Post) (posts []Post) {
 	}
 
 	// Add simple 1/1 reply/comment
-	if (!containsEmptyString(replies)) && len(replies) == len(findings) {
+	if len(replies) == len(findings) && (len(replies) == 1 || !containsEmptyString(replies)) {
 		for i, reply := range replies {
-			id := getParentId(findings[i])
-			if id == 0 {
+			parentId := getParentId(findings[i])
+			if parentId == 0 {
 				continue // TODO: handle external links?
 			}
 			newPost := post
 			newPost.comment = reply
-			newPost.parentId = id
+			newPost.parentId = parentId
 			posts = append(posts, newPost)
 		}
 		return
