@@ -85,7 +85,7 @@ func explodePost(post Post) (posts []Post) {
 	for _, finding := range findings {
 		fmt.Println(finding)
 	}
-	fmt.Println("---- Comment <" + post.subject + ">")
+	fmt.Printf("---- Comment [%d] <%s>\n", post.id, post.subject+">")
 	fmt.Println(post.comment)
 	fmt.Println("---- Replies ", len(replies))
 	for _, reply := range replies {
