@@ -173,3 +173,20 @@ func TestGetParentId(t *testing.T) {
 		}
 	}
 }
+
+func TestCleanComment(t *testing.T) {
+	testComments := map[string]string{
+		"":                       "",
+		"<br>hello<br>":          "hello",
+		"<br>hello<br><br>":      "hello",
+		"<br>he<wbr>llo<br><br>": "hello",
+		"<br>hello<wbr>world":    "helloworld",
+		"hello<wbr>world":        "helloworld",
+	}
+	for comment, expected := range testComments {
+		got := cleanComment(comment)
+		if expected != got {
+			t.Errorf("got `%s` expected `%s`", got, expected)
+		}
+	}
+}

@@ -50,6 +50,7 @@ func explodePost(post Post) (posts []Post) {
 
 	// Whole post is "not replying"
 	if len(findings) == 0 && len(replies) == 1 {
+		post.comment = replies[0]
 		return append(posts, post)
 	}
 
@@ -81,6 +82,7 @@ func explodePost(post Post) (posts []Post) {
 		return
 	}
 
+	// All that remains are powerusers replying to many with a same message
 	fmt.Println("---- Findings ", len(findings))
 	for _, finding := range findings {
 		fmt.Println(finding)
