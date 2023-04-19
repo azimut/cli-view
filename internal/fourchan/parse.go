@@ -46,7 +46,7 @@ func toThread(apiThread *api.Thread) *Thread {
 // explodePost explodes based on "quotelink"
 func explodePost(post Post) (posts []Post) {
 	findings := reQuote.FindAllString(post.comment, -1)
-	replies := reQuote.Split(post.comment, -1)
+	replies := cleanComments(reQuote.Split(post.comment, -1))
 
 	// Whole post is "not replying"
 	if len(findings) == 0 && len(replies) == 1 {
@@ -66,7 +66,7 @@ func explodePost(post Post) (posts []Post) {
 		return
 	}
 
-	// Add simple 1/1 reply/comment
+	// Add simple 1/1 reply/comment messages
 	if len(replies) == len(findings) && (len(replies) == 1 || !containsEmptyString(replies)) {
 		for i, reply := range replies {
 			parentId := getParentId(findings[i])
@@ -93,6 +93,24 @@ func explodePost(post Post) (posts []Post) {
 	}
 	fmt.Println("--------------------------------------------------")
 	return
+}
+
+func cleanComments(comments []string) (ret []string) {
+	for _, comment := range comments {
+		ret = append(ret, cleanComment(comment))
+	}
+	return
+}
+
+func cleanComment(comment string) string {
+	for strings.HasPrefix(comment, "<br>") {
+		comment = strings.TrimPrefix(comment, "<br>")
+	}
+	for strings.HasSuffix(comment, "<br>") {
+		comment = strings.TrimSuffix(comment, "<br>")
+	}
+	comment = strings.ReplaceAll(comment, "<wbr>", "") // NOTE: breaks links
+	return comment
 }
 
 func getParentId(finding string) int {

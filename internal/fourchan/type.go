@@ -27,7 +27,7 @@ type Post struct {
 	id         int
 	parentId   int
 	replies    []Post
-	subject    string
+	subject    string // NOTE: mainly used for debug on testing
 }
 
 type Attachment struct {
