@@ -47,8 +47,9 @@ func toThread(apiThread *api.Thread) *Thread {
 // explodePost explodes based on "quotelink"
 func explodePost(post Post) (posts []Post) {
 	findings := reQuote.FindAllString(post.comment, -1)
-	replies := reQuote.Split(post.comment, -1)
-	replies = fixComments(replies) // Clean here for later empty string checks
+	replies := fixComments(
+		reQuote.Split(post.comment, -1),
+	) // Clean here for later empty string checks
 
 	// Whole post is "not replying"
 	if len(findings) == 0 && len(replies) == 1 {

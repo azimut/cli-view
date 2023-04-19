@@ -1,3 +1,23 @@
+- go-4chan-api bug: parsing this json post, will return a Post with an *nil* File
+  #+begin_src json
+    {
+      "com": "sveltecomrades...",
+      "ext": ".png",
+      "filename": "",
+      "fsize": 771586,
+      "h": 1486,
+      "md5": "yABXo4At8BsykjrRXWe3BA==",
+      "name": "Anonymous",
+      "no": 92882383,
+      "now": "04/18/23(Tue)20:14:20",
+      "resto": 92881288,
+      "tim": 1681863260820065,
+      "time": 1681863260,
+      "tn_h": 79,
+      "tn_w": 125,
+      "w": 2346,
+    }
+  #+end_src
 - Types of messages
   - [ ] Code embed *<pre class=prettyprint"*, could be inlined
    #+begin_src html

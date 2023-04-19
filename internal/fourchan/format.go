@@ -28,17 +28,17 @@ func (op Op) String() (ret string) {
 	ret += "\n"
 	// TODO: better parser to handle links..etc..
 	if op.comment != "" {
-		comment, _ := text.WrapLeftPadded(greenTextIt(op.comment), 100, 2)
+		comment, _ := text.WrapLeftPadded(greenTextIt(op.comment), 100, 3)
 		ret += comment + "\n"
 	}
 	ret += "\n"
-	ret += fmt.Sprintf(">>> %s\n\n", humanize.Time(op.created))
+	ret += fmt.Sprintf(">> %s\n\n\n", humanize.Time(op.created))
 	return
 }
 
 func (post Post) String() (ret string) {
 	if post.comment != "" {
-		comment, _ := text.WrapLeftPadded(greenTextIt(post.comment), 100, max(post.depth*3, 1))
+		comment, _ := text.WrapLeftPadded(greenTextIt(post.comment), 100, post.depth*3+1)
 		ret += comment + "\n"
 	}
 
