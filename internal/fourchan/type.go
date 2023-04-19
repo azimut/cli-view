@@ -1,10 +1,12 @@
 package fourchan
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 type Thread struct {
 	closed bool
-	id     int
 	op     Op
 	posts  []Post
 }
@@ -35,40 +37,48 @@ type Attachment struct {
 	url      string
 }
 
+// insert we assume the parentId was properly set outside
 func (thread *Thread) insert(post Post) {
-	// either parentId is not set, or is the OP
+	fmt.Println("++++++++")
+	// we stop here if is a direct response
 	if post.parentId == 0 || post.parentId == thread.op.id {
+		fmt.Println("no parent ", post.id)
 		thread.posts = append(thread.posts, post)
 		return
 	}
 	// try to find parentId on thread
-	parentPost, found := thread.find(post.parentId)
+	parentPost, depth, found := thread.find(post.parentId)
 	if found {
-		parentPost.replies = append(parentPost.replies, post)
+		post.depth = depth
+		newReplies := append(parentPost.replies, post)
+		fmt.Println(newReplies)
+		parentPost.replies = newReplies
+		fmt.Println(depth, " - ", parentPost.replies[len(parentPost.replies)-1].depth) // DEBUG
 	} else {
+		fmt.Println("fallbacked ", post.id)
 		thread.posts = append(thread.posts, post) // TODO: fallback
 	}
 }
 
-func (thread *Thread) find(postId int) (*Post, bool) {
+func (thread *Thread) find(needlePostId int) (*Post, int, bool) {
 	for _, post := range thread.posts {
-		foundPost := post.find(postId)
+		foundPost, depth := post.find(needlePostId, 1)
 		if foundPost != nil {
-			return foundPost, true
+			return foundPost, depth, true
 		}
 	}
-	return nil, false
+	return nil, 0, false
 }
 
-func (post *Post) find(postId int) *Post {
-	if post.id == postId {
-		return post
+func (post *Post) find(needlePostId, depth int) (*Post, int) {
+	if post.id == needlePostId {
+		return post, depth
 	}
 	for _, reply := range post.replies {
-		found := reply.find(postId)
-		if found != nil {
-			return found
+		foundPost, newDepth := reply.find(needlePostId, depth+1)
+		if foundPost != nil {
+			return foundPost, newDepth
 		}
 	}
-	return nil
+	return nil, 0
 }

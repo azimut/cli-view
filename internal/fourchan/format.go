@@ -39,6 +39,7 @@ func (op Op) String() (ret string) {
 }
 
 func (post Post) String() (ret string) {
+	ret += fmt.Sprint(post.depth) + "\n" // DEBUG
 	if post.comment != "" {
 		ret += post.comment + "\n"
 	}

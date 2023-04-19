@@ -27,6 +27,7 @@ func toThread(apiThread *api.Thread) *Thread {
 		return &thread
 	}
 	// TODO: depth + replies tree
+	fmt.Println("opId ", thread.op.id)
 	for _, apiPost := range apiThread.Posts[1:] {
 		newPost := Post{
 			attachment: getAttachment(apiPost),
@@ -37,6 +38,7 @@ func toThread(apiThread *api.Thread) *Thread {
 			subject:    apiPost.Subject,
 		}
 		for _, post := range explodePost(newPost) {
+			fmt.Println(post.id, " ->hasParent-> ", post.parentId)
 			thread.insert(post)
 		}
 	}
