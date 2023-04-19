@@ -22,7 +22,7 @@ func (op Op) String() (ret string) {
 	url := fmt.Sprintf("https://boards.4channel.org/%s/thread/%d/", op.board, op.id)
 	ret += fmt.Sprintf("title: %s\n", op.subject)
 	ret += fmt.Sprintf(" self: %s\n", url)
-	if op.attachment.filename != "" {
+	if op.attachment.url != "" {
 		ret += fmt.Sprintf("image: %s (%s)\n", op.attachment.url, op.attachment.filename)
 	}
 	ret += "\n"
@@ -46,18 +46,11 @@ func (post Post) String() (ret string) {
 	if post.attachment.filename == "" {
 		ret += fmt.Sprintf(">> %-13s", humanize.Time(post.created))
 	} else {
-		if strings.HasSuffix(post.attachment.url, post.attachment.filename) {
-			ret += fmt.Sprintf(">> %-13s | %s | %s",
-				humanize.Time(post.created),
-				post.attachment.url,
-				post.attachment.filename,
-			)
-		} else {
-			ret += fmt.Sprintf(">> %-13s | %s",
-				humanize.Time(post.created),
-				post.attachment.url,
-			)
-		}
+		ret += fmt.Sprintf(">> %-13s | %s (%s)",
+			humanize.Time(post.created),
+			post.attachment.url,
+			post.attachment.filename,
+		)
 	}
 	ret += "\n\n"
 	for _, reply := range post.replies {
