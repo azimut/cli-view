@@ -40,6 +40,16 @@ var testThread = &api.Thread{
 		// 		Name: "1653870571633",
 		// 	},
 		// },
+		// {
+		// 	Subject: "same thread SINGLE reply, no comment but the link to parent, no <br>",
+		// 	Comment: `<a href="#p92835905" class="quotelink">&gt;&gt;92835905</a>`,
+		// 	Id:      92838669,
+		// 	Time:    time.Now(),
+		// // 	File: &api.File{
+		// // 		Ext:  ".jpg",
+		// // 		Name: "1653870571633",
+		// // 	},
+		// },
 		{
 			Subject: "same thread SINGLE reply, and non linked reply to OP",
 			Comment: `No YOU<br><br><a href="#p92835905" class="quotelink">&gt;&gt;92835905</a><br>Yes https://jetbra.in/s`,

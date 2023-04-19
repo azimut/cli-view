@@ -9,7 +9,7 @@ import (
 	"github.com/moshee/go-4chan-api/api"
 )
 
-var reQuote = regexp.MustCompile(`<a href="[^"]+" class="quotelink">&gt;&gt;[0-9]+</a>[ ]*<br>`)
+var reQuote = regexp.MustCompile(`<a href="[^"]+" class="quotelink">&gt;&gt;[0-9]+</a>([ ]*<br>)?`)
 
 func toThread(apiThread *api.Thread) *Thread {
 	thread := Thread{
