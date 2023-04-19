@@ -1,7 +1,6 @@
 package fourchan
 
 import (
-	"fmt"
 	"time"
 )
 
@@ -39,10 +38,8 @@ type Attachment struct {
 
 // insert we assume the parentId was properly set outside
 func (thread *Thread) insert(post Post) {
-	fmt.Println("++++++++")
 	// we stop here if is a direct response
 	if post.parentId == 0 || post.parentId == thread.op.id {
-		fmt.Println("no parent ", post.id)
 		thread.posts = append(thread.posts, post)
 		return
 	}
@@ -51,18 +48,15 @@ func (thread *Thread) insert(post Post) {
 	if found {
 		post.depth = depth
 		newReplies := append(parentPost.replies, post)
-		fmt.Println(newReplies)
 		parentPost.replies = newReplies
-		fmt.Println(depth, " - ", parentPost.replies[len(parentPost.replies)-1].depth) // DEBUG
 	} else {
-		fmt.Println("fallbacked ", post.id)
 		thread.posts = append(thread.posts, post) // TODO: fallback
 	}
 }
 
 func (thread *Thread) find(needlePostId int) (*Post, int, bool) {
-	for _, post := range thread.posts {
-		foundPost, depth := post.find(needlePostId, 1)
+	for i := range thread.posts {
+		foundPost, depth := thread.posts[i].find(needlePostId, 1)
 		if foundPost != nil {
 			return foundPost, depth, true
 		}

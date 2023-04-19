@@ -39,22 +39,23 @@ func (op Op) String() (ret string) {
 }
 
 func (post Post) String() (ret string) {
-	ret += fmt.Sprint(post.depth) + "\n" // DEBUG
 	if post.comment != "" {
+		ret += strings.Repeat(" ", post.depth*3)
 		ret += post.comment + "\n"
 	}
 
+	ret += strings.Repeat(" ", post.depth*3)
 	if post.attachment.filename == "" {
-		ret += fmt.Sprintf(">> %-13s", humanize.Time(post.created))
+		ret += fmt.Sprintf(">> %-13s\n", humanize.Time(post.created))
 	} else {
 		if strings.HasSuffix(post.attachment.url, post.attachment.filename) {
-			ret += fmt.Sprintf(">> %-13s | %s | %s",
+			ret += fmt.Sprintf(">> %-13s | %s | %s\n",
 				humanize.Time(post.created),
 				post.attachment.url,
 				post.attachment.filename,
 			)
 		} else {
-			ret += fmt.Sprintf(">> %-13s | %s",
+			ret += fmt.Sprintf(">> %-13s | %s\n",
 				humanize.Time(post.created),
 				post.attachment.url,
 			)

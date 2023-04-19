@@ -1,12 +1,17 @@
 GO_FILES := $(shell find . -type f -name '*.go')
 BINARIES := twitterview hackerview redditview fourchanview
+LDFLAGS  := -ldflags="-s -w"
+
+ifdef DEBUG
+undefine LDFLAGS
+endif
 
 .PHONY: all install clean test
 
 all: $(BINARIES)
 
 $(BINARIES): $(GO_FILES)
-	go build -v -ldflags="-s -w" ./cmd/$@
+	go build -v $(LDFLAGS) ./cmd/$@
 	ls -lh $@
 
 install: $(BINARIES);
