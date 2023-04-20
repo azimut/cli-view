@@ -19,12 +19,13 @@ type Op struct {
 }
 
 type Comment struct {
+	id          string
 	author      string
 	createdUtc  int64
 	depth       int64
 	isOp        bool
 	message     string
-	replies     []Comment
+	replies     []*Comment
 	jsonReplies []gjson.Result
 	score       int64
 }

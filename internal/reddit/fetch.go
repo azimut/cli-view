@@ -69,7 +69,7 @@ func addReplies(parentComment *Comment, opAuthorName string) {
 		if comment.author == "" {
 			continue
 		}
-		parentComment.replies = append(parentComment.replies, comment)
+		parentComment.replies = append(parentComment.replies, &comment)
 		addReplies(&comment, opAuthorName)
 	}
 }
@@ -80,6 +80,7 @@ func toComment(jsonComment gjson.Result, opAuthorName string) Comment {
 		author:      author,
 		createdUtc:  jsonComment.Get("created_utc").Int(),
 		depth:       jsonComment.Get("depth").Int(),
+		id:          jsonComment.Get("id").String(),
 		isOp:        opAuthorName == author,
 		jsonReplies: jsonComment.Get("replies.data.children.#.data").Array(),
 		message:     jsonComment.Get("body").String(),
