@@ -1,19 +1,21 @@
-GO_FILES = $(shell find . -type f -name '*.go')
+GO_FILES := $(shell find . -type f -name '*.go')
+BINARIES := twitterview hackerview redditview fourchanview
+LDFLAGS  := -ldflags="-s -w"
+
+ifdef DEBUG
+undefine LDFLAGS
+endif
 
 .PHONY: all install clean test
 
-all: twitterview hackerview redditview
+all: $(BINARIES)
 
-hackerview:
-redditview:
-twitterview: $(GO_FILES)
-	go build -v -ldflags="-s -w" ./cmd/$@
+$(BINARIES): $(GO_FILES)
+	go build -v $(LDFLAGS) ./cmd/$@
 	ls -lh $@
 
-install: hackerview twitterview redditview
-	mv hackerview  $(HOME)/go/bin/
-	mv twitterview $(HOME)/go/bin/
-	mv redditview  $(HOME)/go/bin/
+install: $(BINARIES);
+	 mv $(BINARIES) $(HOME)/go/bin/
 
 clean: ; go clean -x ./...
 test:  ; go test -vet=all -v -race ./...

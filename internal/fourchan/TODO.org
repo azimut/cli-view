@@ -1,0 +1,156 @@
+- TUI: Add link to comment. So people can CAPTCHA and reply there.
+- go-4chan-api bug: parsing this json post, will return a Post with an *nil* File
+  #+begin_src json
+    {
+      "com": "sveltecomrades...",
+      "ext": ".png",
+      "filename": "",
+      "fsize": 771586,
+      "h": 1486,
+      "md5": "yABXo4At8BsykjrRXWe3BA==",
+      "name": "Anonymous",
+      "no": 92882383,
+      "now": "04/18/23(Tue)20:14:20",
+      "resto": 92881288,
+      "tim": 1681863260820065,
+      "time": 1681863260,
+      "tn_h": 79,
+      "tn_w": 125,
+      "w": 2346,
+    }
+  #+end_src
+- Types of messages
+  - [ ] Mentioning another post in the middle of the respons
+    #+begin_src html
+      <a href="#p92877538" class="quotelink">&gt;&gt;92877538</a><br>
+      <span class="quote">&gt;Multi-threaded GREP implementation.</span><br>
+      how would that work?<br>
+      <span class="quote">&gt;Language virtual machine</span><br>
+      what does that mean?<br>
+      <span class="quote">&gt;Daemonized calculator</span><br>
+      cringe<br>
+      <span class="quote">&gt;General Lambert&#039;s-Problem Solver</span><br>
+      cringe, see <a href="#p92892503" class="quotelink">&gt;&gt;92892503</a> and stop sucking dicks
+    #+end_src
+    #+begin_src html
+      <a href="#p92877538" class="quotelink">&gt;&gt;92877538</a><br><span class="quote">&gt;Multi-threaded GREP implementation.</span><br>how would that work?<br><span class="quote">&gt;Language virtual machine</span><br>what does that mean?<br><span class="quote">&gt;Daemonized calculator</span><br>cringe<br><span class="quote">&gt;General Lambert&#039;s-Problem Solver</span><br>cringe, see <a href="#p92892503" class="quotelink">&gt;&gt;92892503</a> and stop sucking dicks
+    #+end_src
+    #+begin_src
+    >>92877538
+    >Multi-threaded GREP implementation.
+    how would that work?
+    >Language virtual machine
+    what does that mean?
+    >Daemonized calculator
+    cringe
+    >General Lambert's-Problem Solver
+    cringe, see >>92892503 and stop sucking dicks
+    #+end_src
+  - [ ] Code embed *<pre class=prettyprint"*, could be inlined
+   #+begin_src html
+     <a href=\"#p92788773\" class=\"quotelink\">&gt;&gt;92788773</a><br>
+     <span class=\"quote\">&gt;In the first one, you&#039;re passing i a dictionary that matches the keyword arguments of the function, so it works.</span><br>
+     I see, thank you anon.<br>
+     But....aren&#039;t function arguments when declaring it just random words that do not need to fit the names of the variables/objects that will use it?<br>
+     Like, this works:<br>
+     <br>
+     <pre class=\"prettyprint\">a=&#039;hello world&#039;<br>
+       <br>
+       def fun(qqq):<br>
+       print(qqq)<br>
+       <br>
+       fun(a)<br>
+     </pre><br>
+     <br>
+     It did not matter if i write the argument of the function <pre class=\"prettyprint\">def fun(lollmao)</pre>, it can take any variable in it even if it&#039;s not called &quot;lollmao&quot;, how come now the args need to fit 100% the name of the keys in the dictionary unpacked?
+   #+end_src
+   #+begin_src
+    >>92788773
+    >In the first one, you're passing i a dictionary that matches the keyword arguments of the function, so it works.
+    I see, thank you anon.
+    But....aren't function arguments when declaring it just random words that do not need to fit the names of the variables/objects that will use it?
+    Like, this works:
+
+    a='hello world'
+
+    def fun(qqq):
+        print(qqq)
+
+    fun(a)
+
+
+
+    It did not matter if i write the argument of the function
+
+    def fun(lollmao)
+
+    , it can take any variable in it even if it's not called "lollmao", how come now the args need to fit 100% the name of the keys in the dictionary unpacked?
+   #+end_src
+  - [ ] YT Embed (I ADDED NEW LINE AFTER BR)
+    #+begin_src html
+      <a href=\"#p92787439\" class=\"quotelink\">&gt;&gt;92787439</a><br>
+      <span class=\"quote\">&gt;I like watching Unix history videos</span><br>
+      here&#039;s a good one<br>
+      https://www.youtube.com/watch?v=tc4<wbr>ROCJYbm0
+    #+end_src
+    #+begin_src
+      >>92787439
+      >I like watching Unix history videos
+      here's a good one
+      https://www.youtube.com/watch?v=tc4ROCJYbm0 [Embed]
+    #+end_src
+  - [X] > Green text (missing <br>?)
+    <span class="quote">&gt;move over im gonna make the  thread</span>
+  - [ ] Link to Message on the same Thread
+    >>92748359
+    <a href="#p92748359" class="quotelink">&gt;&gt;92748359</a><br>
+  - [ ] Multi-quote on the same Thread, with the same message (I ADDED THE NEW LINES AFTER br)
+    #+begin_src html
+      <a href=\"#p92772863\" class=\"quotelink\">&gt;&gt;92772863</a><br>
+      <a href=\"#p92773151\" class=\"quotelink\">&gt;&gt;92773151</a><br>
+      <a href=\"#p92773243\" class=\"quotelink\">&gt;&gt;92773243</a><br>
+      <a href=\"#p92773269\" class=\"quotelink\">&gt;&gt;92773269</a><br>
+      <a href=\"#p92773469\" class=\"quotelink\">&gt;&gt;92773469</a><br>
+      is it true about gcc?<br>
+      https://www.youtube.com/watch?v=B5Y<wbr>okNW7tIs
+    #+end_src
+  - [ ] Multi-quote to messages on other Thread (I ADDED THE NEW LINES AFTER br)
+    #+begin_src html
+    <a href=\"/g/thread/92750475#p92762320\" class=\"quotelink\">&gt;&gt;92762320</a><br>
+    I have a macro that typedef&#039;s up to 2 levels of pointers. If I ever need more, then I can modify the macro and everything will now have the extra typedefs applied. (pic related)<br>
+    <a href=\"/g/thread/92750475#p92762569\" class=\"quotelink\">&gt;&gt;92762569</a><br>
+    Nope. Never used them, never seen them used. Just return NULL if the input size is 0.<br>
+    <a href=\"/g/thread/92750475#p92764145\" class=\"quotelink\">&gt;&gt;92764145</a><br>
+    based. more people should read it. lots of pajeet code in there, but the kernel and low level code is great.<br>
+    <a href=\"/g/thread/92750475#p92764193\" class=\"quotelink\">&gt;&gt;92764193</a><br>
+    GetTempPath/GetTempFileName/CreateF<wbr>ile<br>
+    <a href=\"/g/thread/92750475#p92764359\" class=\"quotelink\">&gt;&gt;92764359</a><br>
+    <a href=\"/g/thread/92750475#p92764402\" class=\"quotelink\">&gt;&gt;92764402</a><br>
+    <span class=\"quote\">&gt;and then delete said file after youre done with it</span><br>
+    Pass FILE_ATTRIBUTE_TEMPORARY | FILE_FLAG_DELETE_ON_CLOSE to CreateFile in the dwFlagsAndAttributes parameter. Easy.<br>
+    <a href=\"/g/thread/92750475#p92764413\" class=\"quotelink\">&gt;&gt;92764413</a><br>
+    Shits unreadable bro. Stop cramming so much shit into each statement and add some fucking comments.<br>
+    <span class=\"quote\">&gt;The file is just a single heap allocated block of memory</span><br>
+    You can use a file mapping to &quot;load&quot; a file into memory without having to do a heap allocation. CreateFile/CreateFileMapping/MapVie<wbr>wOfFile and boom you have the contents of the file in memory. It&#039;s efficient and uses less physical memory than heap allocation.<br>
+    <a href=\"/g/thread/92750475#p92766628\" class=\"quotelink\">&gt;&gt;92766628</a><br>
+    The code changes to use a table if you have 100 shapes. The best solution for any problem depends on the problem, and doing shit to calculate 3 kinds of shapes isn&#039;t even remotely the same as for 30 kinds of shapes.<br>
+    <a href=\"/g/thread/92750475#p92766776\" class=\"quotelink\">&gt;&gt;92766776</a><br>
+    linux config files are a disaster anyway, no harm in inventing one more format to throw on the pile. kek.<br>
+    <a href=\"/g/thread/92750475#p92768358\" class=\"quotelink\">&gt;&gt;92768358</a><br>
+    <span class=\"quote\">&gt;rumours about the NT kernal</span><br>
+    read the source. download the WRK from github. that code used to run on every PC in existence.
+    #+end_src
+  - [ ] Multi-quote messages are separate by 2 <br><br>
+  - [ ] Link to Message on another Thread
+    >>92748198 →
+    <a href="/g/thread/92745370#p92748198" class="quotelink">&gt;&gt;92748198</a><br>
+  - [ ] Normal text is urlencoded
+    Made me smile, Thank G'yoo
+    Made me smile, Thank G&#039;yoo
+  - [ ] Normal text might have a random *<wbr>*
+  - [ ] Normal text has *<br>* for new lines
+    Hi guys got a question
+    I'm using Automatic 1111
+    how do I increase the generation batch count?
+    I want to let it run overnight but I'm capped at 100 and I burn that in like two hours
+    Hi guys got a question<br>I&#039;m using Automatic 1111<br>how do I increase the generation batch count?<br>I want to let it run overnight but I&#039;m capped at 100 and I burn that in like two hours
