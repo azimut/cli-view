@@ -68,8 +68,8 @@ func (post *Post) find(needlePostId, depth int) (*Post, int) {
 	if post.id == needlePostId {
 		return post, depth
 	}
-	for _, reply := range post.replies {
-		foundPost, newDepth := reply.find(needlePostId, depth+1)
+	for i := range post.replies {
+		foundPost, newDepth := post.replies[i].find(needlePostId, depth+1)
 		if foundPost != nil {
 			return foundPost, newDepth
 		}
