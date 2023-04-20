@@ -152,7 +152,7 @@ func TestExplodeNPosts(t *testing.T) {
 func TestNParents(t *testing.T) {
 	thread := toThread(testThread)
 	got := len(thread.posts)
-	expected := 8
+	expected := 7
 	if got != expected {
 		t.Errorf("got %d expected %d", got, expected)
 	}
@@ -187,6 +187,31 @@ func TestCleanComment(t *testing.T) {
 		got := cleanComment(comment)
 		if expected != got {
 			t.Errorf("got `%s` expected `%s`", got, expected)
+		}
+	}
+}
+
+func TestAllEmptyButLast(t *testing.T) {
+	testReplies := []struct {
+		replies  []string
+		expected bool
+	}{
+		{[]string{"", "", "foo"}, true},
+		{[]string{"foo", "bar"}, false},
+		{[]string{"", "foo"}, true},
+		{[]string{}, false},
+	}
+	for _, reply := range testReplies {
+		got := allEmptyButLast(reply.replies)
+		expected := reply.expected
+		if expected != got {
+			t.Errorf(
+				"got %t expected %t - (%d)%+v",
+				got,
+				expected,
+				len(reply.replies),
+				reply.replies,
+			)
 		}
 	}
 }

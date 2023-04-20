@@ -71,7 +71,14 @@ func explodePost(post Post) (posts []Post) {
 	}
 
 	// Add simple 1/1 reply/comment messages
-	if len(replies) == len(findings) && (len(replies) == 1 || !containsEmptyString(replies)) {
+	if len(replies) == len(findings) &&
+		(len(replies) == 1 || allEmptyButLast(replies) || !containsEmptyString(replies)) {
+
+		// squash many/1 reply/comment into 1/1
+		if allEmptyButLast(replies) {
+			replies = []string{replies[len(replies)-1]}
+		}
+
 		for i, reply := range replies {
 			parentId := getParentId(findings[i])
 			if parentId == 0 {
@@ -98,6 +105,18 @@ func explodePost(post Post) (posts []Post) {
 	}
 	fmt.Println("--------------------------------------------------")
 	return
+}
+
+func allEmptyButLast(replies []string) bool {
+	if len(replies) == 0 {
+		return false
+	}
+	for _, reply := range replies[:len(replies)-1] {
+		if reply != "" {
+			return false
+		}
+	}
+	return replies[len(replies)-1] != ""
 }
 
 func fixComments(comments []string) (ret []string) {
