@@ -47,8 +47,7 @@ func (thread *Thread) insert(post Post) {
 	parentPost, depth, found := thread.find(post.parentId)
 	if found {
 		post.depth = depth
-		newReplies := append(parentPost.replies, post)
-		parentPost.replies = newReplies
+		parentPost.replies = append(parentPost.replies, post)
 	} else {
 		thread.posts = append(thread.posts, post) // TODO: fallback
 	}
