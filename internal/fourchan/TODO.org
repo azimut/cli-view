@@ -1,3 +1,4 @@
+- TUI: Add link to comment. So people can CAPTCHA and reply there.
 - go-4chan-api bug: parsing this json post, will return a Post with an *nil* File
   #+begin_src json
     {
@@ -19,6 +20,32 @@
     }
   #+end_src
 - Types of messages
+  - [ ] Mentioning another post in the middle of the respons
+    #+begin_src html
+      <a href="#p92877538" class="quotelink">&gt;&gt;92877538</a><br>
+      <span class="quote">&gt;Multi-threaded GREP implementation.</span><br>
+      how would that work?<br>
+      <span class="quote">&gt;Language virtual machine</span><br>
+      what does that mean?<br>
+      <span class="quote">&gt;Daemonized calculator</span><br>
+      cringe<br>
+      <span class="quote">&gt;General Lambert&#039;s-Problem Solver</span><br>
+      cringe, see <a href="#p92892503" class="quotelink">&gt;&gt;92892503</a> and stop sucking dicks
+    #+end_src
+    #+begin_src html
+      <a href="#p92877538" class="quotelink">&gt;&gt;92877538</a><br><span class="quote">&gt;Multi-threaded GREP implementation.</span><br>how would that work?<br><span class="quote">&gt;Language virtual machine</span><br>what does that mean?<br><span class="quote">&gt;Daemonized calculator</span><br>cringe<br><span class="quote">&gt;General Lambert&#039;s-Problem Solver</span><br>cringe, see <a href="#p92892503" class="quotelink">&gt;&gt;92892503</a> and stop sucking dicks
+    #+end_src
+    #+begin_src
+    >>92877538
+    >Multi-threaded GREP implementation.
+    how would that work?
+    >Language virtual machine
+    what does that mean?
+    >Daemonized calculator
+    cringe
+    >General Lambert's-Problem Solver
+    cringe, see >>92892503 and stop sucking dicks
+    #+end_src
   - [ ] Code embed *<pre class=prettyprint"*, could be inlined
    #+begin_src html
      <a href=\"#p92788773\" class=\"quotelink\">&gt;&gt;92788773</a><br>
@@ -72,7 +99,7 @@
       here's a good one
       https://www.youtube.com/watch?v=tc4ROCJYbm0 [Embed]
     #+end_src
-  - [ ] > Green text (missing <br>?)
+  - [X] > Green text (missing <br>?)
     <span class="quote">&gt;move over im gonna make the  thread</span>
   - [ ] Link to Message on the same Thread
     >>92748359
