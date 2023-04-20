@@ -37,7 +37,7 @@ tonyg(211) - 5 hours ago
 #+end_src
 ** Reddit
 #+begin_src
-> twitterview https://www.reddit.com/r/rust/comments/120mjef/how_to_learn_rust/
+~ » twitterview https://www.reddit.com/r/rust/comments/120mjef/how_to_learn_rust/
 
 title: How to Learn Rust
  self: https://www.reddit.com/r/rust/comments/120mjef/how_to_learn_rust/
@@ -67,10 +67,10 @@ title: How to Learn Rust
     tutorials that ho beyond the basics are sorely lacking.
     >> Jannis_Black(3) - 2 weeks ago
 #+end_src
-** fourchanview
+** 4chan
 *NOTE*: still buggy, it will output to stdout some debug info of what it could not process
 #+begin_src
-> fourchanview
+~ » fourchanview https://boards.4channel.org/g/thread/92883019/
 title:
  self: https://boards.4channel.org/g/thread/92883019/
 image: http://i.4cdn.org/g/1681865762986057.png (1651929037357090.png)
