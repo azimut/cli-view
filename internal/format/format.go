@@ -3,9 +3,23 @@ package format
 import (
 	"math"
 	"strings"
+
+	"github.com/fatih/color"
 )
 
-func WrapLeftPadded(text string, maxWidth int, padding int) string {
+var green = color.New(color.FgGreen)
+
+func GreenTextIt(text string) string {
+	lines := strings.Split(text, "\n")
+	for i, line := range lines {
+		if strings.HasPrefix(line, ">") {
+			lines[i] = green.Sprint(line)
+		}
+	}
+	return strings.Join(lines, "\n")
+}
+
+func WrapLeftPadded(text string, maxWidth, padding int) string {
 	lines := splitByWidthMake(text, maxWidth-padding)
 	pad := strings.Repeat(" ", padding)
 	for i, line := range lines {

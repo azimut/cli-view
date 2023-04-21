@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	text "github.com/MichaelMure/go-term-text"
+	"github.com/azimut/cli-view/internal/format"
 	"github.com/dustin/go-humanize"
-	"github.com/fatih/color"
 )
 
 const width = 100
@@ -32,7 +32,7 @@ func (op Op) String() (ret string) {
 	ret += "\n"
 	// TODO: better parser to handle links..etc..
 	if op.comment != "" {
-		comment, _ := text.WrapLeftPadded(greenTextIt(op.comment), width, 3)
+		comment, _ := text.WrapLeftPadded(format.GreenTextIt(op.comment), width, 3)
 		ret += comment + "\n"
 	}
 	ret += "\n"
@@ -42,7 +42,7 @@ func (op Op) String() (ret string) {
 
 func (post Post) String() (ret string) {
 	if post.comment != "" {
-		comment, _ := text.WrapLeftPadded(greenTextIt(post.comment), width, post.depth*3+1)
+		comment, _ := text.WrapLeftPadded(format.GreenTextIt(post.comment), width, post.depth*3+1)
 		ret += comment + "\n"
 	}
 
@@ -61,16 +61,4 @@ func (post Post) String() (ret string) {
 		ret += fmt.Sprint(reply)
 	}
 	return
-}
-
-var green = color.New(color.FgGreen)
-
-func greenTextIt(text string) string {
-	lines := strings.Split(text, "\n")
-	for i, line := range lines {
-		if strings.HasPrefix(line, ">") {
-			lines[i] = green.Sprint(line)
-		}
-	}
-	return strings.Join(lines, "\n")
 }
