@@ -25,7 +25,7 @@ func (op Op) String() (ret string) {
 	ret += "\n"
 	ret += fmt.Sprintf("title: %s\n", op.title)
 	ret += fmt.Sprintf(" self: %s\n", op.self)
-	if op.url != op.self {
+	if op.url != op.self && op.url != "" {
 		ret += fmt.Sprintf("  url: %s\n", op.url)
 	}
 	ret += "\n"
