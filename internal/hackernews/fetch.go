@@ -14,13 +14,13 @@ func unix2time(t int) time.Time {
 
 func newOp(story *gophernews.Story, selfUrl string) Op {
 	return Op{
-		url:       story.URL,
-		title:     story.Title,
-		score:     story.Score,
-		user:      story.By,
 		date:      unix2time(story.Time),
 		ncomments: len(story.Kids), // ?
+		score:     story.Score,
 		selfUrl:   selfUrl,
+		title:     story.Title,
+		url:       story.URL,
+		user:      story.By,
 	}
 }
 
@@ -109,33 +109,44 @@ func worker(wg *sync.WaitGroup, commentsChan <-chan int, output chan<- result) {
 	}
 }
 
+func isDeleted(comment gophernews.Comment) bool {
+	return comment.Text == "" || comment.Text == "[flagged]" || comment.Text == "[dead]"
+}
+
+func isChildless(comment gophernews.Comment) bool {
+	return len(comment.Kids) == 0
+}
+
 func collector(
 	wg *sync.WaitGroup,
 	commentsCh chan<- int,
 	responseCh <-chan result,
+) []Comment {
+	var comments []Comment
 
-) (state []Comment) {
 	for response := range responseCh {
+
 		if response.err != nil {
 			continue
 		}
 
-		c := response.comment
+		comment := response.comment
 
-		if c.Text == "" && len(c.Kids) == 0 {
+		if isDeleted(comment) {
 			continue
 		}
 
-		state = append(state, Comment{
-			id:   c.ID,
-			msg:  c.Text,
-			user: c.By,
-			kids: c.Kids,
-			date: unix2time(c.Time),
+		comments = append(comments, Comment{
+			id:   comment.ID,
+			msg:  comment.Text,
+			user: comment.By,
+			kids: comment.Kids,
+			date: unix2time(comment.Time),
 		})
-		// for _, id := range c.Kids {
+
+		// for _, id := range comment.Kids {
 		// 	commentsCh <- id
 		// }
 	}
-	return
+	return comments
 }

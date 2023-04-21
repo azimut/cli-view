@@ -39,10 +39,10 @@ func pastLink(title string) string {
 func (o *Op) String() (ret string) {
 	ret += "title: " + o.title + "\n"
 	if o.url != "" {
-		ret += "URL: " + o.url + "\n"
-		ret += "past: " + pastLink(o.title)
+		ret += "  url: " + o.url + "\n"
+		ret += " past: " + pastLink(o.title)
 	}
-	ret += "self: " + o.selfUrl + "\n"
+	ret += " self: " + o.selfUrl + "\n"
 	ret += fmt.Sprintf(
 		"\n%s(%d) - %s - %d Comments\n",
 		o.user,
@@ -69,5 +69,6 @@ func (c *Comment) String() (ret string) {
 		arrow = ">> "
 	}
 	ret += strings.Repeat(" ", indent) + arrow + c.user + " - " + humanize.Time(c.date)
+	ret += "\n"
 	return
 }
