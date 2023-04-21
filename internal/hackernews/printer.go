@@ -16,12 +16,12 @@ const SPACES_PER_INDENT = 5
 var max_width int
 var useDate bool
 
-func Format(width int, useDateArg bool, op *Op, comments *[]Comment) {
+func Format(width int, useDateArg bool, op Op, comments []Comment) {
 	max_width = width
 	useDate = useDateArg
 	fmt.Println(op)
-	for _, comment := range *comments {
-		fmt.Println(&comment)
+	for _, comment := range comments {
+		fmt.Println(comment)
 	}
 }
 
@@ -39,7 +39,7 @@ func pastLink(title string) string {
 	)
 }
 
-func (o *Op) String() (ret string) {
+func (o Op) String() (ret string) {
 	ret += "\ntitle: " + o.title + "\n"
 	if o.url != "" {
 		ret += "  url: " + o.url + "\n"
@@ -56,7 +56,7 @@ func (o *Op) String() (ret string) {
 	return
 }
 
-func (c *Comment) String() (ret string) {
+func (c Comment) String() (ret string) {
 	indent := c.indent * SPACES_PER_INDENT
 	msg, err := html2text.FromString(
 		c.msg,

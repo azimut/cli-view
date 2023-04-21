@@ -8,45 +8,33 @@ import (
 	"github.com/caser/gophernews"
 )
 
-func unix2time(t int) time.Time {
-	return time.Unix(int64(t), 0)
-}
-
-func newOp(story *gophernews.Story, selfUrl string) Op {
-	return Op{
-		date:      unix2time(story.Time),
-		ncomments: len(story.Kids), // ?
-		score:     story.Score,
-		selfUrl:   selfUrl,
-		title:     story.Title,
-		url:       story.URL,
-		user:      story.By,
-	}
-}
-
 func Fetch(
 	rawUrl string,
 	timeout time.Duration,
-	limit int,
-	workers uint,
-) (doc *Op, c *[]Comment, err error) {
+	maxComments int,
+	nWorkers uint,
+) (doc Op, comments []Comment, err error) {
+
 	url, storyId, err := effectiveUrl(rawUrl)
 	if err != nil {
-		return nil, nil, err
+		return Op{}, nil, err
 	}
+
 	client := gophernews.NewClient()
 	story, err := fetchStory(client, storyId)
 	if err != nil {
-		return nil, nil, err
+		return Op{}, nil, err
 	}
-	op := newOp(story, url)
+
 	ids := story.Kids
-	limit = min(len(ids), limit)
-	if limit > 0 {
-		ids = ids[:limit]
+	maxComments = min(len(ids), maxComments)
+	if maxComments > 0 {
+		ids = ids[:maxComments]
+		comments = fetchComments(ids, nWorkers) // TODO: error
 	}
-	comments := fetchComments(ids, workers) // TODO: error
-	return &op, &comments, nil
+
+	op := newOp(story, url)
+	return op, comments, nil
 }
 
 func min(a, b int) int {
