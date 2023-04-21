@@ -14,19 +14,21 @@ import (
 )
 
 type options struct {
-	timeout   time.Duration
-	useColors bool
-	userAgent string
-	width     int
+	leftPadding uint
+	maxWidth    uint
+	timeout     time.Duration
+	useColors   bool
+	userAgent   string
 }
 
 var opts options
 
 func init() {
-	flag.DurationVar(&opts.timeout, "t", time.Second*5, "timeout in seconds")
 	flag.BoolVar(&opts.useColors, "C", true, "use colors")
+	flag.DurationVar(&opts.timeout, "t", time.Second*5, "timeout in seconds")
 	flag.StringVar(&opts.userAgent, "A", "Reddit_Cli/0.1", "user agent to send to reddit")
-	flag.IntVar(&opts.width, "w", 80, "fixed with")
+	flag.UintVar(&opts.maxWidth, "w", 110, "max console width")
+	flag.UintVar(&opts.leftPadding, "l", 3, "left padding on comments")
 }
 
 func usage() {
@@ -43,7 +45,13 @@ func run(args []string, stdout io.Writer) error {
 		return errors.New("missing URL argument")
 	}
 	url := flag.Args()[0]
-	thread, err := reddit.Fetch(url, opts.userAgent, opts.timeout)
+	thread, err := reddit.Fetch(
+		url,
+		opts.userAgent,
+		int(opts.maxWidth),
+		int(opts.leftPadding),
+		opts.timeout,
+	)
 	if err != nil {
 		return err
 	}

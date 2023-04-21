@@ -15,13 +15,13 @@ import (
 )
 
 const AuthorColor = color.FgYellow
-const Padding = 3
-const MaxWidth = 120
 
 var reMarkdownLink = regexp.MustCompile(`\[([^\]]+)\]\(([^\)]+)\)`)
 var reHTTPLink = regexp.MustCompile(`[^\[^\(^m]http[s]?://[^\s^\[^\(^\[]+`)
 
 func (op Op) String() (ret string) {
+	leftPadding := op.printing.leftPadding
+	maxWidth := op.printing.maxWidth
 	ret += "\n"
 	ret += fmt.Sprintf("title: %s\n", op.title)
 	ret += fmt.Sprintf(" self: %s\n", op.self)
@@ -29,7 +29,11 @@ func (op Op) String() (ret string) {
 		ret += fmt.Sprintf("  url: %s\n", op.url)
 	}
 	ret += "\n"
-	ret += fixupContent(op.selftext, MaxWidth, Padding)
+	ret += fixupContent(
+		op.selftext,
+		maxWidth-leftPadding,
+		leftPadding,
+	)
 	ret += "\n"
 	ret += fmt.Sprintf("%s(%d) - %s - %d Comment(s)\n\n\n",
 		color.New(AuthorColor).Sprint(op.author),
@@ -40,13 +44,20 @@ func (op Op) String() (ret string) {
 }
 
 func (comment Comment) String() (ret string) {
-	ret += fixupContent(comment.message, MaxWidth, int(comment.depth)*Padding+1)
+	leftPadding := comment.op.printing.leftPadding
+	maxWidth := comment.op.printing.maxWidth
+	commentLeftPadding := int(comment.depth)*leftPadding + 1
+	ret += fixupContent(
+		comment.message,
+		maxWidth,
+		commentLeftPadding,
+	)
 	author := comment.author
-	if comment.isOp {
+	if comment.author == comment.op.author {
 		author = color.New(AuthorColor).Sprint(comment.author)
 	}
 
-	ret += strings.Repeat(" ", int(comment.depth)*Padding+1)
+	ret += strings.Repeat(" ", int(comment.depth)*leftPadding)
 	ret += fmt.Sprintf(
 		">> %s(%d) - %s\n\n",
 		author,

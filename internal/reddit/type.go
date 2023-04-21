@@ -2,15 +2,21 @@ package reddit
 
 import "github.com/tidwall/gjson"
 
+type Printing struct {
+	leftPadding int
+	maxWidth    int
+}
+
 type Thread struct {
-	op       Op
 	comments []Comment
+	op       Op
 }
 
 type Op struct {
 	author     string
 	createdUTC int64
 	nComments  int64
+	printing   Printing
 	self       string
 	selftext   string
 	title      string
@@ -19,13 +25,13 @@ type Op struct {
 }
 
 type Comment struct {
-	id          string
 	author      string
 	createdUtc  int64
 	depth       int64
-	isOp        bool
-	message     string
-	replies     []*Comment
+	id          string
 	jsonReplies []gjson.Result
+	message     string
+	op          *Op
+	replies     []*Comment
 	score       int64
 }
