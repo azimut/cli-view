@@ -1,7 +1,7 @@
 * cli-view
-  See some urls from the command line.
+See some urls from the command line.
 ** Twitter
-   Uses [[https://developer.twitter.com/en/docs/twitter-for-websites/oembed-api][oEmbeded]] twitter json api
+Uses [[https://developer.twitter.com/en/docs/twitter-for-websites/oembed-api][oEmbeded]] twitter json api
 #+begin_src
 ~ » twitterview https://twitter.com/TwitterDev/status/1428061939146526722
 URL: https://twitter.com/TwitterDev/status/1428061939146526722
@@ -13,7 +13,8 @@ image: https://pic.twitter.com/an4zhbBBKI
 3 weeks ago
 #+end_src
 ** HackerNews
-   Parses html
+Uses *github.com/caser/gophernews*
+NOTE: at the moment it does NOT fetch replies to comments. Only direct comments.
 #+begin_src
 ~ » hackerview https://news.ycombinator.com/item\?id\=28468751
 title: 60x speed-up of Linux “perf”
@@ -31,11 +32,9 @@ tonyg(211) - 5 hours ago
  Understanding that there is actually an underlying license problem is like finally being told all of the reasons for
  everything that happened on LOST ;P.
 >>> saurik - 33 minutes ago
-
-      > This bug affects 3 people (!)
-     >> mistrial9 - 13 minutes ago
 #+end_src
 ** Reddit
+- Uses their [[https://www.reddit.com/dev/api/][.json API]]
 #+begin_src
 ~ » twitterview https://www.reddit.com/r/rust/comments/120mjef/how_to_learn_rust/
 
@@ -68,6 +67,7 @@ title: How to Learn Rust
     >> Jannis_Black(3) - 2 weeks ago
 #+end_src
 ** 4chan
+Uses *github.com/moshee/go-4chan-api*
 *NOTE*: still buggy, it will output to stdout some debug info of what it could not process
 #+begin_src
 ~ » fourchanview https://boards.4channel.org/g/thread/92883019/
