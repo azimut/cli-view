@@ -1,7 +1,6 @@
 package hackernews
 
 import (
-	"errors"
 	"sync"
 	"time"
 
@@ -26,46 +25,40 @@ func Fetch(
 		return Op{}, nil, err
 	}
 
-	ids := story.Kids
-	maxComments = min(len(ids), maxComments)
+	op := newOp(story, url)
+	commentIds := op.kids
+
+	maxComments = min(len(commentIds), maxComments)
 	if maxComments > 0 {
-		ids = ids[:maxComments]
-		comments = fetchComments(ids, nWorkers) // TODO: error
+		commentIds = commentIds[:maxComments]
+		comments = fetchComments(commentIds, nWorkers) // TODO: error
 	}
 
-	op := newOp(story, url)
 	return op, comments, nil
 }
 
-func min(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
-}
-
-func fetchStory(client *gophernews.Client, id int) (*gophernews.Story, error) {
-	story, err := client.GetStory(id)
+func fetchStory(client *gophernews.Client, id int) (gophernews.Item, error) {
+	item, err := client.GetItem(id)
 	if err != nil {
 		return nil, err
 	}
-	if story.Type != "story" {
-		return nil, errors.New("is not a story")
+	if item.Type() != "story" {
+		return nil, err
 	}
-	return &story, nil
+	return item, nil
 }
 
-func fetchComments(comments []int, workers uint) []Comment {
-	idsChan := make(chan int, 5)
+func fetchComments(commentIds []int, nWorkers uint) []Comment {
+	idsCh := make(chan int, 5)
 	commentsCh := make(chan result, 5)
 	var wg sync.WaitGroup
-	wg.Add(len(comments))
-	go sendWork(comments, idsChan)
+	wg.Add(len(commentIds))
+	go sendWork(commentIds, idsCh)
 	go closeAfterWait(&wg, commentsCh)
-	for i := 0; i < int(workers); i++ {
-		go worker(&wg, idsChan, commentsCh)
+	for i := 0; i < int(nWorkers); i++ {
+		go worker(&wg, idsCh, commentsCh)
 	}
-	return collector(&wg, idsChan, commentsCh)
+	return collector(&wg, idsCh, commentsCh)
 }
 
 func closeAfterWait(wg *sync.WaitGroup, commentsCh chan<- result) {
@@ -97,12 +90,12 @@ func worker(wg *sync.WaitGroup, commentsChan <-chan int, output chan<- result) {
 	}
 }
 
-func isDeleted(comment gophernews.Comment) bool {
-	return comment.Text == "" || comment.Text == "[flagged]" || comment.Text == "[dead]"
+func isDeleted(comment Comment) bool {
+	return comment.msg == "" || comment.msg == "[flagged]" || comment.msg == "[dead]"
 }
 
-func isChildless(comment gophernews.Comment) bool {
-	return len(comment.Kids) == 0
+func isChildless(comment Comment) bool {
+	return len(comment.kids) == 0
 }
 
 func collector(
@@ -118,23 +111,22 @@ func collector(
 			continue
 		}
 
-		comment := response.comment
-
+		comment := newComment(response.comment)
 		if isDeleted(comment) {
 			continue
 		}
-
-		comments = append(comments, Comment{
-			id:   comment.ID,
-			msg:  comment.Text,
-			user: comment.By,
-			kids: comment.Kids,
-			date: unix2time(comment.Time),
-		})
+		comments = append(comments, comment)
 
 		// for _, id := range comment.Kids {
 		// 	commentsCh <- id
 		// }
 	}
 	return comments
+}
+
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
 }

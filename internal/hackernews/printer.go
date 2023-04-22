@@ -46,6 +46,9 @@ func (o Op) String() (ret string) {
 		ret += " past: " + pastLink(o.title)
 	}
 	ret += fmt.Sprintf(" self: %s\n", o.selfUrl)
+	if o.text != "" {
+		ret += fmt.Sprintf("\n%s\n", fixupComment(o.text, 3))
+	}
 	ret += fmt.Sprintf(
 		"\n%s(%d) - %s - %d Comments\n",
 		o.user,
@@ -58,16 +61,7 @@ func (o Op) String() (ret string) {
 
 func (c Comment) String() (ret string) {
 	indent := c.indent * SPACES_PER_INDENT
-	msg, err := html2text.FromString(
-		c.msg,
-		html2text.Options{OmitLinks: false, PrettyTables: true, CitationStyleLinks: true},
-	)
-
-	if err != nil {
-		panic(err)
-	}
-	wrapped, _ := text.WrapLeftPadded(format.GreenTextIt(msg), max_width, indent+1)
-	ret += "\n" + wrapped + "\n"
+	ret += "\n" + fixupComment(c.msg, indent+1) + "\n"
 	arrow := ">> "
 	if c.indent > 0 {
 		arrow = ">> "
@@ -79,4 +73,16 @@ func (c Comment) String() (ret string) {
 	}
 	ret += "\n"
 	return
+}
+
+func fixupComment(html string, leftPad int) string {
+	plainText, err := html2text.FromString(
+		html,
+		html2text.Options{OmitLinks: false, PrettyTables: true, CitationStyleLinks: true},
+	)
+	if err != nil {
+		panic(err)
+	}
+	wrapped, _ := text.WrapLeftPadded(format.GreenTextIt(plainText), max_width, leftPad)
+	return wrapped
 }
