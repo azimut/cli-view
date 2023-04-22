@@ -31,7 +31,7 @@ func init() {
 	flag.BoolVar(&opt.useColors, "C", true, "use colors")
 	flag.BoolVar(&opt.usePretty, "P", true, "use pretty formatting")
 	flag.DurationVar(&opt.timeout, "t", time.Second*5, "timeout in seconds")
-	flag.UintVar(&opt.limit, "l", 0, "limits the ammount of comments to fetch")
+	flag.UintVar(&opt.limit, "l", 10, "limits the ammount of comments to fetch")
 	flag.UintVar(&opt.width, "w", 100, "fixed with")
 	flag.UintVar(&opt.workers, "W", 3, "number of workers to fetch comments")
 }

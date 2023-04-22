@@ -5,14 +5,20 @@ import (
 	"time"
 
 	"github.com/caser/gophernews"
+	"github.com/pkg/errors"
 )
+
+type result struct {
+	comment gophernews.Comment
+	err     error
+}
 
 func Fetch(
 	rawUrl string,
 	timeout time.Duration,
 	maxComments int,
 	nWorkers uint,
-) (doc Op, comments []Comment, err error) {
+) (Op, []Comment, error) {
 
 	url, storyId, err := effectiveUrl(rawUrl)
 	if err != nil {
@@ -24,16 +30,11 @@ func Fetch(
 	if err != nil {
 		return Op{}, nil, err
 	}
-
 	op := newOp(story, url)
+
 	commentIds := op.kids
-
-	maxComments = min(len(commentIds), maxComments)
-	if maxComments > 0 {
-		commentIds = commentIds[:maxComments]
-		comments = fetchComments(commentIds, nWorkers) // TODO: error
-	}
-
+	commentIds = commentIds[:min(len(commentIds), maxComments)]
+	comments := fetchComments(commentIds, nWorkers) // TODO: error
 	return op, comments, nil
 }
 
@@ -43,12 +44,15 @@ func fetchStory(client *gophernews.Client, id int) (gophernews.Item, error) {
 		return nil, err
 	}
 	if item.Type() != "story" {
-		return nil, err
+		return nil, errors.New("invalid type returned while story expected")
 	}
 	return item, nil
 }
 
 func fetchComments(commentIds []int, nWorkers uint) []Comment {
+	if len(commentIds) == 0 {
+		return nil
+	}
 	idsCh := make(chan int, 5)
 	commentsCh := make(chan result, 5)
 	var wg sync.WaitGroup
@@ -71,11 +75,6 @@ func sendWork(ids []int, input chan<- int) {
 		input <- id
 	}
 	close(input)
-}
-
-type result struct {
-	comment gophernews.Comment
-	err     error
 }
 
 func worker(wg *sync.WaitGroup, commentsChan <-chan int, output chan<- result) {
