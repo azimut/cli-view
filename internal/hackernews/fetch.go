@@ -16,7 +16,7 @@ type result struct {
 func Fetch(
 	rawUrl string,
 	timeout time.Duration,
-	maxComments int,
+	maxComments uint,
 	nWorkers uint,
 ) (Op, []Comment, error) {
 
@@ -33,7 +33,7 @@ func Fetch(
 	op := newOp(story, url)
 
 	commentIds := op.kids
-	commentIds = commentIds[:min(len(commentIds), maxComments)]
+	commentIds = commentIds[:min(len(commentIds), int(maxComments))]
 	comments := fetchComments(commentIds, nWorkers) // TODO: error
 	return op, comments, nil
 }
