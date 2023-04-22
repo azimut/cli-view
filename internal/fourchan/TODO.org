@@ -1,4 +1,27 @@
 - TUI: Add link to comment. So people can CAPTCHA and reply there.
+- go-4chan-api bug: panics on non existing posts
+  #+begin_src
+    panic: runtime error: invalid memory address or nil pointer dereference
+    [signal SIGSEGV: segmentation violation code=0x1 addr=0x30 pc=0x650698]
+
+    goroutine 1 [running]:
+    github.com/moshee/go-4chan-api/api.getThread({0x7ffc7a8a4d9a, 0x1}, 0x0?, {0x0?, 0x58993eb?, 0x9548c0?})
+        /home/user/go/pkg/mod/github.com/moshee/go-4chan-api@v0.0.0-20180705201006-117c90c93e9c/api/api.go:292 +0x1f8
+    github.com/moshee/go-4chan-api/api.GetThread({0x7ffc7a8a4d9a?, 0xc0000061a0?}, 0x43c285?)
+        /home/user/go/pkg/mod/github.com/moshee/go-4chan-api@v0.0.0-20180705201006-117c90c93e9c/api/api.go:276 +0x32
+    github.com/azimut/cli-view/internal/fourchan.Fetch({0x7ffc7a8a4d7e?, 0xc0000b2010?})
+        /home/user/projects/go/cli-view/internal/fourchan/fetch.go:12 +0x36
+    main.run({0x407af9?, 0x405351?, 0x401240?}, {0x0?, 0x0?})
+        /home/user/projects/go/cli-view/cmd/fourchanview/main.go:44 +0xb7
+    main.main()
+        /home/user/projects/go/cli-view/cmd/fourchanview/main.go:53 +0x3c
+  #+end_src
+  #+NAME: api.go
+  #+DESCRIPTION: code assigns a value without checking for errors
+  #+begin_src go
+    thread, err := ParseThread(resp.Body, board)
+    thread.date_recieved = time.Now()
+  #+end_src
 - go-4chan-api bug: parsing this json post, will return a Post with an *nil* File
   #+begin_src json
     {
