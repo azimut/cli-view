@@ -27,3 +27,10 @@ builds:
     goos:    [  linux  ]
     goarch:  [  amd64  ]
     ldflags: [ "-s -w" ]
+
+  - id: vichanview
+    binary: vichanview
+    main: ./cmd/vichanview
+    goos:    [  linux  ]
+    goarch:  [  amd64  ]
+    ldflags: [ "-s -w" ]
