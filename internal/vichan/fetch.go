@@ -49,10 +49,11 @@ func toThread(vichanThread jsonmodel.Thread) (*Thread, error) {
 
 	vichanOp := vichanThread.Posts[0]
 	op := Op{
-		createdAt: time.Unix(int64(vichanOp.Time), 0),
-		id:        vichanOp.No,
-		message:   vichanOp.Comment,
-		title:     vichanOp.Title,
+		attachments: getAttachments(vichanOp),
+		createdAt:   time.Unix(int64(vichanOp.Time), 0),
+		id:          vichanOp.No,
+		message:     vichanOp.Comment,
+		title:       vichanOp.Title,
 	}
 
 	thread := &Thread{op: op}
@@ -72,9 +73,34 @@ func toThread(vichanThread jsonmodel.Thread) (*Thread, error) {
 
 func toComment(message jsonmodel.Message) Comment {
 	return Comment{
-		author:    message.Author,
-		createdAt: time.Unix(int64(message.Time), 0),
-		id:        message.No,
-		message:   message.Comment,
+		attachments: getAttachments(message),
+		author:      message.Author,
+		createdAt:   time.Unix(int64(message.Time), 0),
+		id:          message.No,
+		message:     message.Comment,
 	}
+}
+
+func getAttachments(message jsonmodel.Message) (attachments []Attachment) {
+	if message.Tim != "" {
+		attachment := Attachment{
+			oldFilename: message.Filename + message.Ext,
+			newFilename: message.Tim + message.Ext,
+			sizeInBytes: int(message.Fsize),
+			width:       message.W,
+			height:      message.H,
+		}
+		attachments = append(attachments, attachment)
+	}
+	for _, extraFile := range message.ExtraFiles {
+		attachment := Attachment{
+			oldFilename: extraFile.Filename + extraFile.Ext,
+			newFilename: extraFile.Tim + extraFile.Ext,
+			sizeInBytes: int(extraFile.Fsize),
+			width:       extraFile.W,
+			height:      extraFile.H,
+		}
+		attachments = append(attachments, attachment)
+	}
+	return
 }

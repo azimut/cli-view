@@ -17,9 +17,11 @@ type Thread struct {
 }
 
 type Attachment struct {
-	filename string
-	thumbUrl string
-	url      string
+	oldFilename string
+	newFilename string
+	height      int
+	sizeInBytes int
+	width       int
 }
 
 type Op struct {
@@ -32,8 +34,8 @@ type Op struct {
 }
 
 type Comment struct {
-	author      string
 	attachments []Attachment
+	author      string
 	createdAt   time.Time
 	depth       int
 	id          int

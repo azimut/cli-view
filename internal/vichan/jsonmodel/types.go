@@ -19,8 +19,8 @@ type Message struct {
 	last_modified  int
 	tn_h           int
 	tn_w           int
-	h              int
-	w              int
+	H              int
+	W              int
 	Fsize          uint64 `json:"fsize"`
 	Filename       string `json:"filename"`
 	Ext            string `json:"ext"`
@@ -33,11 +33,11 @@ type Message struct {
 type Extra struct {
 	tn_h     int
 	tn_w     int
-	h        int
-	w        int
-	Fsize    uint64 `json:"fsize"`
-	Filename string `json:"filename"`
-	Ext      string `json:"ext"`
-	Tim      string `json:"tim"`
+	H        int
+	W        int
+	Fsize    uint64 `json:"fsize"`    // in bytes
+	Filename string `json:"filename"` // Original filename, without extension
+	Ext      string `json:"ext"`      // eg: ".png"
+	Tim      string `json:"tim"`      // Uploaded filename, without extension
 	md5      string
 }
