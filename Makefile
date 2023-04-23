@@ -1,5 +1,5 @@
 GO_FILES := $(shell find . -type f -name '*.go')
-BINARIES := twitterview hackerview redditview fourchanview
+BINARIES := twitterview hackerview redditview fourchanview vichanview
 LDFLAGS  := -ldflags="-s -w"
 
 ifdef DEBUG
@@ -18,4 +18,4 @@ install: $(BINARIES);
 	 mv $(BINARIES) $(HOME)/go/bin/
 
 clean: ; go clean -x ./...
-test:  ; go test -vet=all -v -race ./...
+test:  ; go test -vet=all -race ./...
