@@ -93,3 +93,38 @@ image: http://i.4cdn.org/g/1681865762986057.png (1651929037357090.png)
        anon, what is that
       >> 1 day ago     | http://i.4cdn.org/g/1681874505426414.png (hmmm.png)
 #+end_src
+** Vichan
+Uses the .json API
+#+begin_src
+~ » vichanview https://lainchan.org/λ/res/32109.html
+
+title: Tcl Thread
+ self: https://lainchan.org/λ/res/32109.html
+ file: https:/lainchan.org/λ/src/1659202355093-0.png "800px-Tcl-powered.svg.png"
+
+   Hi, lainons.
+
+   Yesterday I started learning Tcl and it seems like its paradigm of everything being a string is simply better and
+   easier than everything else I've tried. Why don't more languages do it? And why does it seem like we get less
+   innovative ideas in programming?
+
+8 months ago
+
+
+ wait, isn't shell like this?
+>> 8 months ago
+
+    Yes the principles are similar but Tcl does it in a way that seems closer to lisp to me in a way that i can't really
+    put my finger on. I think it's because most Tcl scripts are made up of function application and passing values
+    returned by those functions around.
+
+    For example this script:
+    tcl
+
+    set x 0
+    set list { 1 2 3 4 5 }
+    while {$x < [llength $list]} {
+     puts [lindex $list $x]
+    } is entirely made up of function application and different quoting conventions.
+   >> 8 months ago
+#+end_src
