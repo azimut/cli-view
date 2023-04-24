@@ -7,24 +7,23 @@ import (
 	"io"
 	"log"
 	"os"
-	"time"
 
 	"github.com/azimut/cli-view/internal/fourchan"
 	"github.com/fatih/color"
 )
 
 type options struct {
-	timeout   time.Duration
-	useColors bool
-	userAgent string
-	width     int
+	leftPadding uint
+	showColors  bool
+	width       uint
 }
 
 var opts options
 
 func init() {
-	flag.BoolVar(&opts.useColors, "C", true, "use colors")
-	flag.IntVar(&opts.width, "w", 80, "fixed with") // TODO: use opts.width
+	flag.BoolVar(&opts.showColors, "C", true, "show colors")
+	flag.UintVar(&opts.width, "w", 80, "fixed with")
+	flag.UintVar(&opts.leftPadding, "l", 3, "left padding for child comments")
 }
 
 func usage() {
@@ -35,13 +34,13 @@ func usage() {
 func run(args []string, stdout io.Writer) error {
 	flag.Parse()
 	flag.Usage = usage
-	color.NoColor = !opts.useColors
+	color.NoColor = !opts.showColors
 	if flag.NArg() != 1 {
 		flag.Usage()
 		return errors.New("missing URL argument")
 	}
 	url := flag.Args()[0]
-	thread, err := fourchan.Fetch(url)
+	thread, err := fourchan.Fetch(url, opts.width, opts.leftPadding)
 	if err != nil {
 		return err
 	}

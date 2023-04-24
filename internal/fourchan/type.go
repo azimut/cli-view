@@ -5,9 +5,11 @@ import (
 )
 
 type Thread struct {
-	closed bool
-	op     Op
-	posts  []Post
+	closed      bool
+	leftPadding uint
+	op          Op
+	posts       []Post
+	width       uint
 }
 
 type Op struct {
@@ -17,6 +19,7 @@ type Op struct {
 	created    time.Time
 	id         int
 	subject    string
+	thread     *Thread
 }
 
 type Post struct {
@@ -28,6 +31,7 @@ type Post struct {
 	parentId   int
 	replies    []Post
 	subject    string // NOTE: mainly used for debug on testing
+	thread     *Thread
 }
 
 type Attachment struct {

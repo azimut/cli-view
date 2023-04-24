@@ -9,8 +9,6 @@ import (
 	"github.com/dustin/go-humanize"
 )
 
-const width = 100
-
 func (thread Thread) String() (ret string) {
 	ret += fmt.Sprint(thread.op)
 	for _, post := range thread.posts {
@@ -32,7 +30,11 @@ func (op Op) String() (ret string) {
 	ret += "\n"
 	// TODO: better parser to handle links..etc..
 	if op.comment != "" {
-		comment, _ := text.WrapLeftPadded(format.GreenTextIt(op.comment), width, 3)
+		comment, _ := text.WrapLeftPadded(
+			format.GreenTextIt(op.comment),
+			int(op.thread.width),
+			int(op.thread.leftPadding),
+		)
 		ret += comment + "\n"
 	}
 	ret += "\n"
@@ -42,7 +44,11 @@ func (op Op) String() (ret string) {
 
 func (post Post) String() (ret string) {
 	if post.comment != "" {
-		comment, _ := text.WrapLeftPadded(format.GreenTextIt(post.comment), width, post.depth*3+1)
+		comment, _ := text.WrapLeftPadded(
+			format.GreenTextIt(post.comment),
+			int(post.thread.width),
+			post.depth*int(post.thread.leftPadding)+1,
+		)
 		ret += comment + "\n"
 	}
 

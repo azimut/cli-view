@@ -36,6 +36,7 @@ func toThread(apiThread *api.Thread) *Thread {
 			id:         int(apiPost.Id),
 			parentId:   thread.op.id,
 			subject:    apiPost.Subject,
+			thread:     &thread,
 		}
 		for _, post := range explodePost(newPost) {
 			thread.insert(post)
