@@ -45,8 +45,13 @@ func (op Op) String() (ret string) {
 	}
 	if op.message != "" {
 		ret += "\n" + formatText(op.message, int(op.thread.width), int(op.thread.leftPadding))
+		ret += "\n\n"
 	}
-	ret += fmt.Sprintf("\n\n%s\n\n\n", humanize.Time(op.createdAt))
+	ret += " " + humanize.Time(op.createdAt)
+	if op.thread.showAuthor {
+		ret += " by " + op.author
+	}
+	ret += "\n\n\n"
 	return
 }
 
@@ -57,11 +62,24 @@ func (comment Comment) String() (ret string) {
 			int(comment.thread.width),
 			comment.depth*int(comment.thread.leftPadding)+1,
 		)
+		ret += "\n"
 	}
-	ret += "\n" + strings.Repeat(" ", comment.depth*3)
-	ret += fmt.Sprintf(">> %s\n", humanize.Time(comment.createdAt))
+
 	ret += strings.Repeat(" ", comment.depth*3)
+	ret += ">>"
+	if comment.thread.showDate {
+		ret += " " + humanize.Time(comment.createdAt)
+	}
+	if comment.thread.showAuthor {
+		ret += " " + comment.author
+	}
+	if comment.thread.showId {
+		ret += " " + fmt.Sprintf("%d", comment.id)
+	}
+	ret += "\n"
+
 	for _, attachment := range comment.attachments {
+		ret += strings.Repeat(" ", comment.depth*3)
 		ret += fmt.Sprintf(
 			">> %s \"%s\"\n",
 			path.Dir(path.Dir(comment.thread.url))+"/src/"+attachment.newFilename,

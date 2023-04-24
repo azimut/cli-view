@@ -14,6 +14,9 @@ type Thread struct {
 	leftPadding uint
 	width       uint
 	url         string
+	showAuthor  bool
+	showDate    bool
+	showId      bool
 }
 
 type Attachment struct {
@@ -26,6 +29,7 @@ type Attachment struct {
 
 type Op struct {
 	attachments []Attachment
+	author      string
 	createdAt   time.Time
 	id          int
 	message     string

@@ -13,6 +13,7 @@ func Fetch(
 	rawUrl, userAgent string,
 	width, leftPadding uint,
 	timeout time.Duration,
+	showAuthor, showDate, showId bool,
 ) (*Thread, error) {
 	effectiveUrl, err := parseUrl(rawUrl)
 	if err != nil {
@@ -36,8 +37,11 @@ func Fetch(
 
 	thread.op.thread = thread
 	thread.leftPadding = leftPadding
-	thread.width = width
+	thread.showAuthor = showAuthor
+	thread.showDate = showDate
+	thread.showId = showId
 	thread.url = rawUrl
+	thread.width = width
 
 	return thread, nil
 }
@@ -50,6 +54,7 @@ func toThread(vichanThread jsonmodel.Thread) (*Thread, error) {
 	vichanOp := vichanThread.Posts[0]
 	op := Op{
 		attachments: getAttachments(vichanOp),
+		author:      vichanOp.Author,
 		createdAt:   time.Unix(int64(vichanOp.Time), 0),
 		id:          vichanOp.No,
 		message:     vichanOp.Comment,
