@@ -9,18 +9,21 @@ import (
 	"os"
 
 	"github.com/azimut/cli-view/internal/fourchan"
+	"github.com/azimut/cli-view/internal/tui"
 	"github.com/fatih/color"
 )
 
 type options struct {
 	leftPadding uint
 	showColors  bool
+	useTui      bool
 	width       uint
 }
 
 var opts options
 
 func init() {
+	flag.BoolVar(&opts.useTui, "u", false, "use tui")
 	flag.BoolVar(&opts.showColors, "C", true, "show colors")
 	flag.UintVar(&opts.width, "w", 80, "fixed with")
 	flag.UintVar(&opts.leftPadding, "l", 3, "left padding for child comments")
@@ -44,7 +47,11 @@ func run(args []string, stdout io.Writer) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(thread)
+	if opts.useTui {
+		tui.RenderLoop(fourchan.NewProgram(*thread))
+	} else {
+		fmt.Println(thread)
+	}
 	return nil
 }
 

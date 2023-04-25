@@ -1,51 +1,62 @@
 package tui
 
 import (
-	"github.com/charmbracelet/bubbles/viewport"
+	"fmt"
+	"os"
+
+	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-const verticalPadding = 2
-
-type model struct {
-	content  string
-	ready    bool
-	viewport viewport.Model
+type KeyMap struct {
+	Top      key.Binding
+	Bottom   key.Binding
+	PageDown key.Binding
+	PageUp   key.Binding
+	Down     key.Binding
+	Up       key.Binding
+	Next     key.Binding
+	Prev     key.Binding
 }
 
-func (m model) Init() tea.Cmd {
-	return nil
+var DefaultKeyMap = KeyMap{
+	Up: key.NewBinding(
+		key.WithKeys("k", "up", "ctrl+p"),
+		key.WithHelp("↑/k", "move up"),
+	),
+	Down: key.NewBinding(
+		key.WithKeys("j", "down", "ctrl+n"),
+		key.WithHelp("↓/j", "move down"),
+	),
+	PageDown: key.NewBinding(
+		key.WithKeys("pgdown", " ", "f", "ctrl+v"),
+		key.WithHelp("f/pgdn", "page down"),
+	),
+	PageUp: key.NewBinding(
+		key.WithKeys("pgup", "b", "alt+v"),
+		key.WithHelp("b/pgup", "page up"),
+	),
+	Top: key.NewBinding(
+		key.WithKeys("g"),
+		key.WithHelp("g", "jump to top"),
+	),
+	Bottom: key.NewBinding(
+		key.WithKeys("G"),
+		key.WithHelp("G", "jump to bottom"),
+	),
+	Next: key.NewBinding(
+		key.WithKeys("n"),
+		key.WithHelp("n", "next comment"),
+	),
+	Prev: key.NewBinding(
+		key.WithKeys("p"),
+		key.WithHelp("p", "next comment"),
+	),
 }
 
-func (m model) View() string {
-	if !m.ready {
-		return "\n  Initializing..."
+func RenderLoop(p *tea.Program) {
+	if _, err := p.Run(); err != nil {
+		fmt.Printf("error at last: %v", err)
+		os.Exit(1)
 	}
-	return m.viewport.View()
-}
-
-func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	switch msg := msg.(type) {
-	case tea.WindowSizeMsg:
-		if !m.ready {
-			m.viewport = viewport.Model{Width: msg.Width, Height: msg.Height - verticalPadding}
-			m.viewport.SetContent(m.content)
-			m.ready = true
-		} else {
-			m.viewport.Width = msg.Width
-			m.viewport.Height = msg.Height - verticalPadding
-		}
-	case tea.KeyMsg:
-		if k := msg.String(); k == "q" {
-			return m, tea.Quit
-		}
-	}
-	return m, nil
-}
-
-func NewProgram(content string) *tea.Program {
-	p := tea.NewProgram(
-		model{content: content},
-		tea.WithAltScreen())
-	return p
 }
