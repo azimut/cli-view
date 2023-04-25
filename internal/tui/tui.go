@@ -5,21 +5,26 @@ import (
 	"os"
 
 	"github.com/charmbracelet/bubbles/key"
+	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-type KeyMap struct {
-	Top      key.Binding
-	Bottom   key.Binding
-	PageDown key.Binding
-	PageUp   key.Binding
-	Down     key.Binding
-	Up       key.Binding
-	Next     key.Binding
-	Prev     key.Binding
+type Model struct {
+	keymap       KeyMap
+	Viewport     viewport.Model
+	onLinkScreen bool
+	IsReady      bool
 }
 
-var DefaultKeyMap = KeyMap{
+type KeyMap struct {
+	Top    key.Binding
+	Bottom key.Binding
+	Next   key.Binding
+	Prev   key.Binding
+	Quit   key.Binding
+}
+
+var DefaultViewportKeyMap = viewport.KeyMap{
 	Up: key.NewBinding(
 		key.WithKeys("k", "up", "ctrl+p"),
 		key.WithHelp("↑/k", "move up"),
@@ -36,6 +41,9 @@ var DefaultKeyMap = KeyMap{
 		key.WithKeys("pgup", "b", "alt+v"),
 		key.WithHelp("b/pgup", "page up"),
 	),
+}
+
+var DefaultKeyMap = KeyMap{
 	Top: key.NewBinding(
 		key.WithKeys("g"),
 		key.WithHelp("g", "jump to top"),
@@ -52,6 +60,48 @@ var DefaultKeyMap = KeyMap{
 		key.WithKeys("p"),
 		key.WithHelp("p", "next comment"),
 	),
+	Quit: key.NewBinding(
+		key.WithKeys("q", "esc", "ctrl-c"),
+		key.WithHelp("q", "quit"),
+	),
+}
+
+func (m Model) Init() tea.Cmd {
+	return nil
+}
+
+func (m Model) View() string {
+	return m.Viewport.View()
+}
+
+func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
+	switch msg := msg.(type) {
+	// TODO: not using useHighPerformanceRenderer
+	case tea.WindowSizeMsg:
+		if !m.IsReady {
+			m.Viewport = viewport.Model{
+				Width:  msg.Width,
+				Height: msg.Height,
+				KeyMap: DefaultViewportKeyMap,
+			}
+			m.IsReady = true
+		} else {
+			m.Viewport.Height = msg.Height
+			m.Viewport.Width = msg.Width
+		}
+	case tea.KeyMsg:
+		switch {
+		case key.Matches(msg, DefaultKeyMap.Top):
+			m.Viewport.GotoTop()
+		case key.Matches(msg, DefaultKeyMap.Bottom):
+			m.Viewport.GotoBottom()
+		case key.Matches(msg, DefaultKeyMap.Quit):
+			return m, tea.Quit
+		}
+	}
+	var cmd tea.Cmd
+	m.Viewport, cmd = m.Viewport.Update(msg)
+	return m, cmd
 }
 
 func RenderLoop(p *tea.Program) {

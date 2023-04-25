@@ -23,7 +23,7 @@ type options struct {
 var opts options
 
 func init() {
-	flag.BoolVar(&opts.useTui, "u", false, "use tui")
+	flag.BoolVar(&opts.useTui, "x", false, "use tui")
 	flag.BoolVar(&opts.showColors, "C", true, "show colors")
 	flag.UintVar(&opts.width, "w", 80, "fixed with")
 	flag.UintVar(&opts.leftPadding, "l", 3, "left padding for child comments")
