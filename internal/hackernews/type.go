@@ -6,6 +6,14 @@ import (
 	"github.com/caser/gophernews"
 )
 
+type Thread struct {
+	comments    []Comment
+	op          Op
+	Width       uint
+	LeftPadding uint
+	ShowDate    bool
+}
+
 type Op struct {
 	date      time.Time
 	kids      []int
@@ -16,6 +24,7 @@ type Op struct {
 	title     string
 	url       string
 	user      string
+	thread    *Thread
 }
 
 type Comment struct {
@@ -26,29 +35,17 @@ type Comment struct {
 	kids   []int
 	msg    string
 	user   string
+	thread *Thread
 }
 
-func newOp(story gophernews.Item, selfUrl string) Op {
-	return Op{
-		date:      unix2time(story.Time()),
-		kids:      story.Kids(),
-		ncomments: len(story.Kids()), // TODO: this only gets the direct replies
-		score:     story.Score(),
-		selfUrl:   selfUrl,
-		text:      story.Text(),
-		title:     story.Title(),
-		url:       story.URL(),
-		user:      story.By(),
-	}
-}
-
-func newComment(comment gophernews.Comment) Comment {
+func newComment(comment gophernews.Comment, thread *Thread) Comment {
 	return Comment{
-		id:   comment.ID,
-		msg:  comment.Text,
-		user: comment.By,
-		kids: comment.Kids,
-		date: unix2time(comment.Time),
+		date:   unix2time(comment.Time),
+		id:     comment.ID,
+		kids:   comment.Kids,
+		msg:    comment.Text,
+		thread: thread,
+		user:   comment.By,
 	}
 }
 

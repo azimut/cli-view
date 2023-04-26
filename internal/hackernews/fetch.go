@@ -18,24 +18,40 @@ func Fetch(
 	timeout time.Duration,
 	maxComments uint,
 	nWorkers uint,
-) (Op, []Comment, error) {
+) (*Thread, error) {
 
 	url, storyId, err := effectiveUrl(rawUrl)
 	if err != nil {
-		return Op{}, nil, err
+		return nil, err
 	}
 
 	client := gophernews.NewClient()
 	story, err := fetchStory(client, storyId)
 	if err != nil {
-		return Op{}, nil, err
+		return nil, err
 	}
-	op := newOp(story, url)
+
+	thread := Thread{}
+	op := Op{
+		date:      unix2time(story.Time()),
+		kids:      story.Kids(),
+		ncomments: len(story.Kids()), // TODO: this only gets the direct replies
+		score:     story.Score(),
+		selfUrl:   url,
+		text:      story.Text(),
+		thread:    &thread,
+		title:     story.Title(),
+		url:       story.URL(),
+		user:      story.By(),
+	}
 
 	commentIds := op.kids
 	commentIds = commentIds[:min(len(commentIds), int(maxComments))]
-	comments := fetchComments(commentIds, nWorkers) // TODO: error
-	return op, comments, nil
+	comments := fetchComments(commentIds, nWorkers, &thread) // TODO: error
+	thread.op = op
+	thread.comments = comments
+
+	return &thread, nil
 }
 
 func fetchStory(client *gophernews.Client, id int) (gophernews.Item, error) {
@@ -49,7 +65,7 @@ func fetchStory(client *gophernews.Client, id int) (gophernews.Item, error) {
 	return item, nil
 }
 
-func fetchComments(commentIds []int, nWorkers uint) []Comment {
+func fetchComments(commentIds []int, nWorkers uint, thread *Thread) []Comment {
 	if len(commentIds) == 0 {
 		return nil
 	}
@@ -62,7 +78,7 @@ func fetchComments(commentIds []int, nWorkers uint) []Comment {
 	for i := 0; i < int(nWorkers); i++ {
 		go worker(&wg, idsCh, commentsCh)
 	}
-	return collector(&wg, idsCh, commentsCh)
+	return collector(&wg, idsCh, commentsCh, thread)
 }
 
 func closeAfterWait(wg *sync.WaitGroup, commentsCh chan<- result) {
@@ -101,6 +117,7 @@ func collector(
 	wg *sync.WaitGroup,
 	commentsCh chan<- int,
 	responseCh <-chan result,
+	thread *Thread,
 ) []Comment {
 	var comments []Comment
 
@@ -110,7 +127,7 @@ func collector(
 			continue
 		}
 
-		comment := newComment(response.comment)
+		comment := newComment(response.comment, thread)
 		if isDeleted(comment) {
 			continue
 		}

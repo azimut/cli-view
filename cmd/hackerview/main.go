@@ -14,25 +14,27 @@ import (
 )
 
 type options struct {
+	leftPadding uint
 	maxComments uint
 	nWorkers    uint
 	timeout     time.Duration
-	useColors   bool
-	useDate     bool
-	usePretty   bool
+	showColors  bool
+	showDate    bool
+	useTUI      bool
 	width       uint
 }
 
 var opts options
 
 func init() {
-	flag.BoolVar(&opts.useColors, "C", true, "use colors")
-	flag.BoolVar(&opts.useDate, "d", false, "print date on comments")
-	flag.BoolVar(&opts.usePretty, "P", true, "use pretty formatting")
+	flag.BoolVar(&opts.showColors, "C", true, "use colors")
+	flag.BoolVar(&opts.showDate, "d", false, "print date on comments")
+	flag.BoolVar(&opts.useTUI, "x", false, "use TUI")
 	flag.DurationVar(&opts.timeout, "t", time.Second*5, "timeout in seconds")
-	flag.UintVar(&opts.maxComments, "l", 10, "limits the ammount of comments to fetch")
+	flag.UintVar(&opts.maxComments, "c", 10, "limits the ammount of comments to fetch")
 	flag.UintVar(&opts.nWorkers, "W", 3, "number of workers to fetch comments")
 	flag.UintVar(&opts.width, "w", 100, "fixed with")
+	flag.UintVar(&opts.leftPadding, "l", 3, "left padding")
 }
 
 func usage() {
@@ -43,17 +45,22 @@ func usage() {
 func run(args []string, stdout io.Writer) error {
 	flag.Parse()
 	flag.Usage = usage
-	color.NoColor = !opts.useColors
+	color.NoColor = !opts.showColors
 	if flag.NArg() != 1 {
 		flag.Usage()
 		return errors.New("missing URL argument")
 	}
+
 	url := flag.Args()[0]
-	op, comments, err := hackernews.Fetch(url, opts.timeout, opts.maxComments, opts.nWorkers)
+	thread, err := hackernews.Fetch(url, opts.timeout, opts.maxComments, opts.nWorkers)
 	if err != nil {
 		return errors.New("could not fetch url")
 	}
-	hackernews.Format(int(opts.width), opts.useDate, op, comments)
+	thread.Width = opts.width
+	thread.LeftPadding = opts.leftPadding
+	thread.ShowDate = opts.showDate
+
+	fmt.Println(thread)
 	return nil
 }
 
