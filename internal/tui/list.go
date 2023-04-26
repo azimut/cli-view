@@ -74,10 +74,10 @@ var DefaultListKeyMap = list.KeyMap{
 	),
 
 	// Quitting.
-	Quit: key.NewBinding(
-		key.WithKeys("q", "esc"),
-		key.WithHelp("q", "quit"),
-	),
+	// Quit: key.NewBinding(
+	// 	key.WithKeys("q", "esc"),
+	// 	key.WithHelp("q", "quit"),
+	// ),
 	ForceQuit: key.NewBinding(key.WithKeys("ctrl+c")),
 }
 

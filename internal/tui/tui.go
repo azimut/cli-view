@@ -87,6 +87,7 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 			)
 			m.list.KeyMap = DefaultListKeyMap
 			m.list.SetShowTitle(false)
+			m.list.DisableQuitKeybindings()
 			m.Viewport = viewport.Model{
 				Width:  msg.Width,
 				Height: msg.Height,
@@ -105,6 +106,10 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	case tea.KeyMsg:
 		if m.onLinkScreen {
 			switch {
+			case key.Matches(msg, DefaultKeyMap.Links):
+				m.onLinkScreen = false
+			case key.Matches(msg, DefaultKeyMap.Quit):
+				m.onLinkScreen = false
 			case key.Matches(msg, DefaultKeyMap.LinksOpen):
 				i, ok := m.list.SelectedItem().(item)
 				if ok {
