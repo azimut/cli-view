@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/azimut/cli-view/internal/hackernews"
+	"github.com/azimut/cli-view/internal/tui"
 	"github.com/fatih/color"
 )
 
@@ -60,7 +61,12 @@ func run(args []string, stdout io.Writer) error {
 	thread.LeftPadding = opts.leftPadding
 	thread.ShowDate = opts.showDate
 
-	fmt.Println(thread)
+	if opts.useTUI {
+		tui.RenderLoop(hackernews.NewProgram(*thread))
+	} else {
+		fmt.Println(thread)
+	}
+
 	return nil
 }
 

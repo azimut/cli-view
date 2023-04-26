@@ -7,6 +7,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
+// Useful if we want to do something with the error message returned by the spawned process
 type commandFinishedMsg struct{ err error }
 
 func doSpawn(url string) (tea.Cmd, error) {
@@ -15,13 +16,6 @@ func doSpawn(url string) (tea.Cmd, error) {
 		return nil, err
 	}
 	cmd := exec.Command(spawner, url)
-	// if err = cmd.Start(); err != nil {
-	// 	return nil, err
-	// }
-	// _, err = cmd.Process.Wait()
-	// if err != nil {
-	// 	return nil, err
-	// }
 	return tea.ExecProcess(cmd, func(err error) tea.Msg {
 		return commandFinishedMsg{err}
 	}), nil
