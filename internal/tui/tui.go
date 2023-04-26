@@ -3,6 +3,7 @@ package tui
 import (
 	"fmt"
 	"os"
+	"os/exec"
 
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
@@ -20,12 +21,13 @@ type Model struct {
 }
 
 type KeyMap struct {
-	Top    key.Binding
-	Bottom key.Binding
-	Next   key.Binding
-	Prev   key.Binding
-	Quit   key.Binding
-	Links  key.Binding
+	Top       key.Binding
+	Bottom    key.Binding
+	Next      key.Binding
+	Prev      key.Binding
+	Quit      key.Binding
+	Links     key.Binding
+	LinksOpen key.Binding // TODO: move this elsewhere
 }
 
 var DefaultKeyMap = KeyMap{
@@ -50,8 +52,12 @@ var DefaultKeyMap = KeyMap{
 		key.WithHelp("q", "quit"),
 	),
 	Links: key.NewBinding(
+		key.WithKeys("l"),
+		key.WithHelp("l", "links view"),
+	),
+	LinksOpen: key.NewBinding(
 		key.WithKeys("o"),
-		key.WithHelp("o", "links view"),
+		key.WithHelp("o", "open link"),
 	),
 }
 
@@ -81,7 +87,6 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 			)
 			m.list.KeyMap = DefaultListKeyMap
 			m.list.SetShowTitle(false)
-			m.list.Select(1)
 			m.Viewport = viewport.Model{
 				Width:  msg.Width,
 				Height: msg.Height,
@@ -89,35 +94,53 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 			}
 			m.IsReady = true
 		} else {
-			m.list.SetItems(getItems(m.RawContent))
-			m.list.SetSize(msg.Width, 10)
-			m.list.SetWidth(msg.Width)
-			m.list.SetHeight(msg.Height)
-			m.Viewport.Height = msg.Height
-			m.Viewport.Width = msg.Width
+			if m.onLinkScreen {
+				m.list.SetItems(getItems(m.RawContent))
+				m.list.SetSize(msg.Width, msg.Height)
+			} else {
+				m.Viewport.Height = msg.Height
+				m.Viewport.Width = msg.Width
+			}
 		}
 	case tea.KeyMsg:
-		switch {
-		case key.Matches(msg, DefaultKeyMap.Top):
-			m.Viewport.GotoTop()
-		case key.Matches(msg, DefaultKeyMap.Bottom):
-			m.Viewport.GotoBottom()
-		case key.Matches(msg, DefaultKeyMap.Quit):
-			return m, tea.Quit
-		case key.Matches(msg, DefaultKeyMap.Links):
-			items := getItems(m.RawContent)
-			m.list.SetItems(items)
-			m.list.ResetSelected()
-			m.onLinkScreen = !m.onLinkScreen
+		if m.onLinkScreen {
+			switch {
+			case key.Matches(msg, DefaultKeyMap.LinksOpen):
+				i, ok := m.list.SelectedItem().(item)
+				if ok {
+					binary, lookErr := exec.LookPath("weblauncher")
+					if lookErr != nil {
+						panic(lookErr)
+					}
+					cmd := exec.Command(binary, string(i))
+					err := cmd.Start()
+					if err != nil {
+						panic(err)
+					}
+				}
+			}
+		} else {
+			switch {
+			case key.Matches(msg, DefaultKeyMap.Top):
+				m.Viewport.GotoTop()
+			case key.Matches(msg, DefaultKeyMap.Bottom):
+				m.Viewport.GotoBottom()
+			case key.Matches(msg, DefaultKeyMap.Quit):
+				return m, tea.Quit
+			case key.Matches(msg, DefaultKeyMap.Links):
+				items := getItems(m.RawContent)
+				m.list.SetItems(items)
+				m.onLinkScreen = !m.onLinkScreen
+			}
 		}
 	}
 	var cmd tea.Cmd
-	var cmds []tea.Cmd
-	m.Viewport, cmd = m.Viewport.Update(msg)
-	cmds = append(cmds, cmd)
-	m.list, cmd = m.list.Update(msg)
-	cmds = append(cmds, cmd)
-	return m, tea.Batch(cmds...)
+	if m.onLinkScreen {
+		m.list, cmd = m.list.Update(msg)
+	} else {
+		m.Viewport, cmd = m.Viewport.Update(msg)
+	}
+	return m, cmd
 }
 
 func RenderLoop(p *tea.Program) {
