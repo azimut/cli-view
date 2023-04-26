@@ -3,6 +3,7 @@ package tui
 import (
 	"fmt"
 	"os"
+	"os/exec"
 
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
@@ -20,13 +21,14 @@ type Model struct {
 }
 
 type KeyMap struct {
-	Top       key.Binding
-	Bottom    key.Binding
-	Next      key.Binding
-	Prev      key.Binding
-	Quit      key.Binding
-	LinksView key.Binding
-	LinksOpen key.Binding // TODO: move this elsewhere
+	Top          key.Binding
+	Bottom       key.Binding
+	Next         key.Binding
+	Prev         key.Binding
+	Quit         key.Binding
+	LinksView    key.Binding
+	LinksOpen    key.Binding // TODO: move this elsewhere
+	LinksOpenXDG key.Binding
 }
 
 var DefaultKeyMap = KeyMap{
@@ -57,6 +59,10 @@ var DefaultKeyMap = KeyMap{
 	LinksOpen: key.NewBinding(
 		key.WithKeys("o", "enter"),
 		key.WithHelp("o", "open link"),
+	),
+	LinksOpenXDG: key.NewBinding(
+		key.WithKeys("O"),
+		key.WithHelp("O", "open link with xdg-open"),
 	),
 }
 
@@ -108,6 +114,19 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 				m.onLinkScreen = false
 			case key.Matches(msg, DefaultKeyMap.Quit):
 				m.onLinkScreen = false
+			case key.Matches(msg, DefaultKeyMap.LinksOpenXDG):
+				i, ok := m.list.SelectedItem().(item)
+				if ok {
+					url := string(i)
+					binary, err := exec.LookPath("xdg-open")
+					if err != nil {
+						panic(err)
+					}
+					err = exec.Command(binary, url).Start()
+					if err != nil {
+						panic(err)
+					}
+				}
 			case key.Matches(msg, DefaultKeyMap.LinksOpen):
 				i, ok := m.list.SelectedItem().(item)
 				if ok {
