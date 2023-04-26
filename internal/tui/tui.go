@@ -3,7 +3,6 @@ package tui
 import (
 	"fmt"
 	"os"
-	"os/exec"
 
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
@@ -113,15 +112,11 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 			case key.Matches(msg, DefaultKeyMap.LinksOpen):
 				i, ok := m.list.SelectedItem().(item)
 				if ok {
-					binary, lookErr := exec.LookPath("weblauncher")
-					if lookErr != nil {
-						panic(lookErr)
-					}
-					cmd := exec.Command(binary, string(i))
-					err := cmd.Start()
+					cmd, err := doSpawn(string(i))
 					if err != nil {
 						panic(err)
 					}
+					return m, cmd
 				}
 			}
 		} else {
