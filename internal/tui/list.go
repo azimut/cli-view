@@ -105,9 +105,14 @@ func (d itemDelegate) Render(w io.Writer, m list.Model, index int, listItem list
 func (i item) FilterValue() string { return "" }
 
 func getItems(text string) []list.Item {
-	links := xurls.Strict.FindAllString(text, -1)
-	links = removeDuplicates(links)
+	return toItems(getLinks(text))
+}
 
+func getLinks(text string) []string {
+	return removeDuplicates(xurls.Strict.FindAllString(text, -1))
+}
+
+func toItems(links []string) []list.Item {
 	urls := make([]*url.URL, len(links))
 	for i, link := range links {
 		url, err := url.Parse(link)
@@ -143,6 +148,18 @@ func removeDuplicates(dups []string) (uniq []string) {
 			hash[dup] = true
 			uniq = append(uniq, dup)
 		}
+	}
+	return
+}
+
+func removeLinks(links []string, toRemove ...string) (cleanLinks []string) {
+	for _, link := range links {
+		for _, remove := range toRemove {
+			if link == remove {
+				continue
+			}
+		}
+		cleanLinks = append(cleanLinks, link)
 	}
 	return
 }

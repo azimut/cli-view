@@ -25,7 +25,7 @@ type KeyMap struct {
 	Next      key.Binding
 	Prev      key.Binding
 	Quit      key.Binding
-	Links     key.Binding
+	LinksView key.Binding
 	LinksOpen key.Binding // TODO: move this elsewhere
 }
 
@@ -50,7 +50,7 @@ var DefaultKeyMap = KeyMap{
 		key.WithKeys("q", "ctrl-c"),
 		key.WithHelp("q", "quit"),
 	),
-	Links: key.NewBinding(
+	LinksView: key.NewBinding(
 		key.WithKeys("l"),
 		key.WithHelp("l", "links view"),
 	),
@@ -95,7 +95,6 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 			m.IsReady = true
 		} else {
 			if m.onLinkScreen {
-				m.list.SetItems(getItems(m.RawContent))
 				m.list.SetSize(msg.Width, msg.Height)
 			} else {
 				m.Viewport.Height = msg.Height
@@ -105,7 +104,7 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	case tea.KeyMsg:
 		if m.onLinkScreen {
 			switch {
-			case key.Matches(msg, DefaultKeyMap.Links):
+			case key.Matches(msg, DefaultKeyMap.LinksView):
 				m.onLinkScreen = false
 			case key.Matches(msg, DefaultKeyMap.Quit):
 				m.onLinkScreen = false
@@ -127,7 +126,7 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 				m.Viewport.GotoBottom()
 			case key.Matches(msg, DefaultKeyMap.Quit):
 				return m, tea.Quit
-			case key.Matches(msg, DefaultKeyMap.Links):
+			case key.Matches(msg, DefaultKeyMap.LinksView):
 				items := getItems(m.RawContent)
 				m.list.SetItems(items)
 				m.onLinkScreen = !m.onLinkScreen
