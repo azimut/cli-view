@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"path"
 	"sort"
+	"strings"
 
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
@@ -109,7 +110,7 @@ func getItems(text string) []list.Item {
 }
 
 func getLinks(text string) []string {
-	return removeDuplicates(xurls.Strict.FindAllString(text, -1))
+	return removeSimilar(removeDuplicates(xurls.Strict.FindAllString(text, -1)))
 }
 
 func toItems(links []string) []list.Item {
@@ -141,12 +142,33 @@ func toItems(links []string) []list.Item {
 	return items
 }
 
+// removeDuplicates removes strings that appears twice on slice
 func removeDuplicates(dups []string) (uniq []string) {
 	hash := map[string]bool{}
 	for _, dup := range dups {
 		if !hash[dup] {
 			hash[dup] = true
 			uniq = append(uniq, dup)
+		}
+	}
+	return
+}
+
+// removeSimilar remove links that start the same way, this mainly due a -bug- feature of the markdown parser i am using which adds elipses to links, still, it shouldn't hurt
+func removeSimilar(dupLinks []string) (uniqLinks []string) {
+	for i := range dupLinks {
+		addLink := true
+		for j := range dupLinks {
+			if i == j {
+				continue
+			}
+			if strings.HasPrefix(dupLinks[j], dupLinks[i]) {
+				addLink = false
+				break
+			}
+		}
+		if addLink {
+			uniqLinks = append(uniqLinks, dupLinks[i])
 		}
 	}
 	return
