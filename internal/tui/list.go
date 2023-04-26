@@ -3,6 +3,8 @@ package tui
 import (
 	"fmt"
 	"io"
+	"net/url"
+	"path"
 	"sort"
 
 	"github.com/charmbracelet/bubbles/key"
@@ -104,12 +106,31 @@ func (i item) FilterValue() string { return "" }
 
 func getItems(text string) []list.Item {
 	links := xurls.Strict.FindAllString(text, -1)
-	sort.Slice(links, func(i, j int) bool {
-		return links[i] > links[j]
+
+	urls := make([]*url.URL, len(links))
+	for i, link := range links {
+		url, err := url.Parse(link)
+		urls[i] = url
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	sort.Slice(urls, func(i, j int) bool {
+		iurl := urls[i]
+		jurl := urls[j]
+		if iurl.Scheme == jurl.Scheme {
+			if iurl.Host == jurl.Host {
+				return path.Ext(iurl.Path) < path.Ext(jurl.Path)
+			}
+			return iurl.Host < jurl.Host
+		}
+		return iurl.Scheme > jurl.Scheme // NOTE: inverse order on purpose
 	})
+
 	items := make([]list.Item, len(links))
-	for i := range links {
-		items[i] = item(links[i])
+	for i := range urls {
+		items[i] = item(urls[i].String())
 	}
 	return items
 }
