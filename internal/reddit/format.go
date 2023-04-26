@@ -20,8 +20,8 @@ var reMarkdownLink = regexp.MustCompile(`\[([^\]]+)\]\(([^\)]+)\)`)
 var reHTTPLink = regexp.MustCompile(`[^\[^\(^m]http[s]?://[^\s^\[^\(^\[]+`)
 
 func (op Op) String() (ret string) {
-	leftPadding := op.printing.leftPadding
-	maxWidth := op.printing.maxWidth
+	leftPadding := int(op.thread.LeftPadding)
+	maxWidth := int(op.thread.Width)
 	ret += "\n"
 	ret += fmt.Sprintf("title: %s\n", op.title)
 	ret += fmt.Sprintf(" self: %s\n", op.self)
@@ -44,8 +44,8 @@ func (op Op) String() (ret string) {
 }
 
 func (comment Comment) String() (ret string) {
-	leftPadding := comment.op.printing.leftPadding
-	maxWidth := comment.op.printing.maxWidth
+	leftPadding := int(comment.thread.LeftPadding)
+	maxWidth := int(comment.thread.Width)
 	commentLeftPadding := int(comment.depth)*leftPadding + 1
 	ret += fixupContent(
 		comment.message,
@@ -53,7 +53,7 @@ func (comment Comment) String() (ret string) {
 		commentLeftPadding,
 	)
 	author := comment.author
-	if comment.author == comment.op.author {
+	if comment.author == comment.thread.op.author {
 		author = color.New(AuthorColor).Sprint(comment.author)
 	}
 

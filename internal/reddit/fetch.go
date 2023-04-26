@@ -7,7 +7,7 @@ import (
 	"github.com/tidwall/gjson"
 )
 
-func Fetch(rawUrl, ua string, maxWidth, leftPadding int, timeout time.Duration) (*Thread, error) {
+func Fetch(rawUrl, ua string, timeout time.Duration) (*Thread, error) {
 	url, err := effectiveUrl(rawUrl)
 	if err != nil {
 		return nil, err
@@ -22,12 +22,14 @@ func Fetch(rawUrl, ua string, maxWidth, leftPadding int, timeout time.Duration) 
 		return nil, err
 	}
 
-	thread := toThread(rawJson, rawUrl, leftPadding, maxWidth)
+	thread := toThread(rawJson, rawUrl)
 
 	return thread, nil
 }
 
-func toThread(rawJson, rawUrl string, leftPadding, maxWidth int) *Thread {
+func toThread(rawJson, rawUrl string) *Thread {
+	var thread Thread
+
 	post := gjson.Get(rawJson, "0.data.children.0.data")
 	op := Op{
 		author:     post.Get("author").String(),
@@ -38,19 +40,21 @@ func toThread(rawJson, rawUrl string, leftPadding, maxWidth int) *Thread {
 		title:      post.Get("title").String(),
 		upvotes:    post.Get("ups").Int(),
 		url:        post.Get("url").String(),
-		printing:   Printing{maxWidth: maxWidth, leftPadding: leftPadding},
+		thread:     &thread,
 	}
+	thread.op = op
 
 	if op.nComments <= 0 {
-		return &Thread{op: op}
+		return &thread
 	}
 
-	var comments []Comment
-	var json_comments []gjson.Result
+	json_comments := gjson.Get(rawJson, "1.data.children.#.data").Array()
 
-	json_comments = gjson.Get(rawJson, "1.data.children.#.data").Array()
 	for _, json_comment := range json_comments {
-		comment := toComment(json_comment, &op)
+
+		comment := toComment(json_comment)
+		comment.thread = &thread
+
 		// TODO: is probably a "More..." link
 		if comment.author == "" {
 			continue
@@ -59,18 +63,21 @@ func toThread(rawJson, rawUrl string, leftPadding, maxWidth int) *Thread {
 		if comment.author == "[deleted]" && len(comment.jsonReplies) == 0 {
 			continue
 		}
-		addReplies(&comment, &op)
-		comments = append(comments, comment)
+
+		addReplies(&comment)
+		thread.comments = append(thread.comments, comment)
 	}
-	return &Thread{
-		op:       op,
-		comments: comments,
-	}
+
+	return &thread
 }
 
-func addReplies(parentComment *Comment, op *Op) {
+func addReplies(parentComment *Comment) {
+
 	for _, jsonReply := range parentComment.jsonReplies {
-		comment := toComment(jsonReply, op)
+
+		comment := toComment(jsonReply)
+		comment.thread = parentComment.thread
+
 		// TODO: is probably a "More..." link
 		if comment.author == "" {
 			continue
@@ -79,12 +86,13 @@ func addReplies(parentComment *Comment, op *Op) {
 		if comment.author == "[deleted]" && len(comment.jsonReplies) == 0 {
 			continue
 		}
+
 		parentComment.replies = append(parentComment.replies, &comment)
-		addReplies(&comment, op)
+		addReplies(&comment)
 	}
 }
 
-func toComment(jsonComment gjson.Result, op *Op) Comment {
+func toComment(jsonComment gjson.Result) Comment {
 	return Comment{
 		author:      jsonComment.Get("author").String(),
 		createdUtc:  jsonComment.Get("created_utc").Int(),
@@ -92,7 +100,6 @@ func toComment(jsonComment gjson.Result, op *Op) Comment {
 		id:          jsonComment.Get("id").String(),
 		jsonReplies: jsonComment.Get("replies.data.children.#.data").Array(),
 		message:     jsonComment.Get("body").String(),
-		op:          op,
 		score:       jsonComment.Get("score").Int(),
 	}
 }
