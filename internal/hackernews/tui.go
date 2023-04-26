@@ -32,9 +32,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	m.render, cmd = m.render.Update(msg)
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		m.op.thread.Width = 200
+		m.Width = 200
 		m.render.RawContent = fmt.Sprint(m)
-		m.op.thread.Width = uint(msg.Width) - rightPadding
+		m.Width = uint(msg.Width) - rightPadding
 		m.render.Viewport.SetContent(fmt.Sprint(m))
 	}
 	return m, cmd
