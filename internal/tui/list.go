@@ -106,6 +106,7 @@ func (i item) FilterValue() string { return "" }
 
 func getItems(text string) []list.Item {
 	links := xurls.Strict.FindAllString(text, -1)
+	links = removeDuplicates(links)
 
 	urls := make([]*url.URL, len(links))
 	for i, link := range links {
@@ -133,4 +134,15 @@ func getItems(text string) []list.Item {
 		items[i] = item(urls[i].String())
 	}
 	return items
+}
+
+func removeDuplicates(dups []string) (uniq []string) {
+	hash := map[string]bool{}
+	for _, dup := range dups {
+		if !hash[dup] {
+			hash[dup] = true
+			uniq = append(uniq, dup)
+		}
+	}
+	return
 }
