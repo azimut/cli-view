@@ -2,16 +2,12 @@ package tui
 
 import (
 	"fmt"
-	"io"
 	"os"
-	"sort"
 
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
-	"mvdan.cc/xurls"
 )
 
 type Model struct {
@@ -30,25 +26,6 @@ type KeyMap struct {
 	Prev   key.Binding
 	Quit   key.Binding
 	Links  key.Binding
-}
-
-var DefaultViewportKeyMap = viewport.KeyMap{
-	Up: key.NewBinding(
-		key.WithKeys("k", "up", "ctrl+p"),
-		key.WithHelp("↑/k", "move up"),
-	),
-	Down: key.NewBinding(
-		key.WithKeys("j", "down", "ctrl+n"),
-		key.WithHelp("↓/j", "move down"),
-	),
-	PageDown: key.NewBinding(
-		key.WithKeys("pgdown", " ", "f", "ctrl+v"),
-		key.WithHelp("f/pgdn", "page down"),
-	),
-	PageUp: key.NewBinding(
-		key.WithKeys("pgup", "b", "alt+v"),
-		key.WithHelp("b/pgup", "page up"),
-	),
 }
 
 var DefaultKeyMap = KeyMap{
@@ -102,6 +79,7 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 				msg.Height,
 				// 0, 0,
 			)
+			m.list.KeyMap = DefaultListKeyMap
 			m.list.SetShowTitle(false)
 			m.list.Select(1)
 			m.Viewport = viewport.Model{
@@ -140,45 +118,6 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	m.list, cmd = m.list.Update(msg)
 	cmds = append(cmds, cmd)
 	return m, tea.Batch(cmds...)
-}
-
-type item string
-
-type itemDelegate struct{}
-
-var selectedItemStyle = lipgloss.NewStyle().PaddingLeft(2).Foreground(lipgloss.Color("170"))
-var itemStyle = lipgloss.NewStyle().PaddingLeft(4)
-
-func (d itemDelegate) Height() int                               { return 1 }
-func (d itemDelegate) Spacing() int                              { return 0 }
-func (d itemDelegate) Update(msg tea.Msg, m *list.Model) tea.Cmd { return nil }
-func (d itemDelegate) Render(w io.Writer, m list.Model, index int, listItem list.Item) {
-	i, ok := listItem.(item)
-	if !ok {
-		return
-	}
-
-	str := fmt.Sprintf("%2d. %s", index+1, i)
-
-	if index == m.Index() {
-		fmt.Fprint(w, selectedItemStyle.Render("> "+str))
-	} else {
-		fmt.Fprint(w, itemStyle.Render(str))
-	}
-}
-
-func (i item) FilterValue() string { return "" }
-
-func getItems(text string) []list.Item {
-	links := xurls.Strict.FindAllString(text, -1)
-	sort.Slice(links, func(i, j int) bool {
-		return links[i] > links[j]
-	})
-	items := make([]list.Item, len(links))
-	for i := range links {
-		items[i] = item(links[i])
-	}
-	return items
 }
 
 func RenderLoop(p *tea.Program) {
