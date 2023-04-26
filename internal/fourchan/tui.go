@@ -24,7 +24,7 @@ func (m Model) Init() tea.Cmd {
 }
 
 func (m Model) View() string {
-	return m.render.Viewport.View()
+	return m.render.View()
 }
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -32,6 +32,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	m.render, cmd = m.render.Update(msg)
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
+		m.op.thread.width = 200
+		m.render.RawContent = fmt.Sprint(m)
 		m.op.thread.width = uint(msg.Width) - rightPadding
 		m.render.Viewport.SetContent(fmt.Sprint(m))
 	}

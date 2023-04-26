@@ -2,18 +2,25 @@ package tui
 
 import (
 	"fmt"
+	"io"
 	"os"
+	"sort"
 
 	"github.com/charmbracelet/bubbles/key"
+	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
+	"mvdan.cc/xurls"
 )
 
 type Model struct {
 	keymap       KeyMap
-	Viewport     viewport.Model
-	onLinkScreen bool
 	IsReady      bool
+	onLinkScreen bool
+	Viewport     viewport.Model
+	list         list.Model
+	RawContent   string // used to scrape the links
 }
 
 type KeyMap struct {
@@ -22,6 +29,7 @@ type KeyMap struct {
 	Next   key.Binding
 	Prev   key.Binding
 	Quit   key.Binding
+	Links  key.Binding
 }
 
 var DefaultViewportKeyMap = viewport.KeyMap{
@@ -61,8 +69,12 @@ var DefaultKeyMap = KeyMap{
 		key.WithHelp("p", "next comment"),
 	),
 	Quit: key.NewBinding(
-		key.WithKeys("q", "esc", "ctrl-c"),
+		key.WithKeys("q", "ctrl-c"),
 		key.WithHelp("q", "quit"),
+	),
+	Links: key.NewBinding(
+		key.WithKeys("o"),
+		key.WithHelp("o", "links view"),
 	),
 }
 
@@ -71,7 +83,11 @@ func (m Model) Init() tea.Cmd {
 }
 
 func (m Model) View() string {
-	return m.Viewport.View()
+	if m.onLinkScreen {
+		return m.list.View()
+	} else {
+		return m.Viewport.View()
+	}
 }
 
 func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
@@ -79,6 +95,15 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	// TODO: not using useHighPerformanceRenderer
 	case tea.WindowSizeMsg:
 		if !m.IsReady {
+			m.list = list.New(
+				getItems(m.RawContent),
+				itemDelegate{},
+				msg.Height,
+				msg.Height,
+				// 0, 0,
+			)
+			m.list.SetShowTitle(false)
+			m.list.Select(1)
 			m.Viewport = viewport.Model{
 				Width:  msg.Width,
 				Height: msg.Height,
@@ -86,6 +111,10 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 			}
 			m.IsReady = true
 		} else {
+			m.list.SetItems(getItems(m.RawContent))
+			m.list.SetSize(msg.Width, 10)
+			m.list.SetWidth(msg.Width)
+			m.list.SetHeight(msg.Height)
 			m.Viewport.Height = msg.Height
 			m.Viewport.Width = msg.Width
 		}
@@ -97,11 +126,59 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 			m.Viewport.GotoBottom()
 		case key.Matches(msg, DefaultKeyMap.Quit):
 			return m, tea.Quit
+		case key.Matches(msg, DefaultKeyMap.Links):
+			items := getItems(m.RawContent)
+			m.list.SetItems(items)
+			m.list.ResetSelected()
+			m.onLinkScreen = !m.onLinkScreen
 		}
 	}
 	var cmd tea.Cmd
+	var cmds []tea.Cmd
 	m.Viewport, cmd = m.Viewport.Update(msg)
-	return m, cmd
+	cmds = append(cmds, cmd)
+	m.list, cmd = m.list.Update(msg)
+	cmds = append(cmds, cmd)
+	return m, tea.Batch(cmds...)
+}
+
+type item string
+
+type itemDelegate struct{}
+
+var selectedItemStyle = lipgloss.NewStyle().PaddingLeft(2).Foreground(lipgloss.Color("170"))
+var itemStyle = lipgloss.NewStyle().PaddingLeft(4)
+
+func (d itemDelegate) Height() int                               { return 1 }
+func (d itemDelegate) Spacing() int                              { return 0 }
+func (d itemDelegate) Update(msg tea.Msg, m *list.Model) tea.Cmd { return nil }
+func (d itemDelegate) Render(w io.Writer, m list.Model, index int, listItem list.Item) {
+	i, ok := listItem.(item)
+	if !ok {
+		return
+	}
+
+	str := fmt.Sprintf("%2d. %s", index+1, i)
+
+	if index == m.Index() {
+		fmt.Fprint(w, selectedItemStyle.Render("> "+str))
+	} else {
+		fmt.Fprint(w, itemStyle.Render(str))
+	}
+}
+
+func (i item) FilterValue() string { return "" }
+
+func getItems(text string) []list.Item {
+	links := xurls.Strict.FindAllString(text, -1)
+	sort.Slice(links, func(i, j int) bool {
+		return links[i] > links[j]
+	})
+	items := make([]list.Item, len(links))
+	for i := range links {
+		items[i] = item(links[i])
+	}
+	return items
 }
 
 func RenderLoop(p *tea.Program) {
