@@ -57,7 +57,7 @@ var DefaultKeyMap = KeyMap{
 		key.WithHelp("l", "links view"),
 	),
 	LinksOpen: key.NewBinding(
-		key.WithKeys("o", "enter"),
+		key.WithKeys("o"),
 		key.WithHelp("o", "open link"),
 	),
 	LinksOpenXDG: key.NewBinding(

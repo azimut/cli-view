@@ -103,7 +103,7 @@ func (d itemDelegate) Render(w io.Writer, m list.Model, index int, listItem list
 	}
 }
 
-func (i item) FilterValue() string { return "" }
+func (i item) FilterValue() string { return string(i) }
 
 func getItems(text string) []list.Item {
 	return toItems(getLinks(text))
