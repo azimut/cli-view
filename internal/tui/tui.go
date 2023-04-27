@@ -173,10 +173,9 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 			case key.Matches(msg, DefaultKeyMap.Bottom):
 				m.Viewport.GotoBottom()
 			case key.Matches(msg, DefaultKeyMap.LinksView):
-				items := getItems(m.RawContent)
-				m.list.SetItems(items)
 				m.onLinkScreen = !m.onLinkScreen
 			}
+			// update progress bar on movement
 			if isScrolling(msg) {
 				cmd = m.progress.SetPercent(m.Viewport.ScrollPercent())
 				cmds = append(cmds, cmd)
