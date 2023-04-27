@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
@@ -76,7 +77,8 @@ func (m Model) View() string {
 	if m.onLinkScreen {
 		return m.list.View()
 	} else {
-		return m.progress.View() + "\n" + m.Viewport.View()
+		padding := strings.Repeat(" ", m.Viewport.Width/5*4)
+		return m.Viewport.View() + "\n" + padding + m.progress.View()
 	}
 }
 
@@ -100,7 +102,7 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 			m.progress = progress.New(
 				progress.WithGradient("#696969", "#D3D3D3"),
 				progress.WithoutPercentage(),
-				progress.WithWidth(msg.Width),
+				progress.WithWidth(msg.Width/5),
 			)
 			m.list = list.New(
 				getItems(m.RawContent),
@@ -115,6 +117,7 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 				Width:  msg.Width,
 				Height: msg.Height - 1,
 				KeyMap: DefaultViewportKeyMap,
+				// HighPerformanceRendering: true,
 			}
 			m.IsReady = true
 		} else {
@@ -123,15 +126,16 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 			} else {
 				m.Viewport.Height = msg.Height - 1
 				m.Viewport.Width = msg.Width
-				m.progress.Width = msg.Width
+				m.progress.Width = msg.Width / 5
 			}
+		}
+		if m.Viewport.HighPerformanceRendering && !m.onLinkScreen {
+			cmds = append(cmds, viewport.Sync(m.Viewport))
 		}
 	case tea.KeyMsg:
 		if m.onLinkScreen {
 			switch {
-			case key.Matches(msg, DefaultKeyMap.LinksView):
-				m.onLinkScreen = false
-			case key.Matches(msg, DefaultKeyMap.Quit):
+			case key.Matches(msg, DefaultKeyMap.LinksView, DefaultKeyMap.Quit):
 				m.onLinkScreen = false
 			case key.Matches(msg, DefaultKeyMap.LinksOpenXDG):
 				i, ok := m.list.SelectedItem().(item)
@@ -158,12 +162,12 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 			}
 		} else {
 			switch {
+			case key.Matches(msg, DefaultKeyMap.Quit):
+				return m, tea.Quit
 			case key.Matches(msg, DefaultKeyMap.Top):
 				m.Viewport.GotoTop()
 			case key.Matches(msg, DefaultKeyMap.Bottom):
 				m.Viewport.GotoBottom()
-			case key.Matches(msg, DefaultKeyMap.Quit):
-				return m, tea.Quit
 			case key.Matches(msg, DefaultKeyMap.LinksView):
 				items := getItems(m.RawContent)
 				m.list.SetItems(items)
