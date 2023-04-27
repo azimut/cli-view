@@ -134,6 +134,10 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 		}
 	case tea.KeyMsg:
 		if m.onLinkScreen {
+			// disables rest of the keybinding if we are filtering
+			if m.list.FilterState() == list.Filtering {
+				break
+			}
 			switch {
 			case key.Matches(msg, DefaultKeyMap.LinksView, DefaultKeyMap.Quit):
 				m.onLinkScreen = false
