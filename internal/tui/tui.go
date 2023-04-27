@@ -96,29 +96,9 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 		cmds = append(cmds, cmd)
 	}
 	switch msg := msg.(type) {
-	// TODO: not using useHighPerformanceRenderer
 	case tea.WindowSizeMsg:
 		if !m.IsReady {
-			m.progress = progress.New(
-				progress.WithGradient("#696969", "#D3D3D3"),
-				progress.WithoutPercentage(),
-				progress.WithWidth(msg.Width/5),
-			)
-			m.list = list.New(
-				getItems(m.RawContent),
-				itemDelegate{},
-				msg.Width,
-				msg.Height-1,
-			)
-			m.list.KeyMap = DefaultListKeyMap
-			m.list.SetShowTitle(false)
-			m.list.DisableQuitKeybindings()
-			m.Viewport = viewport.Model{
-				Width:  msg.Width,
-				Height: msg.Height - 1,
-				KeyMap: DefaultViewportKeyMap,
-				// HighPerformanceRendering: true,
-			}
+			m.Initialize(msg)
 			m.IsReady = true
 		} else {
 			if m.onLinkScreen {
@@ -134,11 +114,8 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 		}
 	case tea.KeyMsg:
 		if m.onLinkScreen {
-			// disables rest of the keybinding if we are filtering
-			if m.list.FilterState() == list.Filtering {
-				break
-			}
 			switch {
+			case m.list.FilterState() == list.Filtering:
 			case key.Matches(msg, DefaultKeyMap.LinksView, DefaultKeyMap.Quit):
 				m.onLinkScreen = false
 			case key.Matches(msg, DefaultKeyMap.LinksOpenXDG):
@@ -200,4 +177,29 @@ func isScrolling(msg tea.KeyMsg) bool {
 		DefaultViewportKeyMap.Down,
 		DefaultViewportKeyMap.PageUp,
 		DefaultViewportKeyMap.PageDown)
+}
+
+func (m *Model) Initialize(msg tea.WindowSizeMsg) {
+	m.Viewport = viewport.Model{
+		Width:  msg.Width,
+		Height: msg.Height - 1,
+		KeyMap: DefaultViewportKeyMap,
+		// HighPerformanceRendering: true,
+	}
+
+	m.progress = progress.New(
+		progress.WithGradient("#696969", "#D3D3D3"),
+		progress.WithoutPercentage(),
+		progress.WithWidth(msg.Width/5),
+	)
+
+	m.list = list.New(
+		getItems(m.RawContent),
+		itemDelegate{},
+		msg.Width,
+		msg.Height-1,
+	)
+	m.list.KeyMap = DefaultListKeyMap
+	m.list.SetShowTitle(false)
+	m.list.DisableQuitKeybindings()
 }
