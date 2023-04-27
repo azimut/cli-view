@@ -43,6 +43,19 @@
     }
   #+end_src
 - Types of messages
+  - [ ] empty message, but quoting (with an attachment i guess)
+    #+begin_src
+      ---- Findings  2
+      <a href="#p92883019" class="quotelink">&gt;&gt;92883019</a><br>
+      <a href="#p92891962" class="quotelink">&gt;&gt;92891962</a>
+      ---- Comment [92892097] <>> ADDED NEWLINE
+      <a href="#p92883019" class="quotelink">&gt;&gt;92883019</a><br>
+      <a href="#p92891962" class="quotelink">&gt;&gt;92891962</a>
+      ---- Replies  2
+      ''
+      ''
+      --------------------------------------------------
+    #+end_src
   - [ ] Mentioning another post in the middle of the respons
     #+begin_src html
       <a href="#p92877538" class="quotelink">&gt;&gt;92877538</a><br>
