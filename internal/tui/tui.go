@@ -7,6 +7,7 @@ import (
 
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
+	"github.com/charmbracelet/bubbles/progress"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 )
@@ -15,6 +16,7 @@ type Model struct {
 	keymap       KeyMap
 	IsReady      bool
 	onLinkScreen bool
+	progress     progress.Model
 	Viewport     viewport.Model
 	list         list.Model
 	RawContent   string // used to scrape the links
@@ -74,28 +76,44 @@ func (m Model) View() string {
 	if m.onLinkScreen {
 		return m.list.View()
 	} else {
-		return m.Viewport.View()
+		return m.progress.View() + "\n" + m.Viewport.View()
 	}
 }
 
 func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
+	var cmds []tea.Cmd
+	var cmd tea.Cmd
+	if m.onLinkScreen {
+		m.list, cmd = m.list.Update(msg)
+		cmds = append(cmds, cmd)
+	} else {
+		teaProgress, cmd := m.progress.Update(msg)
+		m.progress = teaProgress.(progress.Model)
+		cmds = append(cmds, cmd)
+		m.Viewport, cmd = m.Viewport.Update(msg)
+		cmds = append(cmds, cmd)
+	}
 	switch msg := msg.(type) {
 	// TODO: not using useHighPerformanceRenderer
 	case tea.WindowSizeMsg:
 		if !m.IsReady {
+			m.progress = progress.New(
+				progress.WithGradient("#696969", "#D3D3D3"),
+				progress.WithoutPercentage(),
+				progress.WithWidth(msg.Width),
+			)
 			m.list = list.New(
 				getItems(m.RawContent),
 				itemDelegate{},
-				msg.Height,
-				msg.Height,
-				// 0, 0,
+				msg.Width,
+				msg.Height-1,
 			)
 			m.list.KeyMap = DefaultListKeyMap
 			m.list.SetShowTitle(false)
 			m.list.DisableQuitKeybindings()
 			m.Viewport = viewport.Model{
 				Width:  msg.Width,
-				Height: msg.Height,
+				Height: msg.Height - 1,
 				KeyMap: DefaultViewportKeyMap,
 			}
 			m.IsReady = true
@@ -103,8 +121,9 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 			if m.onLinkScreen {
 				m.list.SetSize(msg.Width, msg.Height)
 			} else {
-				m.Viewport.Height = msg.Height
+				m.Viewport.Height = msg.Height - 1
 				m.Viewport.Width = msg.Width
+				m.progress.Width = msg.Width
 			}
 		}
 	case tea.KeyMsg:
@@ -150,15 +169,13 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 				m.list.SetItems(items)
 				m.onLinkScreen = !m.onLinkScreen
 			}
+			if isScrolling(msg) {
+				cmd = m.progress.SetPercent(m.Viewport.ScrollPercent())
+				cmds = append(cmds, cmd)
+			}
 		}
 	}
-	var cmd tea.Cmd
-	if m.onLinkScreen {
-		m.list, cmd = m.list.Update(msg)
-	} else {
-		m.Viewport, cmd = m.Viewport.Update(msg)
-	}
-	return m, cmd
+	return m, tea.Batch(cmds...)
 }
 
 func RenderLoop(p *tea.Program) {
@@ -166,4 +183,14 @@ func RenderLoop(p *tea.Program) {
 		fmt.Printf("error at last: %v", err)
 		os.Exit(1)
 	}
+}
+
+func isScrolling(msg tea.KeyMsg) bool {
+	return key.Matches(msg,
+		DefaultKeyMap.Top,
+		DefaultKeyMap.Bottom,
+		DefaultViewportKeyMap.Up,
+		DefaultViewportKeyMap.Down,
+		DefaultViewportKeyMap.PageUp,
+		DefaultViewportKeyMap.PageDown)
 }
