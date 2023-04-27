@@ -9,26 +9,24 @@ import (
 	"os"
 	"time"
 
+	"github.com/azimut/cli-view/internal/tui"
 	"github.com/azimut/cli-view/internal/twitter"
 )
 
 type options struct {
 	timeout   time.Duration
-	userAgent string
 	useColors bool
-	usePretty bool
-	width     int
+	useTUI    bool
+	userAgent string
 }
 
-var opt options
-var url string
+var opts options
 
 func init() {
-	flag.DurationVar(&opt.timeout, "t", time.Second*5, "timeout in seconds")
-	flag.StringVar(&opt.userAgent, "A", "Twitter_View/0.1", "default User-Agent sent")
-	flag.BoolVar(&opt.useColors, "C", true, "use colors")
-	flag.BoolVar(&opt.usePretty, "P", true, "use pretty formatting")
-	flag.IntVar(&opt.width, "w", 0, "fixed with, defaults to console width")
+	flag.BoolVar(&opts.useColors, "C", true, "use colors")
+	flag.BoolVar(&opts.useTUI, "x", false, "use TUI")
+	flag.DurationVar(&opts.timeout, "t", time.Second*5, "timeout in seconds")
+	flag.StringVar(&opts.userAgent, "A", "Twitter_View/0.1", "default User-Agent sent")
 }
 
 func usage() {
@@ -43,12 +41,19 @@ func run(args []string, stdout io.Writer) error {
 		flag.Usage()
 		return errors.New("missing URL argument")
 	}
-	url = flag.Args()[0]
-	res, err := twitter.Fetch(url, opt.userAgent, opt.timeout)
+
+	url := flag.Args()[0]
+	tweet, err := twitter.Fetch(url, opts.userAgent, opts.timeout)
 	if err != nil {
 		return err
 	}
-	fmt.Println(twitter.Format(res))
+
+	if opts.useTUI {
+		tui.RenderLoop(twitter.NewProgram(*tweet))
+	} else {
+		fmt.Println(tweet)
+	}
+
 	return nil
 }
 

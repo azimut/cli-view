@@ -12,14 +12,14 @@ import (
 	"github.com/jaytaylor/html2text"
 )
 
-func Format(t *Embedded) (formatted string) {
+func (t Embedded) String() (ret string) {
 	msg, links := paragraph(t.Html)
-	formatted += fmt.Sprintf("URL: %s\n", t.Url)
+	ret += fmt.Sprintf("URL: %s\n", t.Url)
 	for _, link := range links {
-		formatted += formatLink(link)
+		ret += formatLink(link)
 	}
-	formatted += "\n" + fitInScreen(plaintext(msg))
-	formatted += "\n\n" + date(t.Html)
+	ret += "\n" + fitInScreen(plaintext(msg))
+	ret += "\n\n" + date(t.Html)
 	return
 }
 

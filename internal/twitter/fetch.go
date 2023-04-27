@@ -12,14 +12,17 @@ func Fetch(tweetUrl, ua string, timeout time.Duration) (*Embedded, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	rawJson, err := fetch.Fetch(embedUrl, ua, timeout)
 	if err != nil {
 		return nil, err
 	}
+
 	tweet, err := toEmbedded(rawJson)
 	if err != nil {
 		return nil, err
 	}
+
 	return tweet, nil
 }
 
