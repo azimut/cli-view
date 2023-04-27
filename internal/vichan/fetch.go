@@ -11,9 +11,7 @@ import (
 
 func Fetch(
 	rawUrl, userAgent string,
-	width, leftPadding uint,
 	timeout time.Duration,
-	showAuthor, showDate, showId bool,
 ) (*Thread, error) {
 	effectiveUrl, err := parseUrl(rawUrl)
 	if err != nil {
@@ -36,12 +34,7 @@ func Fetch(
 	}
 
 	thread.op.thread = thread
-	thread.leftPadding = leftPadding
-	thread.showAuthor = showAuthor
-	thread.showDate = showDate
-	thread.showId = showId
 	thread.url = rawUrl
-	thread.width = width
 
 	return thread, nil
 }

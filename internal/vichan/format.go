@@ -44,11 +44,11 @@ func (op Op) String() (ret string) {
 		)
 	}
 	if op.message != "" {
-		ret += "\n" + formatText(op.message, int(op.thread.width), int(op.thread.leftPadding))
+		ret += "\n" + formatText(op.message, int(op.thread.Width), int(op.thread.LeftPadding))
 		ret += "\n\n"
 	}
 	ret += " " + humanize.Time(op.createdAt)
-	if op.thread.showAuthor {
+	if op.thread.ShowAuthor {
 		ret += " by " + op.author
 	}
 	ret += "\n\n\n"
@@ -59,21 +59,21 @@ func (comment Comment) String() (ret string) {
 	if comment.message != "" {
 		ret += formatText(
 			comment.message,
-			int(comment.thread.width),
-			comment.depth*int(comment.thread.leftPadding)+1,
+			int(comment.thread.Width),
+			comment.depth*int(comment.thread.LeftPadding)+1,
 		)
 		ret += "\n"
 	}
 
 	ret += strings.Repeat(" ", comment.depth*3)
 	ret += ">>"
-	if comment.thread.showDate {
+	if comment.thread.ShowDate {
 		ret += " " + humanize.Time(comment.createdAt)
 	}
-	if comment.thread.showAuthor {
+	if comment.thread.ShowAuthor {
 		ret += " " + comment.author
 	}
-	if comment.thread.showId {
+	if comment.thread.ShowId {
 		ret += " " + fmt.Sprintf("%d", comment.id)
 	}
 	ret += "\n"
