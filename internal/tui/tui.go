@@ -98,7 +98,7 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		if !m.IsReady {
-			m.Initialize(msg)
+			m.initialize(msg)
 			m.IsReady = true
 		} else {
 			if m.onLinkScreen {
@@ -179,7 +179,7 @@ func isScrolling(msg tea.KeyMsg) bool {
 		DefaultViewportKeyMap.PageDown)
 }
 
-func (m *Model) Initialize(msg tea.WindowSizeMsg) {
+func (m *Model) initialize(msg tea.WindowSizeMsg) {
 	m.Viewport = viewport.Model{
 		Width:  msg.Width,
 		Height: msg.Height - 1,
@@ -197,7 +197,7 @@ func (m *Model) Initialize(msg tea.WindowSizeMsg) {
 		getItems(m.RawContent),
 		itemDelegate{},
 		msg.Width,
-		msg.Height-1,
+		msg.Height,
 	)
 	m.list.KeyMap = DefaultListKeyMap
 	m.list.SetShowTitle(false)
