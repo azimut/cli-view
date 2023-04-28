@@ -32,7 +32,6 @@ func init() {
 	flag.BoolVar(&opts.useColors, "C", true, "use colors")
 	flag.BoolVar(&opts.showDate, "d", false, "print date on comments")
 	flag.BoolVar(&opts.showAuthor, "a", true, "print author on comments")
-	flag.BoolVar(&opts.showId, "i", true, "print id on comments")
 	flag.BoolVar(&opts.useTUI, "x", false, "use TUI")
 	flag.DurationVar(&opts.timeout, "t", time.Second*5, "timeout in seconds")
 	flag.StringVar(&opts.userAgent, "A", "DiscourseView/1.0", "user agent to send")
@@ -61,9 +60,9 @@ func run(args []string, stdout io.Writer) error {
 	}
 	thread.Width = int(opts.width)
 	thread.LeftPadding = int(opts.leftPadding)
-	// thread.ShowAuthor = opts.showAuthor
-	// thread.ShowDate = opts.showDate
-	// thread.ShowId = opts.showId
+	thread.ShowAuthor = opts.showAuthor
+	thread.ShowDate = opts.showDate
+
 	if opts.useTUI {
 		tui.RenderLoop(discourse.NewProgram(*thread))
 	} else {

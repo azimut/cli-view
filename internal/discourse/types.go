@@ -11,6 +11,8 @@ type Thread struct {
 	url         string
 	Width       int
 	LeftPadding int
+	ShowDate    bool
+	ShowAuthor  bool
 }
 
 type Op struct {
