@@ -5,21 +5,10 @@ import (
 	"path"
 	"strings"
 
-	text "github.com/MichaelMure/go-term-text"
 	"github.com/azimut/cli-view/internal/format"
 
 	"github.com/dustin/go-humanize"
-	"github.com/jaytaylor/html2text"
 )
-
-func formatText(htmlText string, width, leftPadding int) string {
-	plainText, err := html2text.FromString(htmlText, html2text.Options{})
-	if err != nil {
-		panic(err)
-	}
-	wrapped, _ := text.WrapLeftPadded(format.GreenTextIt(plainText), width, leftPadding)
-	return wrapped
-}
 
 func (thread Thread) String() (ret string) {
 	ret += "\n"
@@ -44,7 +33,11 @@ func (op Op) String() (ret string) {
 		)
 	}
 	if op.message != "" {
-		ret += "\n" + formatText(op.message, int(op.thread.Width), int(op.thread.LeftPadding))
+		ret += "\n" + format.FormatHtml2Text(
+			op.message,
+			int(op.thread.Width),
+			int(op.thread.LeftPadding),
+		)
 		ret += "\n\n"
 	}
 	ret += " " + humanize.Time(op.createdAt)
@@ -57,7 +50,7 @@ func (op Op) String() (ret string) {
 
 func (comment Comment) String() (ret string) {
 	if comment.message != "" {
-		ret += formatText(
+		ret += format.FormatHtml2Text(
 			comment.message,
 			int(comment.thread.Width),
 			comment.depth*int(comment.thread.LeftPadding)+1,
