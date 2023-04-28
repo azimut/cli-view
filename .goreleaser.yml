@@ -34,3 +34,10 @@ builds:
     goos:    [  linux  ]
     goarch:  [  amd64  ]
     ldflags: [ "-s -w" ]
+
+  - id: discourseview
+    binary: discourseview
+    main: ./cmd/discourseview
+    goos:    [  linux  ]
+    goarch:  [  amd64  ]
+    ldflags: [ "-s -w" ]

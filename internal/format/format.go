@@ -1,14 +1,16 @@
 package format
 
 import (
-	"math"
 	"strings"
 
+	text "github.com/MichaelMure/go-term-text"
 	"github.com/fatih/color"
+	"github.com/jaytaylor/html2text"
 )
 
 var green = color.New(color.FgGreen)
 
+// GreenTextIt makes green the lines in `text` that start with ">"
 func GreenTextIt(text string) string {
 	lines := strings.Split(text, "\n")
 	for i, line := range lines {
@@ -19,27 +21,12 @@ func GreenTextIt(text string) string {
 	return strings.Join(lines, "\n")
 }
 
-func WrapLeftPadded(text string, maxWidth, padding int) string {
-	lines := splitByWidthMake(text, maxWidth-padding)
-	pad := strings.Repeat(" ", padding)
-	for i, line := range lines {
-		lines[i] = pad + line
+// FormatHtml2Text converts an html text into a plaintext one
+func FormatHtml2Text(htmlText string, width, leftPadding int) string {
+	plainText, err := html2text.FromString(htmlText, html2text.Options{})
+	if err != nil {
+		panic(err)
 	}
-	return strings.Join(lines, "\n")
-}
-
-func splitByWidthMake(str string, size int) []string {
-	strLength := len(str)
-	splitedLength := int(math.Ceil(float64(strLength) / float64(size)))
-	splited := make([]string, splitedLength)
-	var start, stop int
-	for i := 0; i < splitedLength; i += 1 {
-		start = i * size
-		stop = start + size
-		if stop > strLength {
-			stop = strLength
-		}
-		splited[i] = str[start:stop]
-	}
-	return splited
+	wrapped, _ := text.WrapLeftPadded(GreenTextIt(plainText), width, leftPadding)
+	return wrapped
 }
