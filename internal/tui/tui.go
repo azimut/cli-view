@@ -116,6 +116,9 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 		if m.onLinkScreen {
 			switch {
 			case m.list.FilterState() == list.Filtering:
+				if msg.String() == "enter" && m.list.FilterValue() == "" {
+					m.list.ResetFilter()
+				}
 			case key.Matches(msg, DefaultKeyMap.LinksView, DefaultKeyMap.Quit):
 				m.onLinkScreen = false
 			case key.Matches(msg, DefaultKeyMap.LinksOpenXDG):
