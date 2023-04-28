@@ -2,6 +2,7 @@ package discourse
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/azimut/cli-view/internal/format"
 	"github.com/dustin/go-humanize"
@@ -32,6 +33,10 @@ func (c Comment) String() (ret string) {
 		"%s\n",
 		format.FormatHtml2Text(c.message, c.thread.Width, c.thread.LeftPadding*c.depth+1),
 	)
-	ret += fmt.Sprintf(">> %s %s\n", humanize.Time(c.createdAt), c.author)
+	ret += strings.Repeat(" ", c.depth*c.thread.LeftPadding)
+	ret += fmt.Sprintf(">> %s %s\n\n", humanize.Time(c.createdAt), c.author)
+	for _, reply := range c.replies {
+		ret += fmt.Sprint(reply)
+	}
 	return
 }

@@ -1,6 +1,8 @@
 package discourse
 
-import "time"
+import (
+	"time"
+)
 
 type Thread struct {
 	comments    []Comment
@@ -26,6 +28,38 @@ type Comment struct {
 	depth     int
 	id        int
 	message   string
+	parentId  int
 	replies   []Comment
 	thread    *Thread
+}
+
+func (t *Thread) insertComment(comment Comment) {
+	if comment.parentId == 1 || comment.parentId == 0 {
+		t.comments = append(t.comments, comment)
+	} else {
+		parentComment := t.findComment(comment.parentId)
+		comment.depth = parentComment.depth + 1
+		parentComment.replies = append(parentComment.replies, comment)
+	}
+}
+
+func (t *Thread) findComment(id int) *Comment {
+	for i := range t.comments {
+		if found := t.comments[i].findComment(id); found != nil {
+			return found
+		}
+	}
+	return nil
+}
+
+func (c *Comment) findComment(id int) *Comment {
+	if id == c.id {
+		return c
+	}
+	for i := range c.replies {
+		if found := c.replies[i].findComment(id); found != nil {
+			return found
+		}
+	}
+	return nil
 }

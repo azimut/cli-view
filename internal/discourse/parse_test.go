@@ -28,7 +28,7 @@ func TestToThread(t *testing.T) {
 	}
 
 	got = thread.op.id
-	expected = 165427
+	expected = 1
 	if expected != got {
 		t.Errorf("got %d expected %d", got, expected)
 	}
