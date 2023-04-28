@@ -34,7 +34,7 @@ tonyg(211) - 5 hours ago
 >>> saurik - 33 minutes ago
 #+end_src
 ** Reddit
-- Uses their [[https://www.reddit.com/dev/api/][.json API]]
+- Uses their [[https://www.reddit.com/dev/api/][.json API]], parsing the markdown comment in /.body/
 #+begin_src
 ~ » twitterview https://www.reddit.com/r/rust/comments/120mjef/how_to_learn_rust/
 
