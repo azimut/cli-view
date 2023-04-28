@@ -40,10 +40,10 @@ func (op Op) String() (ret string) {
 		)
 		ret += "\n\n"
 	}
-	ret += " " + humanize.Time(op.createdAt)
 	if op.thread.ShowAuthor {
-		ret += " by " + op.author
+		ret += format.AuthorStyle.Render(op.author)
 	}
+	ret += " " + humanize.Time(op.createdAt)
 	ret += "\n\n\n"
 	return
 }
@@ -64,7 +64,12 @@ func (comment Comment) String() (ret string) {
 		ret += " " + humanize.Time(comment.createdAt)
 	}
 	if comment.thread.ShowAuthor {
-		ret += " " + comment.author
+		ret += " "
+		if comment.author == comment.thread.op.author {
+			ret += format.AuthorStyle.Render(comment.author)
+		} else {
+			ret += comment.author
+		}
 	}
 	if comment.thread.ShowId {
 		ret += " " + fmt.Sprintf("%d", comment.id)

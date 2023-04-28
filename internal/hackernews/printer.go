@@ -31,7 +31,7 @@ func (o Op) String() (ret string) {
 	}
 	ret += fmt.Sprintf(
 		"\n%s(%d) - %s - %d Comments\n",
-		o.user,
+		format.AuthorStyle.Render(o.user),
 		o.score,
 		humanize.Time(o.date),
 		o.ncomments,
@@ -46,10 +46,16 @@ func (c Comment) String() (ret string) {
 	if c.indent > 0 {
 		arrow = ">> "
 	}
+
+	author := c.user
+	if c.user == c.thread.op.user {
+		author = format.AuthorStyle.Render(c.user)
+	}
+
 	if c.thread.ShowDate {
-		ret += strings.Repeat(" ", indent) + arrow + c.user + " - " + humanize.Time(c.date)
+		ret += strings.Repeat(" ", indent) + arrow + author + " - " + humanize.Time(c.date)
 	} else {
-		ret += strings.Repeat(" ", indent) + arrow + c.user
+		ret += strings.Repeat(" ", indent) + arrow + author
 	}
 	ret += "\n"
 	return

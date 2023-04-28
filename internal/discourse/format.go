@@ -5,14 +5,8 @@ import (
 	"strings"
 
 	"github.com/azimut/cli-view/internal/format"
-	"github.com/charmbracelet/lipgloss"
 	"github.com/dustin/go-humanize"
 )
-
-var authorStyle = lipgloss.NewStyle().
-	Bold(true).
-	Background(lipgloss.Color("8")).
-	Foreground(lipgloss.Color("0"))
 
 func (t Thread) String() (ret string) {
 	ret += fmt.Sprint(t.op)
@@ -30,7 +24,11 @@ func (o Op) String() (ret string) {
 		"\n%s\n\n",
 		format.FormatHtml2Text(o.message, o.thread.Width, o.thread.LeftPadding),
 	)
-	ret += fmt.Sprintf("%s  - %s \n\n\n", authorStyle.Render(o.author), humanize.Time(o.createdAt))
+	ret += fmt.Sprintf(
+		"%s  - %s \n\n\n",
+		format.AuthorStyle.Render(o.author),
+		humanize.Time(o.createdAt),
+	)
 	return
 }
 
@@ -44,7 +42,7 @@ func (c Comment) String() (ret string) {
 	if c.thread.ShowAuthor {
 		ret += " "
 		if c.author == c.thread.op.author {
-			ret += authorStyle.Render(c.author)
+			ret += format.AuthorStyle.Render(c.author)
 		} else {
 			ret += c.author
 		}

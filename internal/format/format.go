@@ -4,11 +4,16 @@ import (
 	"strings"
 
 	text "github.com/MichaelMure/go-term-text"
+	"github.com/charmbracelet/lipgloss"
 	"github.com/fatih/color"
 	"github.com/jaytaylor/html2text"
 )
 
 var green = color.New(color.FgGreen)
+var AuthorStyle = lipgloss.NewStyle().
+	Bold(true).
+	Background(lipgloss.Color("8")).
+	Foreground(lipgloss.Color("0"))
 
 // GreenTextIt makes green the lines in `text` that start with ">"
 func GreenTextIt(text string) string {

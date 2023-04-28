@@ -7,14 +7,13 @@ import (
 	"time"
 
 	markdown "github.com/MichaelMure/go-term-markdown"
+	"github.com/azimut/cli-view/internal/format"
 	md "github.com/gomarkdown/markdown"
 	"github.com/gomarkdown/markdown/parser"
 
 	"github.com/dustin/go-humanize"
 	"github.com/fatih/color"
 )
-
-const AuthorColor = color.FgYellow
 
 var reMarkdownLink = regexp.MustCompile(`\[([^\]]+)\]\(([^\)]+)\)`)
 var reHTTPLink = regexp.MustCompile(`[^\[^\(^m]http[s]?://[^\s^\[^\(^\[]+`)
@@ -36,7 +35,7 @@ func (op Op) String() (ret string) {
 	)
 	ret += "\n"
 	ret += fmt.Sprintf("%s(%d) - %s - %d Comment(s)\n\n\n",
-		color.New(AuthorColor).Sprint(op.author),
+		format.AuthorStyle.Render(op.author),
 		op.upvotes,
 		relativeFromUnix(op.createdUTC),
 		op.nComments)
@@ -52,9 +51,10 @@ func (comment Comment) String() (ret string) {
 		maxWidth,
 		commentLeftPadding,
 	)
+
 	author := comment.author
 	if comment.author == comment.thread.op.author {
-		author = color.New(AuthorColor).Sprint(comment.author)
+		author = format.AuthorStyle.Render(comment.author)
 	}
 
 	ret += strings.Repeat(" ", int(comment.depth)*leftPadding)
