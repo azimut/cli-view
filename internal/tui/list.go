@@ -46,7 +46,7 @@ var DefaultListKeyMap = list.KeyMap{
 		key.WithHelp("G/end", "go to end"),
 	),
 	Filter: key.NewBinding(
-		key.WithKeys("/", "ctrl+f"),
+		key.WithKeys("/", "ctrl+s"),
 		key.WithHelp("/", "filter"),
 	),
 	ClearFilter: key.NewBinding(
