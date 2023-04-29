@@ -153,6 +153,7 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 			case key.Matches(msg, DefaultKeyMap.Bottom):
 				m.Viewport.GotoBottom()
 			case key.Matches(msg, DefaultKeyMap.LinksView):
+				m.list.SetSize(m.Viewport.Width, m.Viewport.Height)
 				m.onLinkScreen = !m.onLinkScreen
 			}
 			// update progress bar on movement
