@@ -5,11 +5,12 @@ import (
 )
 
 type Thread struct {
-	closed      bool
-	leftPadding uint
-	op          Op
-	posts       []Post
-	width       uint
+	closed       bool
+	op           Op
+	posts        []Post
+	LineWidth    uint
+	LeftPadding  uint
+	CommentWidth uint
 }
 
 type Op struct {

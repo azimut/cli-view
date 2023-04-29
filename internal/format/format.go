@@ -35,3 +35,17 @@ func FormatHtml2Text(htmlText string, width, leftPadding int) string {
 	wrapped, _ := text.WrapLeftPadded(GreenTextIt(plainText), width, leftPadding)
 	return wrapped
 }
+
+func Min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}
+
+func Max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}

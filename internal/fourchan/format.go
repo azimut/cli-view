@@ -32,8 +32,8 @@ func (op Op) String() (ret string) {
 	if op.comment != "" {
 		comment, _ := text.WrapLeftPadded(
 			format.GreenTextIt(op.comment),
-			int(op.thread.width),
-			int(op.thread.leftPadding),
+			int(op.thread.LineWidth),
+			int(op.thread.LeftPadding),
 		)
 		ret += comment + "\n"
 	}
@@ -43,11 +43,17 @@ func (op Op) String() (ret string) {
 }
 
 func (post Post) String() (ret string) {
+	leftPadding := int(post.thread.LeftPadding)*post.depth + 1
+	rightPadding := 2
+	lineWidth := format.Min(
+		int(post.thread.LineWidth),
+		leftPadding+int(post.thread.CommentWidth),
+	) - rightPadding
 	if post.comment != "" {
 		comment, _ := text.WrapLeftPadded(
 			format.GreenTextIt(post.comment),
-			int(post.thread.width),
-			post.depth*int(post.thread.leftPadding)+1,
+			lineWidth,
+			leftPadding,
 		)
 		ret += comment + "\n"
 	}

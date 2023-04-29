@@ -14,10 +14,11 @@ import (
 )
 
 type options struct {
-	leftPadding uint
-	showColors  bool
-	useTui      bool
-	width       uint
+	leftPadding  uint
+	showColors   bool
+	useTui       bool
+	lineWidth    uint
+	commentWidth uint
 }
 
 var opts options
@@ -25,7 +26,8 @@ var opts options
 func init() {
 	flag.BoolVar(&opts.useTui, "x", false, "use tui")
 	flag.BoolVar(&opts.showColors, "C", true, "show colors")
-	flag.UintVar(&opts.width, "w", 80, "fixed with")
+	flag.UintVar(&opts.lineWidth, "w", 100, "max line width")
+	flag.UintVar(&opts.commentWidth, "W", 80, "max comment width")
 	flag.UintVar(&opts.leftPadding, "l", 3, "left padding for child comments")
 }
 
@@ -43,12 +45,17 @@ func run(args []string, stdout io.Writer) error {
 		return errors.New("missing URL argument")
 	}
 	url := flag.Args()[0]
-	thread, err := fourchan.Fetch(url, opts.width, opts.leftPadding)
+
+	thread, err := fourchan.Fetch(url)
+	thread.LineWidth = opts.lineWidth
+	thread.LeftPadding = opts.leftPadding
+	thread.CommentWidth = opts.commentWidth
+
 	if err != nil {
 		return err
 	}
 	if opts.useTui {
-		tui.RenderLoop(fourchan.NewProgram(*thread))
+		tui.RenderLoop(fourchan.NewProgram(thread))
 	} else {
 		fmt.Println(thread)
 	}
