@@ -120,6 +120,7 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 					m.list.ResetFilter()
 				}
 			case key.Matches(msg, DefaultKeyMap.LinksView, DefaultKeyMap.Quit):
+				m.Viewport.Width, m.Viewport.Height = m.list.Width(), m.list.Height()-1
 				m.onLinkScreen = false
 			case key.Matches(msg, DefaultKeyMap.LinksOpenXDG):
 				i, ok := m.list.SelectedItem().(item)
