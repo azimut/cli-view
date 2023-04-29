@@ -27,8 +27,11 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	// Initialize data to be used for links scrapping
 	if m.render.RawContent == "" {
-		m.LineWidth = 300
+		oldCommentWidth := m.CommentWidth
+		m.LineWidth = 400
+		m.CommentWidth = 300
 		m.render.RawContent = m.String()
+		m.CommentWidth = oldCommentWidth
 	}
 	m.render, cmd = m.render.Update(msg)
 	switch msg := msg.(type) {
