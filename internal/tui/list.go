@@ -56,7 +56,7 @@ var DefaultListKeyMap = list.KeyMap{
 
 	// Filtering.
 	CancelWhileFiltering: key.NewBinding(
-		key.WithKeys("esc"),
+		key.WithKeys("esc", "ctrl+g"),
 		key.WithHelp("esc", "cancel"),
 	),
 	AcceptWhileFiltering: key.NewBinding(
