@@ -22,11 +22,11 @@ type itemDelegate struct{}
 var DefaultListKeyMap = list.KeyMap{
 	// Browsing.
 	CursorUp: key.NewBinding(
-		key.WithKeys("up", "k", "ctrl+p"),
+		key.WithKeys("up", "k", "ctrl+p", "p"),
 		key.WithHelp("↑/k", "up"),
 	),
 	CursorDown: key.NewBinding(
-		key.WithKeys("down", "j", "ctrl+n"),
+		key.WithKeys("down", "j", "ctrl+n", "n"),
 		key.WithHelp("↓/j", "down"),
 	),
 	PrevPage: key.NewBinding(
