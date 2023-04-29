@@ -62,7 +62,7 @@ func run(args []string, stdout io.Writer) error {
 	thread.ShowDate = opts.showDate
 
 	if opts.useTUI {
-		tui.RenderLoop(hackernews.NewProgram(*thread))
+		tui.RenderLoop(hackernews.NewProgram(thread))
 	} else {
 		fmt.Println(thread)
 	}

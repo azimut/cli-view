@@ -11,10 +11,10 @@ const rightPadding = 10
 
 type Model struct {
 	render tui.Model
-	Embedded
+	*Embedded
 }
 
-func NewProgram(thread Embedded) *tea.Program {
+func NewProgram(thread *Embedded) *tea.Program {
 	return tea.NewProgram(Model{Embedded: thread},
 		tea.WithAltScreen())
 }

@@ -57,7 +57,7 @@ func run(args []string, stdout io.Writer) error {
 	thread.LeftPadding = opts.leftPadding
 
 	if opts.useTUI {
-		tui.RenderLoop(reddit.NewProgram(*thread))
+		tui.RenderLoop(reddit.NewProgram(thread))
 	} else {
 		fmt.Println(thread)
 	}

@@ -1,8 +1,6 @@
 package hackernews
 
 import (
-	"fmt"
-
 	"github.com/azimut/cli-view/internal/tui"
 	tea "github.com/charmbracelet/bubbletea"
 )
@@ -11,10 +9,10 @@ const rightPadding = 10
 
 type Model struct {
 	render tui.Model
-	Thread
+	*Thread
 }
 
-func NewProgram(thread Thread) *tea.Program {
+func NewProgram(thread *Thread) *tea.Program {
 	return tea.NewProgram(Model{Thread: thread},
 		tea.WithAltScreen())
 }
@@ -32,13 +30,13 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	// Initialize data to be used for links scrapping
 	if m.render.RawContent == "" {
 		m.Width = 300
-		m.render.RawContent = fmt.Sprint(m)
+		m.render.RawContent = m.String()
 	}
 	m.render, cmd = m.render.Update(msg)
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		m.Width = uint(msg.Width) - rightPadding
-		m.render.Viewport.SetContent(fmt.Sprint(m))
+		m.render.Viewport.SetContent(m.String())
 	}
 	return m, cmd
 }

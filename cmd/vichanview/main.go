@@ -67,7 +67,7 @@ func run(args []string, stdout io.Writer) error {
 	thread.Width = opts.width
 
 	if opts.useTUI {
-		tui.RenderLoop(vichan.NewProgram(*thread))
+		tui.RenderLoop(vichan.NewProgram(thread))
 	} else {
 		fmt.Println(thread)
 	}

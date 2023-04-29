@@ -49,7 +49,7 @@ func run(args []string, stdout io.Writer) error {
 	}
 
 	if opts.useTUI {
-		tui.RenderLoop(twitter.NewProgram(*tweet))
+		tui.RenderLoop(twitter.NewProgram(tweet))
 	} else {
 		fmt.Println(tweet)
 	}
