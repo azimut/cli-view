@@ -8,9 +8,9 @@ type Thread struct {
 	closed       bool
 	op           Op
 	posts        []Post
-	LineWidth    uint
-	LeftPadding  uint
-	CommentWidth uint
+	LineWidth    int
+	LeftPadding  int
+	CommentWidth int
 }
 
 type Op struct {

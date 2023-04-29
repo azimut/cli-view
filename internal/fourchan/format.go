@@ -43,11 +43,11 @@ func (op Op) String() (ret string) {
 }
 
 func (post Post) String() (ret string) {
-	leftPadding := int(post.thread.LeftPadding)*post.depth + 1
+	leftPadding := post.thread.LeftPadding*post.depth + 1
 	rightPadding := 2
 	lineWidth := format.Min(
-		int(post.thread.LineWidth),
-		leftPadding+int(post.thread.CommentWidth),
+		post.thread.LineWidth,
+		leftPadding+post.thread.CommentWidth,
 	) - rightPadding
 	if post.comment != "" {
 		comment, _ := text.WrapLeftPadded(

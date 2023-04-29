@@ -22,7 +22,7 @@ func (o Op) String() (ret string) {
 	ret += fmt.Sprintf(" self: %s\n", o.thread.url)
 	ret += fmt.Sprintf(
 		"\n%s\n\n",
-		format.FormatHtml2Text(o.message, o.thread.Width, o.thread.LeftPadding),
+		format.FormatHtml2Text(o.message, o.thread.LineWidth, o.thread.LeftPadding),
 	)
 	ret += fmt.Sprintf(
 		"%s  - %s \n\n\n",
@@ -33,11 +33,18 @@ func (o Op) String() (ret string) {
 }
 
 func (c Comment) String() (ret string) {
+	leftPadding := c.thread.LeftPadding * c.depth
+	rightPadding := 2
+	extraLeft := 1
+	lineWidth := format.Min(
+		c.thread.LineWidth,
+		leftPadding+c.thread.CommentWidth+extraLeft,
+	) - rightPadding
 	ret += fmt.Sprintf(
 		"%s\n",
-		format.FormatHtml2Text(c.message, c.thread.Width, c.thread.LeftPadding*c.depth+1),
+		format.FormatHtml2Text(c.message, lineWidth, leftPadding+extraLeft),
 	)
-	ret += strings.Repeat(" ", c.depth*c.thread.LeftPadding)
+	ret += strings.Repeat(" ", leftPadding)
 	ret += ">>"
 	if c.thread.ShowAuthor {
 		ret += " "

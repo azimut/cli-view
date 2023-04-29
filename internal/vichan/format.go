@@ -35,8 +35,8 @@ func (op Op) String() (ret string) {
 	if op.message != "" {
 		ret += "\n" + format.FormatHtml2Text(
 			op.message,
-			int(op.thread.Width),
-			int(op.thread.LeftPadding),
+			op.thread.LineWidth,
+			op.thread.LeftPadding,
 		)
 		ret += "\n\n"
 	}
@@ -49,11 +49,17 @@ func (op Op) String() (ret string) {
 }
 
 func (comment Comment) String() (ret string) {
+	leftPadding := comment.thread.LeftPadding * comment.depth
+	rightPadding := 2
+	lineWidth := format.Min(
+		comment.thread.LineWidth,
+		leftPadding+comment.thread.CommentWidth+1,
+	) - rightPadding
 	if comment.message != "" {
 		ret += format.FormatHtml2Text(
 			comment.message,
-			int(comment.thread.Width),
-			comment.depth*int(comment.thread.LeftPadding)+1,
+			lineWidth,
+			leftPadding+1,
 		)
 		ret += "\n"
 	}
@@ -77,7 +83,7 @@ func (comment Comment) String() (ret string) {
 	ret += "\n"
 
 	for _, attachment := range comment.attachments {
-		ret += strings.Repeat(" ", comment.depth*3)
+		ret += strings.Repeat(" ", leftPadding)
 		ret += fmt.Sprintf(
 			">> %s \"%s\"\n",
 			path.Dir(path.Dir(comment.thread.url))+"/src/"+attachment.newFilename,

@@ -15,12 +15,13 @@ import (
 )
 
 type options struct {
-	leftPadding uint
-	maxWidth    uint
-	timeout     time.Duration
-	useColors   bool
-	userAgent   string
-	useTUI      bool
+	leftPadding  uint
+	lineWidth    uint
+	commentWidth uint
+	timeout      time.Duration
+	useColors    bool
+	userAgent    string
+	useTUI       bool
 }
 
 var opts options
@@ -30,7 +31,8 @@ func init() {
 	flag.BoolVar(&opts.useColors, "C", true, "use colors")
 	flag.DurationVar(&opts.timeout, "t", time.Second*5, "timeout in seconds")
 	flag.StringVar(&opts.userAgent, "A", "Reddit_Cli/0.1", "user agent to send to reddit")
-	flag.UintVar(&opts.maxWidth, "w", 110, "max console width")
+	flag.UintVar(&opts.lineWidth, "w", 100, "line width")
+	flag.UintVar(&opts.commentWidth, "W", 80, "comment width")
 	flag.UintVar(&opts.leftPadding, "l", 3, "left padding on comments")
 }
 
@@ -53,8 +55,9 @@ func run(args []string, stdout io.Writer) error {
 	if err != nil {
 		return err
 	}
-	thread.Width = opts.maxWidth
-	thread.LeftPadding = opts.leftPadding
+	thread.CommentWidth = int(opts.commentWidth)
+	thread.LineWidth = int(opts.lineWidth)
+	thread.LeftPadding = int(opts.leftPadding)
 
 	if opts.useTUI {
 		tui.RenderLoop(reddit.NewProgram(thread))

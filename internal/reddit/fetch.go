@@ -96,7 +96,7 @@ func toComment(jsonComment gjson.Result) Comment {
 	return Comment{
 		author:      jsonComment.Get("author").String(),
 		createdUtc:  jsonComment.Get("created_utc").Int(),
-		depth:       jsonComment.Get("depth").Int(),
+		depth:       int(jsonComment.Get("depth").Int()),
 		id:          jsonComment.Get("id").String(),
 		jsonReplies: jsonComment.Get("replies.data.children.#.data").Array(),
 		message:     jsonComment.Get("body").String(),

@@ -15,14 +15,15 @@ import (
 )
 
 type options struct {
-	leftPadding uint
-	maxComments uint
-	nWorkers    uint
-	timeout     time.Duration
-	showColors  bool
-	showDate    bool
-	useTUI      bool
-	width       uint
+	leftPadding  uint
+	maxComments  uint
+	nWorkers     uint
+	timeout      time.Duration
+	showColors   bool
+	showDate     bool
+	useTUI       bool
+	lineWidth    uint
+	commentWidth uint
 }
 
 var opts options
@@ -33,8 +34,9 @@ func init() {
 	flag.BoolVar(&opts.useTUI, "x", false, "use TUI")
 	flag.DurationVar(&opts.timeout, "t", time.Second*5, "timeout in seconds")
 	flag.UintVar(&opts.maxComments, "c", 10, "limits the ammount of comments to fetch")
-	flag.UintVar(&opts.nWorkers, "W", 3, "number of workers to fetch comments")
-	flag.UintVar(&opts.width, "w", 100, "fixed with")
+	flag.UintVar(&opts.nWorkers, "n", 3, "number of workers to fetch comments")
+	flag.UintVar(&opts.lineWidth, "w", 100, "line width")
+	flag.UintVar(&opts.commentWidth, "W", 80, "comment width")
 	flag.UintVar(&opts.leftPadding, "l", 3, "left padding")
 }
 
@@ -57,8 +59,10 @@ func run(args []string, stdout io.Writer) error {
 	if err != nil {
 		return errors.New("could not fetch url")
 	}
-	thread.Width = opts.width
-	thread.LeftPadding = opts.leftPadding
+
+	thread.CommentWidth = int(opts.commentWidth)
+	thread.LeftPadding = int(opts.leftPadding)
+	thread.LineWidth = int(opts.lineWidth)
 	thread.ShowDate = opts.showDate
 
 	if opts.useTUI {

@@ -7,11 +7,12 @@ import (
 )
 
 type Thread struct {
-	comments    []Comment
-	op          Op
-	Width       uint
-	LeftPadding uint
-	ShowDate    bool
+	comments     []Comment
+	op           Op
+	CommentWidth int
+	LineWidth    int
+	LeftPadding  int
+	ShowDate     bool
 }
 
 type Op struct {
@@ -31,7 +32,7 @@ type Comment struct {
 	Childs []*Comment
 	date   time.Time
 	id     int
-	indent int
+	depth  int
 	kids   []int
 	msg    string
 	user   string

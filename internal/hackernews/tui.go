@@ -29,13 +29,13 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	// Initialize data to be used for links scrapping
 	if m.render.RawContent == "" {
-		m.Width = 300
+		m.LineWidth = 300
 		m.render.RawContent = m.String()
 	}
 	m.render, cmd = m.render.Update(msg)
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		m.Width = uint(msg.Width) - rightPadding
+		m.LineWidth = msg.Width - rightPadding
 		m.render.Viewport.SetContent(m.String())
 	}
 	return m, cmd

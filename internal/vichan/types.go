@@ -9,14 +9,15 @@ import (
 )
 
 type Thread struct {
-	comments    []Comment
-	op          Op
-	LeftPadding uint
-	ShowAuthor  bool
-	ShowDate    bool
-	ShowId      bool
-	Width       uint
-	url         string
+	comments     []Comment
+	op           Op
+	LeftPadding  int
+	ShowAuthor   bool
+	ShowDate     bool
+	ShowId       bool
+	LineWidth    int
+	CommentWidth int
+	url          string
 }
 
 type Attachment struct {

@@ -12,7 +12,7 @@ func TestFetch(t *testing.T) {
 	if err != nil {
 		t.Errorf("%v", err)
 	}
-	thread.Width = 80
+	thread.LineWidth = 80
 	thread.LeftPadding = 3
 	got := thread.op.id
 	expected := 18084

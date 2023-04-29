@@ -2,7 +2,6 @@ package fourchan
 
 import (
 	"github.com/azimut/cli-view/internal/tui"
-	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 )
 
@@ -34,9 +33,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	m.render, cmd = m.render.Update(msg)
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		m.LineWidth = uint(msg.Width)
+		m.LineWidth = msg.Width
 		m.render.Viewport.SetContent(m.String())
-		viewport.Sync(m.render.Viewport)
 	}
 	return m, cmd
 }

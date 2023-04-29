@@ -47,9 +47,9 @@ func run(args []string, stdout io.Writer) error {
 	url := flag.Args()[0]
 
 	thread, err := fourchan.Fetch(url)
-	thread.LineWidth = opts.lineWidth
-	thread.LeftPadding = opts.leftPadding
-	thread.CommentWidth = opts.commentWidth
+	thread.LineWidth = int(opts.lineWidth)
+	thread.LeftPadding = int(opts.leftPadding)
+	thread.CommentWidth = int(opts.commentWidth)
 
 	if err != nil {
 		return err

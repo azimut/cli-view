@@ -15,15 +15,16 @@ import (
 )
 
 type options struct {
-	leftPadding uint
-	timeout     time.Duration
-	useColors   bool
-	showAuthor  bool
-	showDate    bool
-	showId      bool
-	userAgent   string
-	useTUI      bool
-	width       uint
+	leftPadding  uint
+	timeout      time.Duration
+	useColors    bool
+	showAuthor   bool
+	showDate     bool
+	showId       bool
+	userAgent    string
+	useTUI       bool
+	lineWidth    uint
+	commentWidth uint
 }
 
 var opts options
@@ -35,7 +36,8 @@ func init() {
 	flag.BoolVar(&opts.useTUI, "x", false, "use TUI")
 	flag.DurationVar(&opts.timeout, "t", time.Second*5, "timeout in seconds")
 	flag.StringVar(&opts.userAgent, "A", "DiscourseView/1.0", "user agent to send")
-	flag.UintVar(&opts.width, "w", 100, "terminal width")
+	flag.UintVar(&opts.lineWidth, "w", 100, "line width")
+	flag.UintVar(&opts.commentWidth, "W", 80, "comment width")
 	flag.UintVar(&opts.leftPadding, "l", 3, "left padding on comments")
 }
 
@@ -58,7 +60,8 @@ func run(args []string, stdout io.Writer) error {
 	if err != nil {
 		return errors.New("could not fetch url")
 	}
-	thread.Width = int(opts.width)
+	thread.CommentWidth = int(opts.commentWidth)
+	thread.LineWidth = int(opts.lineWidth)
 	thread.LeftPadding = int(opts.leftPadding)
 	thread.ShowAuthor = opts.showAuthor
 	thread.ShowDate = opts.showDate

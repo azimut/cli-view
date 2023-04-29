@@ -3,10 +3,11 @@ package reddit
 import "github.com/tidwall/gjson"
 
 type Thread struct {
-	comments    []Comment
-	op          Op
-	Width       uint
-	LeftPadding uint
+	comments     []Comment
+	op           Op
+	LineWidth    int
+	CommentWidth int
+	LeftPadding  int
 }
 
 type Op struct {
@@ -24,7 +25,7 @@ type Op struct {
 type Comment struct {
 	author      string
 	createdUtc  int64
-	depth       int64
+	depth       int
 	id          string
 	jsonReplies []gjson.Result
 	message     string

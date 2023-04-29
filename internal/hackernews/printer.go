@@ -27,7 +27,7 @@ func (o Op) String() (ret string) {
 	}
 	ret += fmt.Sprintf(" self: %s\n", o.selfUrl)
 	if o.text != "" {
-		ret += fmt.Sprintf("\n%s\n", fixupComment(o.text, 3, o.thread.Width))
+		ret += fmt.Sprintf("\n%s\n", fixupComment(o.text, 3, o.thread.LineWidth))
 	}
 	ret += fmt.Sprintf(
 		"\n%s(%d) - %s - %d Comments\n",
@@ -40,10 +40,13 @@ func (o Op) String() (ret string) {
 }
 
 func (c Comment) String() (ret string) {
-	indent := c.indent * int(c.thread.LeftPadding)
-	ret += "\n" + fixupComment(c.msg, indent+1, c.thread.Width) + "\n"
+	leftPadding := c.thread.LeftPadding * c.depth
+	rightPadding := 2
+	lineWidth := format.Min(c.thread.LineWidth, leftPadding+c.thread.CommentWidth+1) - rightPadding
+	ret += "\n" + fixupComment(c.msg, leftPadding+1, lineWidth) + "\n"
+
 	arrow := ">> "
-	if c.indent > 0 {
+	if c.depth > 0 {
 		arrow = ">> "
 	}
 
@@ -53,15 +56,16 @@ func (c Comment) String() (ret string) {
 	}
 
 	if c.thread.ShowDate {
-		ret += strings.Repeat(" ", indent) + arrow + author + " - " + humanize.Time(c.date)
+		ret += strings.Repeat(" ", leftPadding) + arrow + author + " - " + humanize.Time(c.date)
 	} else {
-		ret += strings.Repeat(" ", indent) + arrow + author
+		ret += strings.Repeat(" ", leftPadding) + arrow + author
 	}
+
 	ret += "\n"
 	return
 }
 
-func fixupComment(html string, leftPad int, width uint) string {
+func fixupComment(html string, leftPad int, width int) string {
 	plainText, err := html2text.FromString(
 		html,
 		html2text.Options{OmitLinks: false, PrettyTables: true, CitationStyleLinks: true},
@@ -69,7 +73,7 @@ func fixupComment(html string, leftPad int, width uint) string {
 	if err != nil {
 		panic(err)
 	}
-	wrapped, _ := text.WrapLeftPadded(format.GreenTextIt(plainText), int(width), leftPad)
+	wrapped, _ := text.WrapLeftPadded(format.GreenTextIt(plainText), width, leftPad)
 	return wrapped
 }
 

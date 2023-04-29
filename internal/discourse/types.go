@@ -5,14 +5,15 @@ import (
 )
 
 type Thread struct {
-	comments    []Comment
-	op          Op
-	id          int
-	url         string
-	Width       int
-	LeftPadding int
-	ShowDate    bool
-	ShowAuthor  bool
+	comments     []Comment
+	op           Op
+	id           int
+	url          string
+	LineWidth    int
+	CommentWidth int
+	LeftPadding  int
+	ShowDate     bool
+	ShowAuthor   bool
 }
 
 type Op struct {
