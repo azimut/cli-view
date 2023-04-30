@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"net/url"
+	"os"
 	"path"
 	"sort"
 	"strings"
@@ -114,13 +115,16 @@ func getLinks(text string) []string {
 }
 
 func toItems(links []string) []list.Item {
-	urls := make([]*url.URL, len(links))
-	for i, link := range links {
+	var urls []*url.URL
+	var cleanLinks []string
+	for _, link := range links {
 		url, err := url.Parse(link)
-		urls[i] = url
 		if err != nil {
-			panic(err)
+			fmt.Fprintf(os.Stderr, "err: could not parse url `%s` due: %v", link, err)
+			continue
 		}
+		urls = append(urls, url)
+		cleanLinks = append(cleanLinks, link)
 	}
 
 	sort.Slice(urls, func(i, j int) bool {
@@ -135,7 +139,7 @@ func toItems(links []string) []list.Item {
 		return iurl.Scheme > jurl.Scheme // NOTE: inverse order on purpose
 	})
 
-	items := make([]list.Item, len(links))
+	items := make([]list.Item, len(cleanLinks))
 	for i := range urls {
 		items[i] = item(urls[i].String())
 	}
