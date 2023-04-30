@@ -71,13 +71,19 @@ func explodePost(post Post) (posts []Post) {
 		return
 	}
 
+	// squash many/1 reply/comment, when no message
+	if len(replies) == len(findings) && allEmptyStrings(replies) {
+		replies = replies[len(replies)-1:]
+		findings = findings[len(findings)-1:]
+	}
+
 	// Add simple 1/1 reply/comment messages
 	if len(replies) == len(findings) &&
 		(len(replies) == 1 || allEmptyButLast(replies) || !containsEmptyString(replies)) {
 
 		// squash many/1 reply/comment into 1/1
 		if allEmptyButLast(replies) {
-			replies = []string{replies[len(replies)-1]}
+			replies = replies[len(replies)-1:] // keep the last reply
 		}
 
 		for i, reply := range replies {
@@ -181,4 +187,13 @@ func containsEmptyString(xs []string) bool {
 		}
 	}
 	return false
+}
+
+func allEmptyStrings(xs []string) bool {
+	for _, x := range xs {
+		if x != "" {
+			return false
+		}
+	}
+	return true
 }

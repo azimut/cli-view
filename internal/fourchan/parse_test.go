@@ -137,8 +137,13 @@ func TestExplodeNPosts(t *testing.T) {
 			comment: `<a href="#p92834152" class="quotelink">&gt;&gt;92834152</a><br><a href="#p92835905" class="quotelink">&gt;&gt;92835905</a><br>based`,
 			id:      7,
 		},
+		{
+			subject: "empty reply, likely with attachment, 2 quotes",
+			comment: `<a href="#p92883019" class="quotelink">&gt;&gt;92883019</a><br><a href="#p92891962" class="quotelink">&gt;&gt;92891962</a>`,
+			id:      8,
+		},
 	}
-	testNrs := []int{1, 1, 1, 1, 2, 3, 1}
+	testNrs := []int{1, 1, 1, 1, 2, 3, 1, 1}
 	for i, rawPost := range testPosts {
 		posts := explodePost(rawPost)
 		expected = testNrs[i]
