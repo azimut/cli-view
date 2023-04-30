@@ -1,6 +1,18 @@
 * cli-view
 See some urls from the command line.
-** Twitter
+** Why?
+- Current web design does not take into account people not using javascript or using a non-graphical web browser.
+- Some websites present comment in 1 dimension only, not nesting or indenting replies
+- On the websites that support nesting replies, the replies tend to be so nested that navigating them and not losing track of things becomes tedious.
+** Supported Sites
+- Twitter
+- HackerNews
+- Reddit
+- 4chan
+- Vichan boards
+- Discourse forums
+** Example Usage
+*** Twitter
 Uses [[https://developer.twitter.com/en/docs/twitter-for-websites/oembed-api][oEmbeded]] twitter json api
 #+begin_src
 ~ » twitterview https://twitter.com/TwitterDev/status/1428061939146526722
@@ -12,9 +24,9 @@ image: https://pic.twitter.com/an4zhbBBKI
 
 3 weeks ago
 #+end_src
-** HackerNews
-Uses *github.com/caser/gophernews*
-NOTE: at the moment it does NOT fetch replies to comments. Only direct comments.
+*** HackerNews
+- Uses *github.com/caser/gophernews*
+- NOTE: at the moment it does NOT fetch replies to comments. Only direct comments.
 #+begin_src
 ~ » hackerview https://news.ycombinator.com/item\?id\=28468751
 title: 60x speed-up of Linux “perf”
@@ -33,10 +45,10 @@ tonyg(211) - 5 hours ago
  everything that happened on LOST ;P.
 >>> saurik - 33 minutes ago
 #+end_src
-** Reddit
+*** Reddit
 - Uses their [[https://www.reddit.com/dev/api/][.json API]], parsing the markdown comment in /.body/
 #+begin_src
-~ » twitterview https://www.reddit.com/r/rust/comments/120mjef/how_to_learn_rust/
+~ » redditview https://www.reddit.com/r/rust/comments/120mjef/how_to_learn_rust/
 
 title: How to Learn Rust
  self: https://www.reddit.com/r/rust/comments/120mjef/how_to_learn_rust/
@@ -66,7 +78,7 @@ title: How to Learn Rust
     tutorials that ho beyond the basics are sorely lacking.
     >> Jannis_Black(3) - 2 weeks ago
 #+end_src
-** 4chan
+*** 4chan
 Uses *github.com/moshee/go-4chan-api*
 *NOTE*: still buggy, it will output to stdout some debug info of what it could not process
 #+begin_src
@@ -92,39 +104,4 @@ image: http://i.4cdn.org/g/1681865762986057.png (1651929037357090.png)
 
        anon, what is that
       >> 1 day ago     | http://i.4cdn.org/g/1681874505426414.png (hmmm.png)
-#+end_src
-** Vichan
-Uses the .json API
-#+begin_src
-~ » vichanview https://lainchan.org/λ/res/32109.html
-
-title: Tcl Thread
- self: https://lainchan.org/λ/res/32109.html
- file: https:/lainchan.org/λ/src/1659202355093-0.png "800px-Tcl-powered.svg.png"
-
-   Hi, lainons.
-
-   Yesterday I started learning Tcl and it seems like its paradigm of everything being a string is simply better and
-   easier than everything else I've tried. Why don't more languages do it? And why does it seem like we get less
-   innovative ideas in programming?
-
-8 months ago
-
-
- wait, isn't shell like this?
->> 8 months ago
-
-    Yes the principles are similar but Tcl does it in a way that seems closer to lisp to me in a way that i can't really
-    put my finger on. I think it's because most Tcl scripts are made up of function application and passing values
-    returned by those functions around.
-
-    For example this script:
-    tcl
-
-    set x 0
-    set list { 1 2 3 4 5 }
-    while {$x < [llength $list]} {
-     puts [lindex $list $x]
-    } is entirely made up of function application and different quoting conventions.
-   >> 8 months ago
 #+end_src
