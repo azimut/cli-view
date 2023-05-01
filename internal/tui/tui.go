@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"strings"
 
+	"github.com/atotto/clipboard"
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/progress"
@@ -32,6 +33,7 @@ type KeyMap struct {
 	LinksView    key.Binding
 	LinksOpen    key.Binding // TODO: move this elsewhere
 	LinksOpenXDG key.Binding
+	LinksYank    key.Binding
 }
 
 var DefaultKeyMap = KeyMap{
@@ -66,6 +68,10 @@ var DefaultKeyMap = KeyMap{
 	LinksOpenXDG: key.NewBinding(
 		key.WithKeys("O"),
 		key.WithHelp("O", "open link with xdg-open"),
+	),
+	LinksYank: key.NewBinding(
+		key.WithKeys("y"),
+		key.WithHelp("y", "yank current selected link"),
 	),
 }
 
@@ -118,6 +124,14 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 			case m.list.FilterState() == list.Filtering:
 				if msg.String() == "enter" && m.list.FilterValue() == "" {
 					m.list.ResetFilter()
+				}
+			case key.Matches(msg, DefaultKeyMap.LinksYank):
+				i, ok := m.list.SelectedItem().(item)
+				if ok {
+					err := clipboard.WriteAll(string(i))
+					if err != nil {
+						panic(err)
+					}
 				}
 			case key.Matches(msg, DefaultKeyMap.LinksView, DefaultKeyMap.Quit):
 				m.Viewport.Width, m.Viewport.Height = m.list.Width(), m.list.Height()-1

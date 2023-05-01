@@ -6,6 +6,7 @@ require (
 	github.com/MichaelMure/go-term-markdown v0.1.4
 	github.com/MichaelMure/go-term-text v0.3.1
 	github.com/PuerkitoBio/goquery v1.8.1
+	github.com/atotto/clipboard v0.1.4
 	github.com/caser/gophernews v0.0.0-20150107061403-f17255d5b792
 	github.com/charmbracelet/bubbles v0.15.0
 	github.com/charmbracelet/bubbletea v0.23.2
@@ -23,7 +24,6 @@ require (
 require (
 	github.com/alecthomas/chroma v0.10.0 // indirect
 	github.com/andybalholm/cascadia v1.3.1 // indirect
-	github.com/atotto/clipboard v0.1.4 // indirect
 	github.com/aymanbagabas/go-osc52 v1.2.1 // indirect
 	github.com/charmbracelet/harmonica v0.2.0 // indirect
 	github.com/containerd/console v1.0.3 // indirect
