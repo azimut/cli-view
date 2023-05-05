@@ -38,8 +38,7 @@ func Fetch(rawUrl, userAgent string, timeout time.Duration) (*Thread, error) {
 	}
 	comments := gjson.Get(jsonRaw, "comments").Array()
 	for _, comment := range comments {
-		// TODO: replies
-		thread.comments = append(thread.comments, Comment{
+		thread.insert(Comment{
 			createdAt: comment.Get("created_at").Time(),
 			id:        comment.Get("short_id").String(),
 			message:   comment.Get("comment").String(),

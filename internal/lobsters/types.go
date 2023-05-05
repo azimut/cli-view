@@ -36,3 +36,34 @@ type Comment struct {
 	thread    *Thread
 	username  string
 }
+
+func (t *Thread) insert(comment Comment) {
+	if comment.parent == "" {
+		t.comments = append(t.comments, comment)
+	} else {
+		parentComment := t.findComment(comment.parent)
+		comment.depth = parentComment.depth + 1
+		parentComment.replies = append(parentComment.replies, comment)
+	}
+}
+
+func (t *Thread) findComment(id string) *Comment {
+	for i := range t.comments {
+		if found := t.comments[i].findComment(id); found != nil {
+			return found
+		}
+	}
+	return nil
+}
+
+func (c *Comment) findComment(id string) *Comment {
+	if c.id == id {
+		return c
+	}
+	for i := range c.replies {
+		if found := c.replies[i].findComment(id); found != nil {
+			return found
+		}
+	}
+	return nil
+}

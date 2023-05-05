@@ -61,8 +61,8 @@ func (c Comment) String() (ret string) {
 		ret += " " + humanize.Time(c.createdAt)
 	}
 	ret += "\n\n"
-	// for _, reply := range c.replies {
-	// 	ret += fmt.Sprint(reply)
-	// }
+	for _, reply := range c.replies {
+		ret += reply.String()
+	}
 	return
 }
