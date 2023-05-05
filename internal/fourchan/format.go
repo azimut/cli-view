@@ -59,16 +59,15 @@ func (post Post) String() (ret string) {
 	}
 
 	ret += strings.Repeat(" ", post.depth*3)
-	if post.attachment.filename == "" {
-		ret += fmt.Sprintf(">> %-13s", humanize.Time(post.created))
-	} else {
-		ret += fmt.Sprintf(">> %-13s | %s (%s)",
-			humanize.Time(post.created),
+	ret += fmt.Sprintf(">> %s\n", humanize.Time(post.created))
+	if post.attachment.filename != "" {
+		ret += strings.Repeat(" ", post.depth*3)
+		ret += fmt.Sprintf(">> %s (%s)\n",
 			post.attachment.url,
 			post.attachment.filename,
 		)
 	}
-	ret += "\n\n"
+	ret += "\n"
 	for _, reply := range post.replies {
 		ret += fmt.Sprint(reply)
 	}
