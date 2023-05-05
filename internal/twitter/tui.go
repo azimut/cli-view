@@ -1,8 +1,6 @@
 package twitter
 
 import (
-	"fmt"
-
 	"github.com/azimut/cli-view/internal/tui"
 	tea "github.com/charmbracelet/bubbletea"
 )
@@ -29,11 +27,13 @@ func (m Model) View() string {
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
+	if m.render.RawContent == "" {
+		m.render.RawContent = m.String()
+	}
 	m.render, cmd = m.render.Update(msg)
 	switch msg.(type) {
 	case tea.WindowSizeMsg:
-		m.render.RawContent = fmt.Sprint(m)
-		m.render.Viewport.SetContent(fmt.Sprint(m))
+		m.render.Viewport.SetContent(m.String())
 	}
 	return m, cmd
 }
