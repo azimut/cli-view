@@ -21,12 +21,14 @@ func (o Op) String() (ret string) {
 	ret += fmt.Sprintf("title: %s\n", o.title)
 	ret += fmt.Sprintf(" self: %s\n", o.self)
 	if o.url != "" {
-		ret += fmt.Sprintf("  url: %s\n", o.url)
+		ret += fmt.Sprintf("  url: %s\n\n", o.url)
 	}
-	ret += fmt.Sprintf(
-		"\n%s\n\n",
-		format.FormatText(o.message, o.thread.LineWidth, o.thread.LeftPadding),
-	)
+	if o.message != "" {
+		ret += fmt.Sprintf(
+			"\n%s\n\n",
+			format.FormatText(o.message, o.thread.LineWidth, o.thread.LeftPadding),
+		)
+	}
 	ret += fmt.Sprintf(
 		"%s  - %s \n\n\n",
 		format.AuthorStyle.Render(o.username),
