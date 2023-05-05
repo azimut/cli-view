@@ -1,5 +1,5 @@
 GO_FILES := $(shell find . -type f -name '*.go')
-BINARIES := twitterview hackerview redditview fourchanview vichanview discourseview
+BINARIES := twitterview hackerview redditview fourchanview vichanview discourseview lobstersview
 LDFLAGS  := -ldflags="-s -w"
 
 ifdef DEBUG

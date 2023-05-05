@@ -41,3 +41,10 @@ builds:
     goos:    [  linux  ]
     goarch:  [  amd64  ]
     ldflags: [ "-s -w" ]
+
+  - id: lobstersview
+    binary: lobstersview
+    main: ./cmd/lobstersview
+    goos:    [  linux  ]
+    goarch:  [  amd64  ]
+    ldflags: [ "-s -w" ]
