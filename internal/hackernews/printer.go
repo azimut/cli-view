@@ -2,13 +2,15 @@ package hackernews
 
 import (
 	"fmt"
+	"html"
 	"net/url"
+	"regexp"
 	"strings"
 
 	text "github.com/MichaelMure/go-term-text"
 	"github.com/azimut/cli-view/internal/format"
+	"github.com/charmbracelet/lipgloss"
 	"github.com/dustin/go-humanize"
-	"github.com/jaytaylor/html2text"
 )
 
 func (thread Thread) String() (ret string) {
@@ -65,15 +67,32 @@ func (c Comment) String() (ret string) {
 	return
 }
 
-func fixupComment(html string, leftPad int, width int) string {
-	plainText, err := html2text.FromString(
-		html,
-		html2text.Options{OmitLinks: false, PrettyTables: true, CitationStyleLinks: true},
+var reAnchor = regexp.MustCompile(`<a href="([^"]+)"( rel="nofollow")?>([^<]+)</a>`)
+var reItalic = regexp.MustCompile(`<i>([^<]+)</i>`)
+
+var italicStyle = lipgloss.NewStyle().Italic(true)
+
+func fixupComment(htmlText string, leftPad int, width int) string {
+	plainText := strings.ReplaceAll(htmlText, "<p>", "\n\n")
+	plainText = strings.TrimSpace(plainText)
+	plainText = reItalic.ReplaceAllStringFunc(plainText, func(s string) string {
+		return italicStyle.Render(s[3 : len(s)-4])
+	})
+	plainText = reAnchor.ReplaceAllStringFunc(plainText, func(s string) string {
+		matches := reAnchor.FindAllStringSubmatch(s, -1)
+		href := matches[0][1]
+		desc := strings.TrimSuffix(matches[0][3], "...")
+		if strings.HasPrefix(href, desc) {
+			return href
+		} else {
+			return fmt.Sprintf("[%s](%s)", desc, href)
+		}
+	})
+	wrapped, _ := text.WrapLeftPadded(
+		format.GreenTextIt(html.UnescapeString(plainText)),
+		width,
+		leftPad,
 	)
-	if err != nil {
-		panic(err)
-	}
-	wrapped, _ := text.WrapLeftPadded(format.GreenTextIt(plainText), width, leftPad)
 	return wrapped
 }
 
