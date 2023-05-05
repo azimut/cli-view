@@ -25,7 +25,7 @@ func (o Op) String() (ret string) {
 	}
 	ret += fmt.Sprintf(
 		"\n%s\n\n",
-		format.FormatHtml2Text(o.message, o.thread.LineWidth, o.thread.LeftPadding),
+		format.FormatText(o.message, o.thread.LineWidth, o.thread.LeftPadding),
 	)
 	ret += fmt.Sprintf(
 		"%s  - %s \n\n\n",
@@ -45,7 +45,7 @@ func (c Comment) String() (ret string) {
 	) - rightPadding
 	ret += fmt.Sprintf(
 		"%s\n",
-		format.FormatHtml2Text(c.message, lineWidth, leftPadding+extraLeft),
+		format.FormatText(c.message, lineWidth, leftPadding+extraLeft),
 	)
 	ret += strings.Repeat(" ", leftPadding)
 	ret += ">>"

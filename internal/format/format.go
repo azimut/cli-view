@@ -36,6 +36,15 @@ func FormatHtml2Text(htmlText string, width, leftPadding int) string {
 	return wrapped
 }
 
+func FormatText(plainText string, width, leftPadding int) string {
+	wrapped, _ := text.WrapLeftPadded(
+		GreenTextIt(strings.ReplaceAll(plainText, "\r\n", "\n")),
+		width,
+		leftPadding,
+	)
+	return wrapped
+}
+
 func Min(a, b int) int {
 	if a < b {
 		return a

@@ -26,7 +26,7 @@ func Fetch(rawUrl, userAgent string, timeout time.Duration) (*Thread, error) {
 	thread := Thread{}
 	thread.op = Op{
 		createdAt: gjson.Get(jsonRaw, "created_at").Time(),
-		message:   gjson.Get(jsonRaw, "description").String(),
+		message:   gjson.Get(jsonRaw, "description_plain").String(),
 		nComments: int(gjson.Get(jsonRaw, "comment_count").Int()),
 		score:     int(gjson.Get(jsonRaw, "score").Int()),
 		self:      rawUrl,
@@ -41,7 +41,7 @@ func Fetch(rawUrl, userAgent string, timeout time.Duration) (*Thread, error) {
 		thread.insert(Comment{
 			createdAt: comment.Get("created_at").Time(),
 			id:        comment.Get("short_id").String(),
-			message:   comment.Get("comment").String(),
+			message:   comment.Get("comment_plain").String(),
 			parent:    comment.Get("parent_comment").String(),
 			score:     int(comment.Get("score").Int()),
 			thread:    &thread,
