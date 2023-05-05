@@ -11,6 +11,7 @@ See some urls from the command line.
 - 4chan
 - Vichan boards
 - Discourse forums
+- Lobste.rs
 ** Example Usage
 *** Twitter
 Uses [[https://developer.twitter.com/en/docs/twitter-for-websites/oembed-api][oEmbeded]] twitter json api
