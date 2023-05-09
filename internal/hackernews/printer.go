@@ -29,7 +29,7 @@ func (o Op) String() (ret string) {
 	}
 	ret += fmt.Sprintf(" self: %s\n", o.selfUrl)
 	if o.text != "" {
-		ret += fmt.Sprintf("\n%s\n", fixupComment(o.text, 3, o.thread.LineWidth))
+		ret += fmt.Sprintf("\n%s\n", fixupComment(o.text, 3, o.thread.LineWidth-3))
 	}
 	ret += fmt.Sprintf(
 		"\n%s(%d) - %s - %d Comments\n",

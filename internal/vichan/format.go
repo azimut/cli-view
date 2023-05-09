@@ -35,7 +35,7 @@ func (op Op) String() (ret string) {
 	if op.message != "" {
 		ret += "\n" + format.FormatHtml2Text(
 			op.message,
-			op.thread.LineWidth,
+			op.thread.LineWidth-op.thread.LeftPadding,
 			op.thread.LeftPadding,
 		)
 		ret += "\n\n"

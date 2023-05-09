@@ -22,7 +22,11 @@ func (o Op) String() (ret string) {
 	ret += fmt.Sprintf(" self: %s\n", o.thread.url)
 	ret += fmt.Sprintf(
 		"\n%s\n\n",
-		format.FormatHtml2Text(o.message, o.thread.LineWidth, o.thread.LeftPadding),
+		format.FormatHtml2Text(
+			o.message,
+			o.thread.LineWidth-o.thread.LeftPadding,
+			o.thread.LeftPadding,
+		),
 	)
 	ret += fmt.Sprintf(
 		"%s  - %s \n\n\n",

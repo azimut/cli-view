@@ -32,7 +32,7 @@ func (op Op) String() (ret string) {
 	if op.comment != "" {
 		comment, _ := text.WrapLeftPadded(
 			format.GreenTextIt(op.comment),
-			int(op.thread.LineWidth),
+			int(op.thread.LineWidth-op.thread.LeftPadding),
 			int(op.thread.LeftPadding),
 		)
 		ret += comment + "\n"

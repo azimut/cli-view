@@ -26,7 +26,11 @@ func (o Op) String() (ret string) {
 	if o.message != "" {
 		ret += fmt.Sprintf(
 			"\n%s\n\n",
-			format.FormatText(o.message, o.thread.LineWidth, o.thread.LeftPadding),
+			format.FormatText(
+				o.message,
+				o.thread.LineWidth-o.thread.LeftPadding,
+				o.thread.LeftPadding,
+			),
 		)
 	}
 	ret += fmt.Sprintf(
