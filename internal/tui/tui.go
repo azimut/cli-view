@@ -199,12 +199,8 @@ func isScrolling(msg tea.KeyMsg) bool {
 }
 
 func (m *Model) initialize(msg tea.WindowSizeMsg) {
-	m.Viewport = viewport.Model{
-		Width:  msg.Width,
-		Height: msg.Height - 1,
-		KeyMap: DefaultViewportKeyMap,
-		// HighPerformanceRendering: true,
-	}
+	m.Viewport = viewport.New(msg.Width, msg.Height-1)
+	m.Viewport.KeyMap = DefaultViewportKeyMap
 
 	m.progress = progress.New(
 		progress.WithGradient("#696969", "#D3D3D3"),
