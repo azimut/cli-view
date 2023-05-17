@@ -14,7 +14,7 @@ $(BINARIES): $(GO_FILES)
 	go build -v $(LDFLAGS) ./cmd/$@
 	ls -lh $@
 
-install: $(BINARIES) test
+install: test $(BINARIES)
 	 mv $(BINARIES) $(HOME)/go/bin/
 
 clean: ; go clean -x ./...
