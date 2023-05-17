@@ -35,7 +35,7 @@ var DefaultListKeyMap = list.KeyMap{
 		key.WithHelp("←/h/pgup", "prev page"),
 	),
 	NextPage: key.NewBinding(
-		key.WithKeys("right", "pgdown", "ctrl+v"),
+		key.WithKeys("right", "pgdown", "ctrl+v", " "),
 		key.WithHelp("→/l/pgdn", "next page"),
 	),
 	GoToStart: key.NewBinding(
