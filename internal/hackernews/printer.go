@@ -67,7 +67,9 @@ func (c Comment) String() (ret string) {
 	return
 }
 
-var reAnchor = regexp.MustCompile(`<a href="([^"]+)"( rel="nofollow")?>([^<]+)</a>`)
+var reAnchor = regexp.MustCompile(
+	`<a href="([^"]+)"(( rel="nofollow")|( rel="nofollow noreferrer"))?>([^<]+)</a>`,
+)
 var reItalic = regexp.MustCompile(`<i>([^<]+)</i>`)
 
 var italicStyle = lipgloss.NewStyle().Italic(true)
